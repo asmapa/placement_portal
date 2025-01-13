@@ -9,6 +9,7 @@ import FlashNews from './Components/FlashNews';
 import Contact from './Components/Contact';
 import Footer from './Components/Footer';
 import Login from './Student/Login'; // Import the Login component
+import StudentDashboard from './Student/StudentDashboard';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -39,6 +40,7 @@ const App = () => {
         
         {/* Add a route for the Login page */}
         <Route path="/login" element={<Login />} />
+        <Route path="/StudentDashboard" element={<StudentDashboard />} />
       </Routes>
     </Router>
   );
