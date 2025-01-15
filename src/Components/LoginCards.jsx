@@ -28,6 +28,10 @@ const LoginCards = () => {
     navigate('/login'); // Navigate to login page
   };
 
+  const handleRegister = () => {
+    navigate('/Register');
+  }
+
   // Dynamic button styles
   const buttonStyle = (hover) => ({
     backgroundColor: hover ? 'gray' : 'navy', // Change color on hover
@@ -62,6 +66,7 @@ const LoginCards = () => {
                 style={buttonStyle(registerHover)}
                 onMouseEnter={() => handleMouseEnter('register')}
                 onMouseLeave={() => handleMouseLeave('register')}
+                onClick={handleRegister}
               >
                 Register
               </Button>
