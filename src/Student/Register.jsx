@@ -32,21 +32,9 @@ const Register = () => {
 
           <div>
             <form>
-              {/* Row 1 */}
-              <div className="flex gap-10 mb-6">
-                <div className="flex-1">
-                  <label className="text-white">KTU ID</label>
-                  <div>
-                    <input
-                      type="text"
-                      className="input w-1/2 text-white bg-transparent border-b  rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
+           
 
-              {/* Row 2 */}
+              {/* Row 1 */}
               <div className="flex gap-10 mb-6">
                 <div className="flex-1">
                   <label className="text-white">Your Name</label>
@@ -59,10 +47,10 @@ const Register = () => {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <label className="text-white">Email Address</label>
+                  <label className="text-white">KTU ID</label>
                   <div>
                     <input
-                      type="email"
+                      type="text"
                       className="input w-full border text-white bg-transparent border-b  rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
                       required
                     />
@@ -70,7 +58,7 @@ const Register = () => {
                 </div>
               </div>
 
-              {/* Row 3 */}
+              {/* Row 2 */}
               <div className="flex gap-10 mb-6">
                 <div className="flex-1">
                   <label className="text-white">Password</label>
@@ -94,14 +82,14 @@ const Register = () => {
                 </div>
               </div>
 
-              {/* Row 4 */}
+              {/* Row 3 */}
               <div className="flex gap-10 mb-6">
                 <div className="flex-1">
                   <label className="text-white">Phone</label>
                   <div>
                     <input
                       type="text"
-                      className="input w-full text-white bg-transparent border-b  rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+                      className="input w-full text-white bg-transparent border rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -125,7 +113,7 @@ const Register = () => {
                 </div>
               </div>
 
-              {/* Row 5 */}
+              {/* Row 4 */}
               <div className="flex gap-10 mb-6">
                 <div className="flex-1">
                   <label htmlFor="dob" className="block text-white mb-2">DOB</label>
@@ -138,20 +126,21 @@ const Register = () => {
                   />
                 </div>
                 <div className="flex-1">
-                  <label htmlFor="course" className="block text-white mb-2">Course</label>
-                  <select
-                    className="w-full text-white bg-transparent border-b  rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
-                    required
-                  >
-                    <option value="">Select Course</option>
-                    <option value="B.Tech">B.Tech</option>
-                    <option value="M.Tech">M.Tech</option>
-                    <option value="PhD">PhD</option>
-                  </select>
-                </div>
-              </div>
+                      <label htmlFor="course" className="block text-white mb-2">Course</label>
+                            <select
+                                className="w-full bg-transparent text-white border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
+                                required
+                            >
+                                  <option value="" className="bg-gray-800 text-white">Select Course</option>
+                                  <option value="B.Tech" className="bg-gray-800 text-white">B.Tech</option>
+                                  <option value="M.Tech" className="bg-gray-800 text-white">M.Tech</option>
+                                  <option value="PhD" className="bg-gray-800 text-white">PhD</option>
+                            </select>
+                    </div>
 
-              {/* Row 6 */}
+              </div> 
+
+              {/* Row 5*/}
               <div className="flex gap-10 mb-6">
                 <div className="flex-1">
                   <label htmlFor="year" className="block text-white mb-2">Year of Study</label>
@@ -159,11 +148,11 @@ const Register = () => {
                     className="w-full border text-white bg-transparent border-b  rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
                     required
                   >
-                    <option value="">Choose Year</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    <option value="" className="bg-gray-800 text-white">Choose Year</option>
+                    <option value="1" className="bg-gray-800 text-white">1</option>
+                    <option value="2" className="bg-gray-800 text-white">2</option>
+                    <option value="3" className="bg-gray-800 text-white">3</option>
+                    <option value="4" className="bg-gray-800 text-white">4</option>
                   </select>
                 </div>
                 <div className="flex-1">
@@ -172,18 +161,63 @@ const Register = () => {
                     className="w-full text-white bg-transparent border-b  rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
                     required
                   >
-                    <option value="">Select CGPA</option>
-                    <option value="9">9</option>
-                    <option value="8">8</option>
-                    <option value="7">7</option>
-                    <option value="6">6</option>
+                    <option value="" className="bg-gray-800 text-white">Select CGPA</option>
+                    <option value="9" className="bg-gray-800 text-white">9</option>
+                    <option value="8" className="bg-gray-800 text-white">8</option>
+                    <option value="7" className="bg-gray-800 text-white">7</option>
+                    <option value="6" className="bg-gray-800 text-white">6</option>
                   </select>
                 </div>
               </div>
 
+
+              {/* Row 7 */}
+              <div className="flex gap-10 mb-6">
+                <div className="flex-1">
+                  <label className="text-white">College Email address</label>
+                  <div>
+                    <input
+                      type="text"
+                      className="input w-full text-white bg-transparent border-b  rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <label className="text-white">Number Of Backlogs</label>
+                  <div>
+                    <input
+                      type="email"
+                      className="input w-full border text-white bg-transparent border-b  rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 7 */}
+              <div className="flex gap-10 mb-6">
+                <div className="flex-1">
+                  <label className="text-white">Upload Certificate</label>
+                  <div>
+                    <input
+                      type="file"
+                      className="input w-full text-white bg-transparent border  rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+                      placeholder='Select Certificate'
+                      name='certificate'
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="flex-1">
+                 
+                </div>
+              </div>
+
+
               {/* Submit Button */}
               <div className="text-center">
-                <button type="submit" className="stylebt px-6 py-2 bg-blue-500 text-white rounded">Register Now</button>
+                <button type="submit" className="stylebt px-6 py-2 bg-white text-Navy rounded">Register Now</button>
               </div>
             </form>
           </div>
