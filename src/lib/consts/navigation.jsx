@@ -6,55 +6,39 @@ import {
 	HiOutlineDocumentText,
 	HiOutlineAnnotation,
 	HiOutlineQuestionMarkCircle,
-	HiOutlineCog
+	HiOutlineCog,
+	HiOutlineChartSquareBar
 } from 'react-icons/hi'
 
 export const DASHBOARD_SIDEBAR_LINKS = [
 	{
 		key: 'dashboard',
 		label: 'Dashboard',
-		path: '/',
+		path: '/student-dashboard',
 		icon: <HiOutlineViewGrid />
 	},
 	{
-		key: 'products',
-		label: 'Products',
-		path: '/products',
-		icon: <HiOutlineCube />
-	},
-	{
-		key: 'orders',
-		label: 'Orders',
-		path: '/orders',
-		icon: <HiOutlineShoppingCart />
-	},
-	{
-		key: 'customers',
-		label: 'Customers',
-		path: '/customers',
+		key: 'UpdateProfile',
+		label: 'Update Profile',
+		path: '/UpdateProfile',
 		icon: <HiOutlineUsers />
 	},
 	{
-		key: 'transactions',
-		label: 'Transactions',
-		path: '/transactions',
+		key: 'MyApplication',
+		label: 'My Application',
+		path: '/MyApplication',
 		icon: <HiOutlineDocumentText />
 	},
 	{
-		key: 'messages',
-		label: 'Messages',
-		path: '/messages',
-		icon: <HiOutlineAnnotation />
-	}
+		key: 'Result',
+		label: 'Result',
+		path: '/Result',
+		icon: <HiOutlineChartSquareBar />
+	  }
 ]
 
 export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
-	{
-		key: 'settings',
-		label: 'Settings',
-		path: '/settings',
-		icon: <HiOutlineCog />
-	},
+	
 	{
 		key: 'support',
 		label: 'Help & Support',

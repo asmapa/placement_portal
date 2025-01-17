@@ -11,10 +11,11 @@ import Footer from './Components/Footer';
 import Login from './Student/Login'; // Import the Login component
 import Layout from './Student/StudentDashboard/shared/Layout';
 import Register from './Student/Register';
-import Dashboard from './Student/StudentDashboard/Dashboard';
+import Result from './Student/StudentDashboard/Result';
 import Placement from './Student/StudentDashboard/Placement';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import RecentPlacement from './Components/RecentPlacement';
 
 const App = () => {
   return (
@@ -36,6 +37,10 @@ const App = () => {
               <section id="login">
                 <LoginCards />
               </section>
+              <section id="RecentPlacement">
+              <RecentPlacement/>
+              </section>
+              
               <TopCompany />
               <section id="contact">
                 <Contact />
@@ -50,9 +55,8 @@ const App = () => {
 
         {/* Dashboard Routes */}
         <Route path="/student-dashboard" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route index element={<Dashboard />} />
-          <Route path="placement" element={<Placement />} />
+          <Route index element={<Placement />} />
+          
         </Route>
       </Routes>
     </Router>

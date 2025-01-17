@@ -25,6 +25,6 @@ module.exports = {
     },
   },
   plugins: [
-    flowbite.plugin(), // Use Flowbite React plugin
+    require("flowbite/plugin"), // Flowbite plugin
   ],
 };
