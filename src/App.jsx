@@ -12,9 +12,11 @@ import Login from './Student/Login'; // Import the Login component
 import Layout from './Student/StudentDashboard/shared/Layout';
 import Register from './Student/Register';
 import Result from './Student/StudentDashboard/Result';
+import UpdateProfile from './Student/StudentDashboard/UpdateProfile';
+import MyApplication from './Student/StudentDashboard/MyApplication';
 import Placement from './Student/StudentDashboard/Placement';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import './App.css'; 
 import RecentPlacement from './Components/RecentPlacement';
 
 const App = () => {
@@ -55,9 +57,13 @@ const App = () => {
 
         {/* Dashboard Routes */}
         <Route path="/student-dashboard" element={<Layout />}>
-          <Route index element={<Placement />} />
-          
-        </Route>
+        {/* Default route */}
+        <Route index element={<Placement />} />
+        {/* Nested routes */}
+        <Route path="Result" element={<Result />} />
+        <Route path="UpdateProfile" element={<UpdateProfile />} />
+        <Route path="MyApplication" element={<MyApplication />} />
+      </Route>
       </Routes>
     </Router>
   );

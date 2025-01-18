@@ -12,30 +12,31 @@ import {
 
 export const DASHBOARD_SIDEBAR_LINKS = [
 	{
-		key: 'dashboard',
-		label: 'Dashboard',
-		path: '/student-dashboard',
-		icon: <HiOutlineViewGrid />
+	  key: 'dashboard',
+	  label: 'Dashboard',
+	  path: '/student-dashboard', // Full path for the root
+	  icon: <HiOutlineViewGrid />
 	},
 	{
-		key: 'UpdateProfile',
-		label: 'Update Profile',
-		path: '/UpdateProfile',
-		icon: <HiOutlineUsers />
+	  key: 'UpdateProfile',
+	  label: 'Update Profile',
+	  path: '/student-dashboard/UpdateProfile', // Correct relative path
+	  icon: <HiOutlineUsers />
 	},
 	{
-		key: 'MyApplication',
-		label: 'My Application',
-		path: '/MyApplication',
-		icon: <HiOutlineDocumentText />
+	  key: 'MyApplication',
+	  label: 'My Application',
+	  path: '/student-dashboard/MyApplication', // Correct relative path
+	  icon: <HiOutlineDocumentText />
 	},
 	{
-		key: 'Result',
-		label: 'Result',
-		path: '/Result',
-		icon: <HiOutlineChartSquareBar />
-	  }
-]
+	  key: 'Result',
+	  label: 'Result',
+	  path: '/student-dashboard/Result', // Correct relative path
+	  icon: <HiOutlineChartSquareBar />
+	}
+  ];
+  
 
 export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
 	
