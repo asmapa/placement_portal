@@ -18,6 +18,8 @@ import Placement from './Student/StudentDashboard/Placement';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'; 
 import RecentPlacement from './Components/RecentPlacement';
+import AdminLayout from './Admin/AdminDashboard/Shared/AdminLayout';
+import Dashboard from './Admin/AdminDashboard/Dashboard';
 
 const App = () => {
   return (
@@ -63,6 +65,10 @@ const App = () => {
         <Route path="Result" element={<Result />} />
         <Route path="UpdateProfile" element={<UpdateProfile />} />
         <Route path="MyApplication" element={<MyApplication />} />
+      </Route>
+
+      <Route path="/Admin-dashboard" element={<AdminLayout/>}>
+          <Route index element={<Dashboard/>}/>
       </Route>
       </Routes>
     </Router>

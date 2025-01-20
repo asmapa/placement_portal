@@ -3,7 +3,7 @@ import { HiOutlineChatAlt, HiOutlineSearch } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
 
-const Header = () => {
+const AdminHeader = () => {
   const [isModalOpen, setModalOpen] = useState(false); // state for modal visibility
   const [isDropdownOpen, setDropdownOpen] = useState(false); // state for dropdown visibility
 
@@ -17,15 +17,7 @@ const Header = () => {
 
   return (
     <div className='flex h-16 px-4 justify-between items-center bg-white border-b border-gray-300'>
-      {/* Div for search button */}
-      <div className='relative'>
-        <HiOutlineSearch fontSize={20} className='absolute top-1/2 -translate-y-1/2 left-3'/>
-        <input
-          type="text"
-          placeholder='search company name...'
-          className='text-sm h-10 w-[24rem] border border-gray-700 rounded-sm pl-11 pr-4 focus:outline-none active:outline-none'
-        />
-      </div>
+      <h3 className='text-[#005f69]'><span className='text-Navy font-extrabold text-3xl'>RIT</span> Career Connect</h3>
       
       {/* Other icons and links */}
       <div className='flex items-center gap-6 mr-2'>
@@ -36,12 +28,7 @@ const Header = () => {
           Home
         </Link>
         
-        {/* Chat Icon */}
-        <HiOutlineChatAlt
-          fontSize={24}
-          className='hover:bg-slate-200 cursor-pointer'
-          onClick={toggleModal} // Open the modal when clicked
-        />
+       
 
         {/* User Icon with Dropdown */}
         <div className='relative'>
@@ -66,22 +53,19 @@ const Header = () => {
 
       {/* Modal */}
       {isModalOpen && (
-  <div className="fixed inset-0 z-50 flex justify-center items-center bg-gray-800 bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg w-80 shadow-lg">
-      <p className="text-black">
-        Best Opportunity For Final year students, TCS is going to visit. Must apply for the Drive!
-      </p>
-      <button
-        onClick={toggleModal}
-        className="mt-4 bg-red-500 text-white px-4 py-2 rounded">
-        Close
-      </button>
-    </div>
-  </div>
-)}
-
+        <div className='fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50'>
+          <div className='bg-white p-6 rounded-lg w-80'>
+            <p className="text-black">Best Opportunity For Final year students, TCS is going to visit, Must apply for the Drive!</p>
+            <button 
+              onClick={toggleModal} 
+              className='mt-4 bg-red-500 text-white px-4 py-2 rounded'>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Header;
+export default AdminHeader;

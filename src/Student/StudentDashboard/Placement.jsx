@@ -3,6 +3,11 @@ import { Carousel } from 'flowbite-react';
 import Rit from '../../assets/placed_1.png';
 import homeimage1 from '../../assets/placed_2.png';
 import homeimage2 from '../../assets/placed_3.png';
+import { 
+  FaUserGraduate,  // For Placements Attended
+  FaRegHandshake,  // For Number of Offers
+  FaUsers          // For Ongoing Drives
+} from 'react-icons/fa';
 const Placement = () => {
   const [selectedTab, setSelectedTab] = useState('on-campus'); // State to toggle between tabs
 
@@ -98,21 +103,28 @@ const Placement = () => {
 
 
       {/* Placement Stats Section */}
-      <div className="flex justify-around  mt-8">
-        <div className="flex flex-col items-center flex-1 bg-Navy text-white p-4 rounded-lg mx-2 shadow-md">
-          <h2 className="text-lg font-bold">Placements Attended</h2>
-          <p className="text-4xl font-bold">6</p>
-        </div>
-        <div className="flex flex-col items-center flex-1 bg-blue-950 text-white p-4 rounded-lg mx-2 shadow-md">
-          <h2 className="text-lg font-bold">Number of Offers</h2>
-          <p className="text-4xl font-bold">1</p>
-        </div>
-        <div className="flex flex-col items-center flex-1 bg-blue-900 text-white p-4 rounded-lg mx-2 shadow-md">
-          <h2 className="text-lg font-bold">Ongoing Drives</h2>
-          <p className="text-4xl font-bold">3</p>
-        </div>
+      <div className="flex justify-around mt-8">
+      {/* Placements Attended */}
+      <div className="flex flex-col items-center flex-1 bg-Navy text-white p-4 rounded-lg mx-2 shadow-md">
+        <FaUserGraduate className="text-5xl mb-2" />
+        <h2 className="text-lg font-bold">Placements Attended</h2>
+        <p className="text-4xl font-bold">6</p>
       </div>
-
+      
+      {/* Number of Offers */}
+      <div className="flex flex-col items-center flex-1 bg-blue-950 text-white p-4 rounded-lg mx-2 shadow-md">
+        <FaRegHandshake className="text-5xl mb-2" />
+        <h2 className="text-lg font-bold">Number of Offers</h2>
+        <p className="text-4xl font-bold">1</p>
+      </div>
+      
+      {/* Ongoing Drives */}
+      <div className="flex flex-col items-center flex-1 bg-blue-900 text-white p-4 rounded-lg mx-2 shadow-md">
+        <FaUsers className="text-5xl mb-2" />
+        <h2 className="text-lg font-bold">Ongoing Drives</h2>
+        <p className="text-4xl font-bold">3</p>
+      </div>
+    </div>
       {/* Tabs Section */}
       <div className="flex justify-center mt-6 gap-4">
         <button
