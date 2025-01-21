@@ -21,6 +21,8 @@ import RecentPlacement from './Components/RecentPlacement';
 import AdminLayout from './Admin/AdminDashboard/Shared/AdminLayout';
 import Dashboard from './Admin/AdminDashboard/Dashboard';
 import PublishResult from './Admin/AdminDashboard/PublishResult';
+import UploadOrDeleteDrive from './Admin/AdminDashboard/UploadOrDeleteDrive';
+import RegisterCompany from './Admin/AdminDashboard/RegisterCompany';
 
 const App = () => {
   return (
@@ -71,6 +73,8 @@ const App = () => {
       <Route path="/Admin-dashboard" element={<AdminLayout/>}>
           <Route index element={<Dashboard/>}/>
           <Route path="PublishResult" element={<PublishResult/>}/>
+          <Route path="UploadOrDeleteDrive" element={<UploadOrDeleteDrive/>}/>
+          <Route path="RegisterCompany" element={<RegisterCompany/>}/>
       </Route>
       </Routes>
     </Router>

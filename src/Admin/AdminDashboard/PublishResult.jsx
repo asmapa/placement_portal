@@ -1,33 +1,41 @@
-import React, { useState } from 'react';
-import * as XLSX from 'xlsx';
-import { Data } from '../AdminDashboard/ExcelComponent/Data';
+import React, { useState } from "react";
+import * as XLSX from "xlsx";
+import { Data } from "../AdminDashboard/ExcelComponent/Data";
 
 const PublishResult = () => {
     const [excelFile, setExcelFile] = useState(null);
     const [excelFileError, setExcelFileError] = useState(null);
     const [excelData, setExcelData] = useState(null);
+    const [fileName, setFileName] = useState(""); // State to store the selected file name
 
     const FileType = [
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ];
 
     const handleFile = (e) => {
-        let selectedFile = e.target.files[0];
+        let selectedFile = e.target.files[0]; // Get the first file
         if (selectedFile) {
+            setFileName(selectedFile.name); // Set file name
             if (FileType.includes(selectedFile.type)) {
                 let reader = new FileReader();
                 reader.readAsArrayBuffer(selectedFile);
-                reader.onload = (e) => {
+                reader.onload = (event) => {
                     setExcelFileError(null);
-                    setExcelFile(e.target.result);
+                    setExcelFile(event.target.result); // Update state with the file data
+                };
+                reader.onerror = () => {
+                    setExcelFileError("Error reading the file");
+                    setExcelFile(null);
                 };
             } else {
-                setExcelFileError('Please select an Excel file');
+                setExcelFileError("Please select a valid Excel file");
                 setExcelFile(null);
+                setFileName(""); // Reset file name if the file is invalid
             }
         } else {
-            console.log('Select your file first');
+            setExcelFileError("No file selected");
+            setFileName(""); // Reset file name if no file is selected
         }
     };
 
@@ -35,15 +43,28 @@ const PublishResult = () => {
         e.preventDefault();
         e.stopPropagation();
         const selectedFile = e.dataTransfer.files[0];
-        handleFile({ target: { files: [selectedFile] } });
+        if (selectedFile) {
+            handleFile({ target: { files: [selectedFile] } });
+        }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (excelFile !== null) {
-            const workbook = XLSX.read(excelFile, { type: 'array' });
+            const workbook = XLSX.read(excelFile, { type: "array" });
             const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-            const data = XLSX.utils.sheet_to_json(worksheet);
+            let data = XLSX.utils.sheet_to_json(worksheet, { raw: false });
+
+            // Format dates
+            data = data.map((row) => {
+                if (row.Date) {
+                    row.Date = new Date((row.Date - 25569) * 86400 * 1000)
+                        .toISOString()
+                        .split("T")[0];
+                }
+                return row;
+            });
+
             setExcelData(data);
         } else {
             setExcelData(null);
@@ -52,14 +73,15 @@ const PublishResult = () => {
 
     return (
         <div className="container mx-auto p-6">
-         
             {/* Drag and Drop File Section */}
             <div
                 className="border-2 border-dashed border-Navy p-6 text-center rounded-lg mt-6"
                 onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
             >
-                <label className="block text-xl font-semibold text-gray-700 mb-4">Drag and Drop Result File</label>
+                <label className="block text-xl font-semibold text-gray-700 mb-4">
+                    Drag and Drop Result File
+                </label>
                 <p className="text-gray-500 mb-4">Or click to select a file</p>
                 <input
                     type="file"
@@ -69,11 +91,16 @@ const PublishResult = () => {
                 />
                 <button
                     type="button"
-                    onClick={() => document.getElementById('fileInput').click()}
+                    onClick={() => document.getElementById("fileInput").click()}
                     className="mt-4 px-6 py-2 bg-[#005f69] text-white rounded-md hover:bg-Navy"
                 >
                     Choose File
                 </button>
+
+                {/* Display Selected File Name */}
+                {fileName && (
+                    <p className="text-green-500 mt-4">Selected File: {fileName}</p>
+                )}
                 {excelFileError && (
                     <p className="text-red-500 text-sm mt-2">{excelFileError}</p>
                 )}
