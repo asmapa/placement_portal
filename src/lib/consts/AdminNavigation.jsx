@@ -3,7 +3,8 @@ import {
 	HiOutlineUserGroup,
 	HiOutlineOfficeBuilding,
 	HiOutlineCloudUpload,
-	HiOutlineClipboardCheck
+	HiOutlineClipboardCheck,
+	HiUserAdd
 } from 'react-icons/hi';
 
 export const DASHBOARD_SIDEBAR_LINKS = [
@@ -36,5 +37,11 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 		label: 'Publish Result',
 		path: '/Admin-dashboard/PublishResult', // Correct relative path
 		icon: <HiOutlineClipboardCheck /> // Clipboard check icon for results
+	},
+	{
+		key: 'AddStudents',
+		label: 'Add Students',
+		path: '/Admin-dashboard/AddStudents', // Correct relative path
+		icon: <HiUserAdd /> // Clipboard check icon for results
 	}
 ];

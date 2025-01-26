@@ -1,17 +1,31 @@
 import React from 'react';
+import { motion } from 'framer-motion'; // Import motion from framer-motion
 import image from '../assets/image.png';
+import { fadeIn } from '../variants'; // Import the fadeIn function
 
 const Welcome = () => {
   return (
     <div className="md:px-14 w-full py-6 mt-6 px-4 mx-auto max-w-screen-xl">
       <div className="flex flex-col md:flex-row items-center justify-between gap-8">
         {/* Image Section */}
-        <div className="flex-shrink-0 w-full md:w-1/3">
+        <motion.div
+          className="flex-shrink-0 w-full md:w-1/3"
+           initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: false, amount: 0.3 }} // Trigger animation when 30% of the div is visible
+                  variants={fadeIn('left', 0.2)}// Trigger once when 30% of the section is visible
+        >
           <img src={image} alt="Welcome" className="w-full object-contain" />
-        </div>
+        </motion.div>
 
         {/* Text Section */}
-        <div className="md:w-2/3 text-center md:text-left">
+        <motion.div
+          className="md:w-2/3 text-center md:text-left"
+      initial="hidden"
+             whileInView="show"
+             viewport={{ once: false, amount: 0.3 }} // Trigger animation when 30% of the div is visible
+             variants={fadeIn('up', 0.2)} // Trigger once when 30% of the section is visible
+        >
           <h4 className="text-xl font-semibold mb-2">Welcome To CGPC at</h4>
           <h1 className="text-3xl font-bold text-red-800 mb-4">
             Rajiv Gandhi Institute Of Technology
@@ -26,7 +40,7 @@ const Welcome = () => {
             support your recruitment efforts. Career Guidance and Placement Cell serves as an
             interface between graduating students and prospective employers.
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

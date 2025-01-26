@@ -44,7 +44,13 @@ const PublishResult = () => {
         e.stopPropagation();
         const selectedFile = e.dataTransfer.files[0];
         if (selectedFile) {
-            handleFile({ target: { files: [selectedFile] } });
+            handleFile({ 
+                target: 
+                { 
+                    files: 
+                    [selectedFile] 
+                } 
+            });
         }
     };
 

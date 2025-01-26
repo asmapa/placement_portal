@@ -8,7 +8,7 @@ import Welcome from './Components/Welcome';
 import FlashNews from './Components/FlashNews';
 import Contact from './Components/Contact';
 import Footer from './Components/Footer';
-import Login from './Student/Login'; // Import the Login component
+import Login from './Student/Login';
 import Layout from './Student/StudentDashboard/shared/Layout';
 import Register from './Student/Register';
 import Result from './Student/StudentDashboard/Result';
