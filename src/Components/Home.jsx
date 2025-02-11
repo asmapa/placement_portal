@@ -30,46 +30,37 @@ const Home = () => {
                 variants={fadeIn('right', 0.2)}
               >
                 <span className='block text-Navy'>WELCOME TO</span>
-                <span className='block'>RIT CAREER CONNECT</span>
+                <span className='block'><span className='text-red-600'>RIT</span> CAREER CONNECT!</span>
               </motion.h1>
 
-              <p className='text-[#696969] text-2xl mb-8 font-dancing'>
-                Your bridge to success! Simplifying placements with streamlined updates, personalized profiles, and exclusive
-                opportunities—step into your future with confidence.
-              </p>
-              <button className='px-7 py-2 bg-Navy text-white rounded hover:bg-[#696969] transition-all duration-300 hover:-translate-y-4'>
-                Contact
+                          <motion.p
+                               initial='hidden'
+              whileInView='show'
+              viewport={{ once: false, amount: 0.3 }} // Trigger animation when 30% of the div is visible
+              variants={fadeIn('left', 0.2)} 
+                          >
+                 <p className='text-[#696969] text-2xl mb-8 font-dancing'>
+               This platform is designed to streamline the placement process for students and placement cell at RIT. For students, it offers an easy way to explore job opportunities, track applications, and stay updated on campus placements
+              </p>                 
+                          </motion.p>
+                          
+                          <motion.button
+                                    initial='hidden'
+              whileInView='show'
+              viewport={{ once: false, amount: 0.3 }} // Trigger animation when 30% of the div is visible
+              variants={fadeIn('up', 0.2)} 
+                          >
+                              <button className='px-7 py-2 bg-Navy text-white rounded hover:bg-[#696969] transition-all duration-300 hover:-translate-y-4 w-36'>
+                Explore
               </button>
+                          </motion.button>
+
+             
+              
             </div>
           </div>
 
-          {/* <div className="my-28 md:my-8 py-12 flex flex-col md:flex-row items-center justify-between">
-               <div>
-                  <img src={homeimage1} alt="" />
-               </div>
-
-              <div className="md:w-1/2">
-                  <h1 className="text-5xl font-itim mb-4 text-delft md:w-3/4 leading-snug">
-                   Your Pathway to Excellence
-                  </h1>
-                  <p className="text-[#696969] text-2xl mb-8 font-dancing">Empowering students with tools for growth and success—connect, learn, and achieve your career goals with ease.</p>
-                    <button className="px-7 py-2 bg-Navy text-white rounded hover:bg-[#696969] transition-all duration-300 hover:-translate-y-4">Learn More</button>
-               </div>
-          </div>
-
-          <div className="my-28 md:my-8 py-12 flex flex-col md:flex-row-reverse items-center justify-between">
-              <div>
-                  <img src={homeimage2} alt="" />
-              </div>
-
-              <div className="md:w-1/2">
-                  <h1 className="text-5xl font-itim mb-4 text-dolphins md:w-3/4 leading-snug">
-                      From Campus to Corporate
-                  </h1>
-                  <p className="text-[#696969] text-2xl mb-8 font-dancing">Seamlessly transition from academics to industry with our efficient placement management system designed for your success.</p>
-                  <button className="px-7 py-2 bg-Navy text-white rounded hover:bg-[#696969] transition-all duration-300 hover:-translate-y-4">Explore</button>
-              </div>
-          </div> */}
+          
         </Carousel>
       </div>
     </div>
