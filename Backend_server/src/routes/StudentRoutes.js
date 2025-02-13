@@ -7,3 +7,5 @@ const router = express.Router();
 router.post("/add-student", StudentController.addStudent);
 
 export default router;
+
+//http://localhost:3000/portal/add-student
