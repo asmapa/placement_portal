@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Table from "react-bootstrap/Table";
 import {
   FaUserFriends,
   FaBuilding,
@@ -33,9 +34,61 @@ const dataPie = [
   { name: 'CE', value: 40 },
 ];
 
+
+
+const companies = [
+  {
+    company_id: 1,
+    company_name: "Tech Innovators Ltd",
+    contact_person_name: "Rahul Sharma",
+    phone_number: "9876543210",
+    official_mail: "contact@techinnovators.com",
+    address: "123, Tech Park, Bangalore, India",
+    website_link: "https://www.techinnovators.com"
+  },
+  {
+    company_id: 2,
+    company_name: "NextGen Solutions",
+    contact_person_name: "Priya Verma",
+    phone_number: "9123456780",
+    official_mail: "info@nextgensolutions.com",
+    address: "456, Business Hub, Mumbai, India",
+    website_link: "https://www.nextgensolutions.com"
+  },
+  {
+    company_id: 3,
+    company_name: "GlobalSoft Pvt Ltd",
+    contact_person_name: "Amit Khanna",
+    phone_number: "9001234567",
+    official_mail: "support@globalsoft.com",
+    address: "789, IT Valley, Hyderabad, India",
+    website_link: "https://www.globalsoft.com"
+  },
+  {
+    company_id: 4,
+    company_name: "DataWave Analytics",
+    contact_person_name: "Sneha Raj",
+    phone_number: "9988776655",
+    official_mail: "hello@datawave.com",
+    address: "101, Data Towers, Pune, India",
+    website_link: "https://www.datawave.com"
+  },
+  {
+    company_id: 5,
+    company_name: "AI Revolution Corp",
+    contact_person_name: "Vikram Patel",
+    phone_number: "9871122334",
+    official_mail: "ai@revolutioncorp.com",
+    address: "555, AI Hub, Chennai, India",
+    website_link: "https://www.revolutioncorp.com"
+  }
+];
+
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00c49f'];
 
 const Dashboard = () => {
+  const [selectedTab, setSelectedTab] = useState('Existing-Company');
+
   return (
     <div>
       {/* Placement Stats */}
@@ -121,6 +174,81 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
       </div>
+
+      {/*Button to choose different sections */}
+     <div className="flex justify-center mt-10 gap-4">
+        <button
+          className={`px-6 py-2 font-bold flex-1 ${
+            selectedTab === 'Existing-Company' ? 'bg-[#005f69] text-white' : 'bg-gray-300'
+          }`}
+          onClick={() => setSelectedTab('Existing-Company')}
+        >
+          Existing Company
+        </button>
+        <button
+          className={`px-6 py-2  font-bold flex-1 ${
+            selectedTab === 'On-going-drive' ? 'bg-[#005f69] text-white' : 'bg-gray-300'
+          }`}
+          onClick={() => setSelectedTab('On-going-drive')}
+        >
+          On Going Drive's
+        </button>
+         <button
+          className={`px-6 py-2 font-bold flex-1 ${
+            selectedTab === 'Up-coming-drive' ? 'bg-[#005f69] text-white' : 'bg-gray-300'
+          }`}
+          onClick={() => setSelectedTab('Up-coming-drive')}
+        >
+         Up Coming Drive's
+        </button>
+      </div>   
+
+      {/*The Table Data */}
+      {selectedTab === "Existing-Company" && (
+        <div className="overflow-x-auto shadow-md rounded-lg border-Navy mt-8">
+          <Table striped bordered hover responsive>
+            <thead style={{ backgroundColor: "#005f69", color: "white" }}>
+              <tr>
+                <th>ID</th>
+                <th>Company Name</th>
+                <th>Contact Person</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Website</th>
+                <th>Update</th>
+                <th>Dlete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {companies.map((company) => (
+                <tr key={company.company_id}>
+                  <td>{company.company_id}</td>
+                  <td>{company.company_name}</td>
+                  <td>{company.contact_person_name || "N/A"}</td>
+                  <td>{company.official_mail}</td>
+                  <td>{company.phone_number || "N/A"}</td>
+                  <td>
+                    <a
+                      href={company.website_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {company.website_link}
+                    </a>
+                  </td>
+                  <td>
+                    <button className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[blue] transition">Update</button>
+                  </td>
+                  <td>
+                    <button className='px-6 py-2 bg-red-700 text-white rounded hover:bg-[#004b52] transition'>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      )}
+    
     </div>
   );
 };
