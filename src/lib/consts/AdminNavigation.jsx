@@ -41,7 +41,7 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 	{
 		key: 'AddStudents',
 		label: 'Add Students',
-		path: '/Admin-dashboard/AddStudents', // Correct relative path
+		path: '/Admin-dashboard/AddStudent', // Correct relative path
 		icon: <HiUserAdd /> // Clipboard check icon for results
 	}
 ];

@@ -11,8 +11,10 @@ export const getStudent = async (req, res) => {
 
 export const createStudent = async (req, res) => {
     try {
-        
+        const studentData = await req.body;
+        const newStudentData = await StudentServices.createStudent(studentData);
+        res.status(200).json(newStudentData);
     } catch (err) {
-        console.err("Error for inserting data !!", err);
+        console.error("Error for inserting data !!", err);
     }
 }

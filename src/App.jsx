@@ -23,6 +23,7 @@ import Dashboard from './Admin/AdminDashboard/Dashboard';
 import PublishResult from './Admin/AdminDashboard/PublishResult';
 import UploadOrDeleteDrive from './Admin/AdminDashboard/UploadOrDeleteDrive';
 import RegisterCompany from './Admin/AdminDashboard/RegisterCompany';
+import AddStudent from './Admin/AdminDashboard/AddStudent';
 
 const App = () => {
   return (
@@ -74,7 +75,8 @@ const App = () => {
           <Route index element={<Dashboard/>}/>
           <Route path="PublishResult" element={<PublishResult/>}/>
           <Route path="UploadOrDeleteDrive" element={<UploadOrDeleteDrive/>}/>
-          <Route path="RegisterCompany" element={<RegisterCompany/>}/>
+          <Route path="RegisterCompany" element={<RegisterCompany />} />
+          <Route path="AddStudent" element={<AddStudent />} />
       </Route>
       </Routes>
     </Router>
