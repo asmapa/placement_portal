@@ -84,6 +84,46 @@ const companies = [
   }
 ];
 
+const on_going = [
+  {
+      drive_id: 1,
+      company_name: "Tech Innovators Ltd",
+      job_role: "Software Engineer",
+      num_of_rounds: 3,
+      training_package: 5.5,
+      permanent_package: 10.0,
+      drive_mode: "On Campus",
+      drive_type: "Dream",
+      start_date: "2025-02-10",
+      last_date_to_submit: "2025-02-08",
+      no_of_backlogs_permitted: 1,
+      supply_history_allowed: true,
+      min_cgpa_required: 7.0,
+      focused_branches: ["CSE", "IT"],
+      work_location: "Bangalore, India",
+      registration_link: "https://techinnovators.com/register"
+  },
+{
+  drive_id: 2,
+      company_name: "NextGen Solutions",
+      job_role: "Data Analyst",
+      num_of_rounds: 4,
+      training_package: 6.0,
+      permanent_package: 12.0,
+      drive_mode: "Off Campus",
+      drive_type: "Open",
+      start_date: "2025-03-05",
+      last_date_to_submit: "2025-03-01",
+      no_of_backlogs_permitted: 2,
+      supply_history_allowed: false,
+      min_cgpa_required: 6.5,
+      focused_branches: ["CSE", "ECE"],
+      work_location: "Mumbai, India",
+      registration_link: "https://nextgensolutions.com/apply"
+    }
+  
+];
+
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00c49f'];
 
 const Dashboard = () => {
@@ -248,6 +288,73 @@ const Dashboard = () => {
           </Table>
         </div>
       )}
+
+      {selectedTab === "On-going-drive" && (
+  <div className="overflow-x-auto shadow-md rounded-lg border-Navy mt-8 p-4">
+    <Table striped bordered hover responsive>
+      <thead style={{ backgroundColor: "#005f69", color: "white" }}>
+        <tr>
+          <th className="px-4 py-2 ">ID</th>
+          <th className="px-4 py-2">Company Name</th>
+          <th className="px-4 py-2">Job Role</th>
+          <th className="px-4 py-2">Rounds</th>
+          <th className="px-4 py-2">Training Package</th>
+          <th className="px-4 py-2">Permanent Package</th>
+          <th className="px-4 py-2">Drive Mode</th>
+          <th className="px-4 py-2">Drive Type</th>
+          <th className="px-4 py-2">Start Date</th>
+          <th className="px-4 py-2">Last Date to Submit</th>
+          <th className="px-4 py-2">Backlogs Permitted</th>
+          <th className="px-4 py-2">Supply Allowed</th>
+          <th className="px-4 py-2">Min CGPA</th>
+          <th className="px-4 py-2">Focused Branches</th>
+          <th className="px-4 py-2">Work Location</th>
+                <th className="px-4 py-2">Registration Link</th>
+                <th className="px-4 py-2">Update</th>
+                 <th className="px-4 py-2">Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {on_going.map((drive) => (
+          <tr key={drive.drive_id}>
+            <td className="px-4 py-3">{drive.drive_id}</td>
+            <td className="px-4 py-3">{drive.company_name}</td>
+            <td className="px-4 py-3">{drive.job_role}</td>
+            <td className="px-4 py-3">{drive.num_of_rounds}</td>
+            <td className="px-4 py-3">{drive.training_package} LPA</td>
+            <td className="px-4 py-3">{drive.permanent_package} LPA</td>
+            <td className="px-4 py-3">{drive.drive_mode}</td>
+            <td className="px-4 py-3">{drive.drive_type}</td>
+            <td className="px-4 py-3">{drive.start_date}</td>
+            <td className="px-4 py-3">{drive.last_date_to_submit}</td>
+            <td className="px-4 py-3">{drive.no_of_backlogs_permitted}</td>
+            <td className="px-4 py-3">{drive.supply_history_allowed ? "Yes" : "No"}</td>
+            <td className="px-4 py-3">{drive.min_cgpa_required}</td>
+            <td className="px-4 py-3">{drive.focused_branches.join(", ")}</td>
+            <td className="px-4 py-3">{drive.work_location}</td>
+            <td className="px-4 py-3">
+              <a
+                href={drive.registration_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline"
+              >
+                Apply Here
+              </a>
+            </td>
+            <td>
+                    <button className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[blue] transition">Update</button>
+                  </td>
+                  <td>
+                    <button className='px-6 py-2 bg-red-700 text-white rounded hover:bg-[#004b52] transition'>Delete</button>
+                  </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  </div>
+)}
+
     
     </div>
   );
