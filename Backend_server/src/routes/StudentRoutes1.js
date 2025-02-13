@@ -4,6 +4,7 @@ import * as StudentController from "../controller/StudentController.js"
 
 const router = express.Router();
 
-router.post("/add-student", StudentController.addStudent);
+router.get('/students', StudentController.getStudent);
+router.post('/students', StudentController.getStudent);
 
 export default router;
