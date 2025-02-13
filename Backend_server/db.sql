@@ -112,3 +112,6 @@ ADD COLUMN permanent_package DECIMAL(10,2) CHECK (permanent_package >= 0),
 ADD COLUMN last_date_to_submit DATE NOT NULL,
 ADD COLUMN registration_link TEXT NOT NULL,
 ADD COLUMN work_location VARCHAR(255) NOT NULL;
+
+ALTER TABLE placement_drive 
+ADD COLUMN duration INTERVAL;

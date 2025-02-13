@@ -17,7 +17,8 @@ export const insertDrive = async (driveData) => {
         permanent_package,
         last_date_to_submit,
         registration_link,
-        work_location
+        work_location,
+        duration
     } = driveData; 
 
     const { rows } = await query(
@@ -26,16 +27,16 @@ export const insertDrive = async (driveData) => {
             company_id, job_role, num_of_rounds, drive_mode, drive_type,
             start_date, no_of_backlogs_permitted, supply_history_allowed, 
             min_cgpa_required, focused_branches, description, training_package, 
-            permanent_package, last_date_to_submit, registration_link, work_location
+            permanent_package, last_date_to_submit, registration_link, work_location,duration
         ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16,$17
         ) RETURNING *;
         `,
         [
             company_id, job_role, num_of_rounds, drive_mode, drive_type,
             start_date, no_of_backlogs_permitted, supply_history_allowed,
             min_cgpa_required, focused_branches, description, training_package,
-            permanent_package, last_date_to_submit, registration_link, work_location
+            permanent_package, last_date_to_submit, registration_link, work_location,duration
         ]
     );
 
