@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-
+import { useNavigate } from 'react-router-dom';
 const UploadOrDeleteDrive = () => {
+  const navigate = useNavigate();
   const [companyData, setCompanyData] = useState({
     drive_id: "",
     description: "",
@@ -215,6 +216,7 @@ const UploadOrDeleteDrive = () => {
             <button
               type="submit"
               className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[#004b52] transition"
+              onClick={()=> navigate("/Admin-dashboard/AddRounds")}
             >
               Register Drive
             </button>

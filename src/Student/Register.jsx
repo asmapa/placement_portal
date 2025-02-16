@@ -48,7 +48,10 @@ const handleRegister = async (e) => {
     console.error("Error registering student:", error.response ? error.response.data : error.message);
   }
 };
-
+  const handleClick = () => {
+    alert("Are you sure about the Provided Data ?");
+    navigate("/Login")
+ }
 
   return (
     <section className="min-h-screen flex flex-col items-center justify-center">
@@ -57,8 +60,8 @@ const handleRegister = async (e) => {
           <h2 className="rit text-3xl font-[Itim] font-light text-white">RIT Career Connect</h2>
         </div>
         <ul className="flex flex-1 justify-end space-x-6">
-          <li className="text-lg cursor-pointer text-white">Home</li>
-          <li className="text-lg cursor-pointer text-white">Login</li>
+          <li className="text-2xl cursor-pointer font-bold text-white hover:text-gray-800" onClick={()=> navigate("/")}>Home</li>
+          <li className="text-2xl font-bold cursor-pointer text-white" onClick={()=> navigate("/Login")}>Login</li>
         </ul>
       </div>
 
@@ -236,7 +239,7 @@ const handleRegister = async (e) => {
 
             {/* Submit Button */}
             <div className="text-center">
-              <button type="submit" className="stylebt px-6 py-2 bg-white text-Navy rounded">
+              <button type="submit" className="stylebt px-6 py-2 bg-white text-Navy rounded" onClick={handleClick}>
                 Register Now
               </button>
             </div>

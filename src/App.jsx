@@ -24,6 +24,7 @@ import PublishResult from './Admin/AdminDashboard/PublishResult';
 import UploadOrDeleteDrive from './Admin/AdminDashboard/UploadOrDeleteDrive';
 import RegisterCompany from './Admin/AdminDashboard/RegisterCompany';
 import AddStudent from './Admin/AdminDashboard/AddStudent';
+import AddRounds from './Admin/AdminDashboard/AddRounds';
 
 const App = () => {
   return (
@@ -77,6 +78,7 @@ const App = () => {
           <Route path="UploadOrDeleteDrive" element={<UploadOrDeleteDrive/>}/>
           <Route path="RegisterCompany" element={<RegisterCompany />} />
           <Route path="AddStudent" element={<AddStudent />} />
+          <Route path="AddRounds" element={<AddRounds/>} />
       </Route>
       </Routes>
     </Router>

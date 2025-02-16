@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Table from "react-bootstrap/Table";
+import { Modal, Button } from 'flowbite-react';
 import {
   FaUserFriends,
   FaBuilding,
@@ -129,6 +130,84 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00c49f'];
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('Existing-Company');
 
+  const [choose, setChoose] = useState(false);
+  const [drivechoose, setDrivechoose] = useState(false);
+   const [formData, setFormData] = useState({
+    company_id: "",
+    company_name: "",
+    contact_person_name: "",
+    official_mail: "",
+    phone_number: "",
+    website_link: "",
+   });
+  
+  
+  const [formDrive, setFormDrive] = useState({
+  drive_id: "",
+  company_name: "",
+  job_role: "",
+  num_of_rounds: "",
+  training_package: "",
+  permanent_package: "",
+  drive_mode: "",
+  drive_type: "",
+  start_date: "",
+  last_date_to_submit: "",
+  no_of_backlogs_permitted: "",
+  supply_history_allowed: false,
+  min_cgpa_required: "",
+  focused_branches: [],
+  work_location: "",
+  });
+  
+
+  const handleDriveChange = (drive) => {
+    setFormDrive({
+  drive_id: drive.drive_id,
+  company_name: drive.company_name,
+  job_role: drive.job_role || "",
+  num_of_rounds: drive.num_of_rounds || "",
+  training_package: drive.training_package || "",
+  permanent_package: drive.permanent_package || "",
+  drive_mode: drive.drive_mode || "",
+  drive_type: drive.drive_type || "",
+  start_date: drive.start_date || "",
+  last_date_to_submit: drive.last_date_to_submit || "",
+  no_of_backlogs_permitted: drive.no_of_backlogs_permitted || "",
+  supply_history_allowed: drive.supply_history_allowed ?? false, // Handling boolean values
+  min_cgpa_required: drive.min_cgpa_required || "",
+  focused_branches: drive.focused_branches || [],
+  work_location: drive.work_location || "",
+});
+
+setTimeout(() => setDrivechoose(true), 10);
+  }
+
+  const handleUpdatedClick = (company) => {
+    
+
+   
+    setFormData({
+      company_id: company.company_id,
+      company_name: company.company_name,
+      contact_person_name: company.contact_person_name || "",
+      official_mail: company.official_mail,
+      phone_number: company.phone_number || "",
+      website_link: company.website_link,
+    });
+     setTimeout(() => setChoose(true), 10);
+  }
+
+  const handleDrive = (e) => {
+    setFormDrive({ ...formDrive, [e.target.name]: e.target.value });
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+ 
+
   return (
     <div>
       {/* Placement Stats */}
@@ -229,18 +308,11 @@ const Dashboard = () => {
           className={`px-6 py-2  font-bold flex-1 ${
             selectedTab === 'On-going-drive' ? 'bg-[#005f69] text-white' : 'bg-gray-300'
           }`}
-          onClick={() => setSelectedTab('On-going-drive')}
+          onClick={() => setSelectedTab('DriveData')}
         >
-          On Going Drive's
+          Check Drive Details
         </button>
-         <button
-          className={`px-6 py-2 font-bold flex-1 ${
-            selectedTab === 'Up-coming-drive' ? 'bg-[#005f69] text-white' : 'bg-gray-300'
-          }`}
-          onClick={() => setSelectedTab('Up-coming-drive')}
-        >
-         Up Coming Drive's
-        </button>
+         
       </div>   
 
       {/*The Table Data */}
@@ -249,7 +321,7 @@ const Dashboard = () => {
           <Table striped bordered hover responsive>
             <thead style={{ backgroundColor: "#005f69", color: "white" }}>
               <tr>
-                <th>ID</th>
+                <th> ID</th>
                 <th>Company Name</th>
                 <th>Contact Person</th>
                 <th>Email</th>
@@ -277,7 +349,12 @@ const Dashboard = () => {
                     </a>
                   </td>
                   <td>
-                    <button className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[blue] transition">Update</button>
+                    <button className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[blue] transition"
+                onClick={() => {
+    console.log("Button clicked! Company:", company); // Add this log
+    handleUpdatedClick(company);
+    console.log("choose after click:", choose); // Check if `choose` changes
+  }}>Update</button>
                   </td>
                   <td>
                     <button className='px-6 py-2 bg-red-700 text-white rounded hover:bg-[#004b52] transition'>Delete</button>
@@ -289,12 +366,26 @@ const Dashboard = () => {
         </div>
       )}
 
-      {selectedTab === "On-going-drive" && (
-  <div className="overflow-x-auto shadow-md rounded-lg border-Navy mt-8 p-4">
+      {selectedTab === "DriveData" && (
+        <div className="overflow-x-auto shadow-md rounded-lg border-Navy mt-8 p-4">
+           <div >
+                
+                <select
+                  name="course"
+                  className=" w-50 border-[#005f69] text-black border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
+                  
+                  required
+                >
+                  <option value="">Choose Specific Drive</option>
+                  <option value="B.Tech">On-Going-drive</option>
+                  <option value="M.Tech">Up-coming-Drives</option>
+                  <option value="PhD">Completed-drives</option>
+                </select>
+              </div>
     <Table striped bordered hover responsive>
       <thead style={{ backgroundColor: "#005f69", color: "white" }}>
         <tr>
-          <th className="px-4 py-2 ">ID</th>
+          <th className="px-4 py-2 ">Drive ID</th>
           <th className="px-4 py-2">Company Name</th>
           <th className="px-4 py-2">Job Role</th>
           <th className="px-4 py-2">Rounds</th>
@@ -343,7 +434,7 @@ const Dashboard = () => {
               </a>
             </td>
             <td>
-                    <button className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[blue] transition">Update</button>
+                    <button className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[blue] transition" onClick={()=>handleDriveChange(drive)}>Update</button>
                   </td>
                   <td>
                     <button className='px-6 py-2 bg-red-700 text-white rounded hover:bg-[#004b52] transition'>Delete</button>
@@ -353,9 +444,147 @@ const Dashboard = () => {
       </tbody>
     </Table>
   </div>
+      )}
+
+
+{drivechoose && (
+  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-2xl shadow-xl w-1/2">
+      <h2 className="text-3xl text-[#005f69] font-bold mb-6 text-center my-7">Update Drive</h2>
+
+      <form action="#" className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-3">
+          {Object.keys(formDrive).map((key) => (
+            <div key={key}>
+              <label className="block text-sm font-semibold text-gray-700">
+                {key.replace(/_/g, " ").toUpperCase()}
+              </label>
+              <input
+                type={key === "supply_history_allowed" ? "checkbox" : "text"}
+                name={key}
+                value={formDrive[key]}
+                onChange={handleDriveChange}
+                className="border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-2 focus:ring-blue-400"
+                readOnly={key === "drive_id"} 
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="flex justify-center items-center gap-5 ">
+          <button
+            type="button"
+            onClick={() => setDrivechoose(false)}
+            className="text-white hover:bg-red-700 font-bold bg-slate-500 rounded-lg text-sm px-5 py-2.5 transition flex-1 my-7"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="text-white bg-[#005f69] hover:bg-[#004b52] font-medium rounded-lg text-sm px-5 py-2.5 transition flex-1 my-7"
+          >
+            Update Drive
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 )}
 
-    
+      
+
+{choose && (
+  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-2xl shadow-xl w-1/2">
+      <h2 className="text-3xl text-[#005f69] font-bold mb-6 text-center my-7">Update Company</h2>
+
+      <form action="#" className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="block text-lg font-bold text-[#005f69] mb-4">ID</label>
+            <input
+              type="text"
+              name="company_id"
+              value={formData.company_id}
+              readOnly
+              className="bg-gray-200 border-[#005f69] text-[#005f69] text-lg rounded-lg w-full p-2.5"
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-bold text-[#005f69] mb-4">Company Name</label>
+            <input
+              type="text"
+              name="company_name"
+              value={formData.company_name}
+              onChange={handleChange}
+              className="bg-gray-200 border-[#005f69] text-[#005f69] text-lg rounded-lg w-full p-2.5"
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-bold text-[#005f69] mb-4">Contact Person</label>
+            <input
+              type="text"
+              name="contact_person_name"
+              value={formData.contact_person_name}
+              onChange={handleChange}
+              className="bg-gray-200 border-[#005f69] text-[#005f69] text-lg rounded-lg w-full p-2.5"
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-bold text-[#005f69] mb-4">Email</label>
+            <input
+              type="email"
+              name="official_mail"
+              value={formData.official_mail}
+              onChange={handleChange}
+              className="bg-gray-200 border-[#005f69] text-[#005f69] text-lg rounded-lg w-full p-2.5"
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-bold text-[#005f69] mb-4">Phone</label>
+            <input
+              type="tel"
+              name="phone_number"
+              value={formData.phone_number}
+              onChange={handleChange}
+              className="bg-gray-200 border-[#005f69] text-[#005f69] text-lg rounded-lg w-full p-2.5"
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-bold text-[#005f69] mb-4">Website</label>
+            <input
+              type="url"
+              name="website_link"
+              value={formData.website_link}
+              onChange={handleChange}
+              className="bg-gray-200 border-[#005f69] text-[#005f69] text-lg rounded-lg w-full p-2.5"
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-center items-center gap-5 ">
+          <button
+            type="button"
+            onClick={() => setChoose(false)}
+            className="text-white hover:bg-red-700 font-bold bg-slate-500 rounded-lg text-sm px-5 py-2.5 transition flex-1 my-7"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="text-white bg-[#005f69] hover:bg-[#004b52] font-medium rounded-lg text-sm px-5 py-2.5 transition flex-1 my-7"
+          >
+            Update Drive
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
+
+ 
+
     </div>
   );
 };

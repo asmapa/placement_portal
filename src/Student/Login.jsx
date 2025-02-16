@@ -3,7 +3,7 @@ import LoginWelcome from "../assets/LoginWelcome.avif";
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-
+  const navigate = useNavigate();
 
   return (
     <section className='bg-gray-100 min-h-screen flex items-center justify-center'>
@@ -27,7 +27,7 @@ const Login = () => {
             />
             <button 
               type="submit" 
-              className='bg-Navy text-white py-2 rounded-xl mt-4 mb-2'
+              className='bg-Navy text-white py-2 rounded-xl mt-4 mb-2 hover:bg-red-950'
             >
               Login
             </button>
@@ -39,7 +39,9 @@ const Login = () => {
             <p className='text-center'>OR</p>
             <hr className='border-gray-500'/>
           </div>
-          <button className='bg-Navy text-white py-2 rounded-xl mt-4 mb-4 w-full'>Register</button>
+          <button className='bg-Navy text-white py-2 rounded-xl mt-4 mb-4 w-full hover:bg-green-600'
+            onClick={() => navigate('/Register')}
+          >Register</button>
         </div>
         <div className='sm:block hidden w-1/2'>
           <img className='rounded-2xl h-full' src={LoginWelcome} alt="Welcome" />
