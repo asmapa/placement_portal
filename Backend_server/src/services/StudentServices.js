@@ -12,7 +12,6 @@ export const insertStudent = async (studentData) => {
      date_of_birth,
      year_of_graduation,
      gender,
-     sgpa,
      cgpa,
       no_of_backlogs,
      supply_history
@@ -22,14 +21,14 @@ export const insertStudent = async (studentData) => {
     `
     INSERT INTO student (
       ktu_id, student_name, department, rit_email, phone_number, program,
-      semester, date_of_birth, year_of_graduation, gender, sgpa, cgpa,
+      semester, date_of_birth, year_of_graduation, gender,cgpa,
       no_of_backlogs, supply_history
     ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
     ) RETURNING *;
   `,
     [ktu_id, student_name, department, rit_email, phone_number, program,
-      semester, date_of_birth, year_of_graduation, gender, sgpa, cgpa,
+      semester, date_of_birth, year_of_graduation, gender, cgpa,
       no_of_backlogs, supply_history]
 );
 

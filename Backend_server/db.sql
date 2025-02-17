@@ -29,7 +29,7 @@ CREATE TABLE placement_drive (
 CREATE TABLE placement_round (
     drive_id INT NOT NULL,
     round_number INT NOT NULL,
-    round_name VARCHAR(50) NOT NULL CHECK (round_name IN ('Aptitude', 'Technical', 'HR', 'Group Discussion', 'Coding Test',
+    round_name VARCHAR(50) NOT NULL CHECK (round_name IN ('Aptitude', 'Interview','Technical', 'HR', 'Group Discussion', 'Coding Test',
         'System Design', 'Case Study', 'Puzzle Round', 'Managerial Round',
         'Domain-Specific Round')),
     round_date DATE NOT NULL,
