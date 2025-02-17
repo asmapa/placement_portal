@@ -1,14 +1,16 @@
 import { query } from "../db.js";
 
 // Function to insert a new company into the database
+// Function to insert a new company into the database
 export const insertCompany = async (companyData) => {
+    // 🌟 Correctly mapping frontend data to database column names
     const { 
-        company_name, 
-        contact_person_name, 
-        phone_number, 
-        official_mail, 
+        companyName, 
+        contactPerson, 
+        phoneNumber, 
+        email, 
         address, 
-        website_link 
+        website 
     } = companyData;
 
     const { rows } = await query(
@@ -19,11 +21,12 @@ export const insertCompany = async (companyData) => {
             $1, $2, $3, $4, $5, $6
         ) RETURNING *;
         `,
-        [company_name, contact_person_name, phone_number, official_mail, address, website_link]
+        [companyName, contactPerson, phoneNumber, email, address, website] // Corrected Mapping
     );
 
     return rows[0];  // Returns the newly inserted company
 };
+
 
 // Function to get all companies
 export const getAllCompanies = async () => {
