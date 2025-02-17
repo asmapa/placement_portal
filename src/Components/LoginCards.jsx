@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import officer from '../assets/officer.png';
 import student from '../assets/student.png';
@@ -80,6 +79,7 @@ const LoginCards = () => {
                   onMouseEnter={() => setPlacementHover(true)}
                   onMouseLeave={() => setPlacementHover(false)}
                   whileHover={{ scale: 1.1 }}
+                  onClick={()=>navigate("/AdminLogin")}
                 >
                   Login
                 </motion.button>

@@ -25,6 +25,7 @@ import UploadOrDeleteDrive from './Admin/AdminDashboard/UploadOrDeleteDrive';
 import RegisterCompany from './Admin/AdminDashboard/RegisterCompany';
 import AddStudent from './Admin/AdminDashboard/AddStudent';
 import AddRounds from './Admin/AdminDashboard/AddRounds';
+import AdminLogin from './Admin/AdminDashboard/AdminLogin';
 
 const App = () => {
   return (
@@ -61,7 +62,7 @@ const App = () => {
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
+        <Route path="/AdminLogin" element={<AdminLogin/> } />
         {/* Dashboard Routes */}
         <Route path="/student-dashboard" element={<Layout />}>
         {/* Default route */}

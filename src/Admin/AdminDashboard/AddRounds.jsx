@@ -1,7 +1,30 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+
+const MySwal = withReactContent(Swal);
+
 
 const AddRounds = ({ driveId }) => {
+
+
+     const handleSubmit = (e) => {
+    e.preventDefault();
+
+      // Show success alert when form is fully filled
+      MySwal.fire({
+        title: "Good Job!",
+        text: "You have successfully registered the Drive!",
+        icon: "success",
+        confirmButtonText: "OK",
+        timer: 2000, // Auto close after 2 seconds
+      });
+
+      navigate("/Admin-dashboard");
+    
+  };
     const navigate = useNavigate();
     const [numRounds, setNumRounds] = useState(1);
     const [rounds, setRounds] = useState([]);
@@ -22,25 +45,15 @@ const AddRounds = ({ driveId }) => {
         setRounds(newRounds);
     };
 
-    // Handle form submit
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        fetch("/api/rounds", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ driveId, rounds }),
-        })
-        .then(res => res.json())
-        .then(data => console.log("Rounds saved!", data))
-        .catch(err => console.error("Error saving rounds", err));
-    };
+  
+ 
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-[#005f69] font-bold text-2xl text-center mb-4">Add Rounds for Drive ID: {driveId}</h2>
 
             <div className="mb-6">
-                <label className="text-lg font-bold text-[#005f69] block mb-2 text-2xl">Number of Rounds:</label>
+                <label className=" font-bold text-[#005f69] block mb-2 text-2xl">Number of Rounds:</label>
                 <input 
                     className="border-[#005f69] rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#005f69]"
                     type="number" 

@@ -28,7 +28,7 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 	},
 	{
 		key: 'UploadOrDeleteDrive',
-		label: 'Upload/Delete Drive',
+		label: 'Upload Drive',
 		path: '/Admin-dashboard/UploadOrDeleteDrive', // Correct relative path
 		icon: <HiOutlineCloudUpload /> // Cloud upload icon for file operations
 	},
