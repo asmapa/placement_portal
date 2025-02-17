@@ -11,3 +11,19 @@ export const addStudent = async (req, res) => {
     res.status(500).json({ error: "Failed to add student" });
   }
 };
+
+export const getEligibleDrives = async (req, res) => {
+    try {
+        const { ktu_id } = req.params;
+        const eligibleDrives = await StudentServices.fetchEligibleDrives(ktu_id);
+
+        if (!eligibleDrives) {
+            return res.status(404).json({ message: "Student not found or no eligible drives" });
+        }
+
+        res.json(eligibleDrives);
+    } catch (error) {
+        console.error("Error fetching eligible drives:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};

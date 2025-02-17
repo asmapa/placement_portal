@@ -115,3 +115,63 @@ ADD COLUMN work_location VARCHAR(255) NOT NULL;
 
 ALTER TABLE placement_drive 
 ADD COLUMN duration INTERVAL;
+
+INSERT INTO company (
+    company_name, contact_person_name, phone_number, official_mail, address, website_link
+) VALUES
+    ('Google', 'Sundar Pichai', '6502530000', 'careers@google.com', '1600 Amphitheatre Parkway, Mountain View, CA 94043, USA', 'https://careers.google.com'),
+    
+    ('Microsoft', 'Satya Nadella', '4258828080', 'jobs@microsoft.com', 'One Microsoft Way, Redmond, WA 98052, USA', 'https://careers.microsoft.com'),
+    
+    ('Amazon', 'Andy Jassy', '206266000', 'hiring@amazon.com', '410 Terry Ave N, Seattle, WA 98109, USA', 'https://www.amazon.jobs'),
+    
+    ('Tesla', 'Elon Musk', '3104201234', 'careers@tesla.com', '3500 Deer Creek Road, Palo Alto, CA 94304, USA', 'https://www.tesla.com/careers'),
+    
+    ('Infosys', 'Salil Parekh', '8028520261', 'jobs@infosys.com', 'Electronics City, Bangalore, Karnataka, India', 'https://www.infosys.com/careers');
+
+
+INSERT INTO placement_drive (
+    company_id, job_role, num_of_rounds, training_package, permanent_package, 
+    drive_mode, drive_type, start_date, last_date_to_submit, 
+    no_of_backlogs_permitted, supply_history_allowed, min_cgpa_required, 
+    focused_branches, registration_link, work_location, description
+) VALUES
+    (6, 'Software Engineer', 4, 6.50, 12.50, 'On Campus', 'Dream', 
+     '2025-06-15', '2025-06-10', 1, FALSE, 8.0, ARRAY['CSE', 'IT'], 
+     'https://example.com/register1', 'Bangalore', 'Hiring for software engineering roles.'),
+     
+    (8, 'Data Analyst', 3, 5.00, 9.80, 'Off Campus', 'Open', 
+     '2025-07-10', '2025-07-05', 2, TRUE, 7.5, ARRAY['CSE', 'ECE', 'EEE'], 
+     'https://example.com/register2', 'Hyderabad', 'Looking for skilled data analysts with SQL and Python knowledge.'),
+     
+    (9, 'Embedded Systems Engineer', 5, 7.00, 14.25, 'On Campus', 'Core', 
+     '2025-05-20', '2025-05-15', 0, FALSE, 8.5, ARRAY['ECE', 'EEE'], 
+     'https://example.com/register3', 'Chennai', 'Hiring for embedded development in automotive domain.'),
+     
+    (10, 'Full Stack Developer', 4, 6.00, 10.00, 'On Campus', 'IT', 
+     '2025-08-05', '2025-08-01', 3, TRUE, 7.0, ARRAY['CSE', 'IT', 'MCA'], 
+     'https://example.com/register4', 'Pune', 'Hiring developers for web applications.'),
+     
+    (11, 'Cybersecurity Analyst', 3, 6.80, 11.20, 'Off Campus', 'Dream', 
+     '2025-06-25', '2025-06-20', 1, FALSE, 8.2, ARRAY['CSE', 'IT'], 
+     'https://example.com/register5', 'Delhi', 'Seeking cybersecurity analysts with ethical hacking skills.');
+
+
+INSERT INTO drive_result (drive_id, ktu_id, result)  
+VALUES  
+    (15, 'KTE24CS025', 'Not Selected'),  -- The student is placed in drive_id 1
+    (16, 'KTE24CS025', 'Not Selected'),  
+    (17, 'KTE24CS025', 'Not Selected'),  
+    (18, 'KTE24CS025', 'Not Selected'),  
+    (19, 'KTE24CS025', 'Selected');  
+
+
+CREATE TABLE drive_registered (
+    drive_id INT NOT NULL,
+    ktu_id VARCHAR(10) NOT NULL CHECK (
+        ktu_id ~ '^(KTE|LKTE|IDK)\d{2}(CS|ME|CE|EC|EE|RAI|MCA)\d{3}$'
+    ),
+    PRIMARY KEY (drive_id, ktu_id),
+    FOREIGN KEY (drive_id) REFERENCES placement_drive(drive_id) ON DELETE CASCADE,
+    FOREIGN KEY (ktu_id) REFERENCES student(ktu_id) ON DELETE CASCADE
+);
