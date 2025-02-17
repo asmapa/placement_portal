@@ -42,3 +42,29 @@ export const insertDrive = async (driveData) => {
 
     return rows[0]; // Returns the newly inserted placement drive
 };
+
+
+export const getUpcomingDrives = async () => {
+    const { rows } = await query(`
+        SELECT * FROM placement_drive
+        WHERE start_date > CURRENT_DATE
+    `);
+    return rows;
+};
+
+export const getPastDrives = async () => {
+    const { rows } = await query(`
+        SELECT * FROM placement_drive
+        WHERE start_date + duration < CURRENT_DATE
+    `);
+    return rows;
+};
+
+export const getOngoingDrives = async () => {
+    const { rows } = await query(`
+        SELECT * FROM placement_drive
+        WHERE start_date <= CURRENT_DATE
+        AND start_date + duration >= CURRENT_DATE
+    `);
+    return rows;
+};

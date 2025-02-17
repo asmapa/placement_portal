@@ -3,7 +3,7 @@ import { query } from "../db.js";
 // Function to insert a new company into the database
 // Function to insert a new company into the database
 export const insertCompany = async (companyData) => {
-    // 🌟 Correctly mapping frontend data to database column names
+    // Correctly mapping frontend data to database column names
     const { 
         companyName, 
         contactPerson, 
