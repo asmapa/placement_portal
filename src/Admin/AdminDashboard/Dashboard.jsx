@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import Table from "react-bootstrap/Table";
-import { Modal, Button } from 'flowbite-react';
+import axios from "axios";
 import {
   FaUserFriends,
   FaBuilding,
@@ -37,53 +37,6 @@ const dataPie = [
 
 
 
-const companies = [
-  {
-    company_id: 1,
-    company_name: "Tech Innovators Ltd",
-    contact_person_name: "Rahul Sharma",
-    phone_number: "9876543210",
-    official_mail: "contact@techinnovators.com",
-    address: "123, Tech Park, Bangalore, India",
-    website_link: "https://www.techinnovators.com"
-  },
-  {
-    company_id: 2,
-    company_name: "NextGen Solutions",
-    contact_person_name: "Priya Verma",
-    phone_number: "9123456780",
-    official_mail: "info@nextgensolutions.com",
-    address: "456, Business Hub, Mumbai, India",
-    website_link: "https://www.nextgensolutions.com"
-  },
-  {
-    company_id: 3,
-    company_name: "GlobalSoft Pvt Ltd",
-    contact_person_name: "Amit Khanna",
-    phone_number: "9001234567",
-    official_mail: "support@globalsoft.com",
-    address: "789, IT Valley, Hyderabad, India",
-    website_link: "https://www.globalsoft.com"
-  },
-  {
-    company_id: 4,
-    company_name: "DataWave Analytics",
-    contact_person_name: "Sneha Raj",
-    phone_number: "9988776655",
-    official_mail: "hello@datawave.com",
-    address: "101, Data Towers, Pune, India",
-    website_link: "https://www.datawave.com"
-  },
-  {
-    company_id: 5,
-    company_name: "AI Revolution Corp",
-    contact_person_name: "Vikram Patel",
-    phone_number: "9871122334",
-    official_mail: "ai@revolutioncorp.com",
-    address: "555, AI Hub, Chennai, India",
-    website_link: "https://www.revolutioncorp.com"
-  }
-];
 
 const on_going = [
   {
@@ -129,18 +82,39 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00c49f'];
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('Existing-Company');
-
+const [companies, setCompanies] = useState([]);
   const [choose, setChoose] = useState(false);
+  const [companyId, setCompanyId] = useState(0);
   const [drivechoose, setDrivechoose] = useState(false);
+
+  //Comapny Form Data
    const [formData, setFormData] = useState({
     company_id: "",
     company_name: "",
     contact_person_name: "",
-    official_mail: "",
     phone_number: "",
+    official_mail: "",
+    address:"",
     website_link: "",
    });
   
+
+  
+ const fetchCompanies = () => {
+  axios
+    .get("http://localhost:3000/portal/get-company") 
+    .then((response) => {
+      console.log("Fetched Data:", response.data);
+      setCompanies(response.data); // Update state
+    })
+    .catch((error) => {
+      console.error("Error fetching companies:", error);
+    });
+};
+
+useEffect(() => {
+  fetchCompanies(); // Fetch initially
+}, []); 
   
   const [formDrive, setFormDrive] = useState({
   drive_id: "",
@@ -183,6 +157,21 @@ const Dashboard = () => {
 setTimeout(() => setDrivechoose(true), 10);
   }
 
+const handleDeleteClick = async (company) => {
+  try {
+    const res = await axios.delete(`http://localhost:3000/portal/delete-company/${company.company_id}`);
+    
+    if (res.status === 200) {
+      alert("Deleted successfully!!!");
+    } 
+  } catch (error) {
+    console.error("Error deleting company:", error);
+    alert("Failed to delete company.");
+  }
+};
+
+
+
   const handleUpdatedClick = (company) => {
     
 
@@ -192,6 +181,7 @@ setTimeout(() => setDrivechoose(true), 10);
       company_name: company.company_name,
       contact_person_name: company.contact_person_name || "",
       official_mail: company.official_mail,
+      address: company.address,
       phone_number: company.phone_number || "",
       website_link: company.website_link,
     });
@@ -206,7 +196,23 @@ setTimeout(() => setDrivechoose(true), 10);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
- 
+
+  //Updation of company from front
+  const handleCompanySubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+
+    try {
+      const response = await axios.put('http://localhost:3000/portal/update-company', formData);
+      if (response.status === 200) {
+        alert("Company updated successfully!");
+        setChoose(false);
+      }
+    } catch (error) {
+      console.error("Error updating company:", error);
+      alert("Failed to update company.");
+    }
+  };
+
 
   return (
     <div>
@@ -325,10 +331,11 @@ setTimeout(() => setDrivechoose(true), 10);
                 <th>Company Name</th>
                 <th>Contact Person</th>
                 <th>Email</th>
+                <th>Address</th>
                 <th>Phone</th>
                 <th>Website</th>
                 <th>Update</th>
-                <th>Dlete</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -338,6 +345,7 @@ setTimeout(() => setDrivechoose(true), 10);
                   <td>{company.company_name}</td>
                   <td>{company.contact_person_name || "N/A"}</td>
                   <td>{company.official_mail}</td>
+                   <td>{company.address}</td>
                   <td>{company.phone_number || "N/A"}</td>
                   <td>
                     <a
@@ -357,7 +365,12 @@ setTimeout(() => setDrivechoose(true), 10);
   }}>Update</button>
                   </td>
                   <td>
-                    <button className='px-6 py-2 bg-red-700 text-white rounded hover:bg-[#004b52] transition'>Delete</button>
+                    <button className='px-6 py-2 bg-red-700 text-white rounded hover:bg-[#004b52] transition'
+                      onClick={() => {
+                        handleDeleteClick(company);
+                    }}>
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -498,7 +511,7 @@ setTimeout(() => setDrivechoose(true), 10);
     <div className="bg-white p-6 rounded-2xl shadow-xl w-1/2">
       <h2 className="text-3xl text-[#005f69] font-bold mb-6 text-center my-7">Update Company</h2>
 
-      <form action="#" className="space-y-4">
+      <form onSubmit={handleCompanySubmit} className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-lg font-bold text-[#005f69] mb-4">ID</label>
@@ -536,6 +549,16 @@ setTimeout(() => setDrivechoose(true), 10);
               type="email"
               name="official_mail"
               value={formData.official_mail}
+              onChange={handleChange}
+              className="bg-gray-200 border-[#005f69] text-[#005f69] text-lg rounded-lg w-full p-2.5"
+            />
+                </div>
+                 <div>
+            <label className="block text-lg font-bold text-[#005f69] mb-4">Address</label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
               onChange={handleChange}
               className="bg-gray-200 border-[#005f69] text-[#005f69] text-lg rounded-lg w-full p-2.5"
             />
