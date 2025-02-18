@@ -95,3 +95,65 @@ export const fetchEligibleDrives = async (ktu_id) => {
         throw error;
     }
 };
+
+export const getAllStudents = async () => {
+  const stud_query = "SELECT * FROM student";
+  const { rows } = await query(stud_query);
+  return rows;
+};
+
+export const getStudentsByGraduationYear = async (year) => {
+  const stud_query = "SELECT * FROM student WHERE year_of_graduation = $1";
+  const { rows } = await query(stud_query, [year]);
+  return rows;
+};
+
+export const getPlacedStudents = async () => {
+  const stud_query = `
+    SELECT s.*, dr.drive_id, c.company_name, pd.job_role, pd.permanent_package
+    FROM student s
+    JOIN drive_result dr ON s.ktu_id = dr.ktu_id
+    JOIN placement_drive pd ON dr.drive_id = pd.drive_id
+    JOIN company c ON pd.company_id = c.company_id
+    WHERE dr.result = 'Selected'
+  `;
+  const { rows } = await query(stud_query);
+  return rows;
+};
+
+export const getRegisteredStudents = async () => {
+  const stud_query = `
+    SELECT DISTINCT s.*
+    FROM student s
+    JOIN drive_registered dr ON s.ktu_id = dr.ktu_id
+  `;
+  const { rows } = await query(stud_query);
+  return { count: rows.length, students: rows };
+};
+
+// Get count of placed students for a particular year_of_graduation
+export const getPlacedCountByGraduationYear = async (year) => {
+  const stud_query = `
+    SELECT COUNT(DISTINCT s.ktu_id) AS placed_count
+    FROM student s
+    JOIN drive_result dr ON s.ktu_id = dr.ktu_id
+    WHERE s.year_of_graduation = $1 AND dr.result = 'Selected'
+  `;
+  const { rows } = await query(stud_query, [year]);
+  return rows[0];
+};
+
+// Get department-wise placement statistics
+export const getDepartmentWiseStats = async (year) => {
+  const stud_query = `
+    SELECT s.department, COUNT(DISTINCT dr.ktu_id) AS placed_count
+    FROM student s
+    JOIN drive_result dr ON s.ktu_id = dr.ktu_id
+    WHERE dr.result = 'Selected' AND s.year_of_graduation = $1 
+    GROUP BY s.department
+  `;
+  const { rows } = await query(stud_query,[year]);
+  return rows;
+};
+
+

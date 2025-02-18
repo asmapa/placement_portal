@@ -27,3 +27,62 @@ export const getEligibleDrives = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+export const getStudents = async (req, res) => {
+  try {
+    const students = await StudentServices.getAllStudents();
+    res.status(200).json(students);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getStudentsByYear = async (req, res) => {
+  try {
+    const { year } = req.params;
+    const students = await StudentServices.getStudentsByGraduationYear(year);
+    res.status(200).json(students);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getPlaced = async (req, res) => {
+  try {
+    const students = await StudentServices.getPlacedStudents();
+    res.status(200).json(students);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getRegistered = async (req, res) => {
+  try {
+    const students = await StudentServices.getRegisteredStudents();
+    res.status(200).json(students);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Controller to get count of placed students by graduation year
+export const fetchPlacedCountByGraduationYear = async (req, res) => {
+  try {
+    const { year } = req.params;
+    const count = await StudentServices.getPlacedCountByGraduationYear(year);
+    res.json(count);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Controller to get department-wise placement statistics
+export const fetchDepartmentWiseStats = async (req, res) => {
+  try {
+    const { year } = req.params;
+    const stats = await StudentServices.getDepartmentWiseStats(year);
+    res.json(stats);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

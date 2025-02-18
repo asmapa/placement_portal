@@ -41,3 +41,13 @@ export const deleteCompany = async (req, res) => {
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+
+export const getCompanies = async (req, res) => {
+  try {
+    const companies = await CompanyServices.getAllCompanies();
+    res.status(200).json(companies);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

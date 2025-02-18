@@ -31,7 +31,7 @@ export const insertCompany = async (companyData) => {
 // Function to get all companies
 export const getAllCompanies = async () => {
     const { rows } = await query(`SELECT * FROM company;`);
-    return rows;
+    return {count: rows.length,companies: rows};
 };
 
 // Function to get a company by ID
