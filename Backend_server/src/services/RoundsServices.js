@@ -25,7 +25,7 @@ export const getPlacementRounds = async () => {
 
 export const getDriveRounds = async (drive_id) => {
   const round_query = `SELECT * FROM placement_round WHERE drive_id = $1`;
-  const result = await query(round_query,drive_id);
+  const result = await query(round_query,[drive_id]);
   return result.rows;
 };
 
