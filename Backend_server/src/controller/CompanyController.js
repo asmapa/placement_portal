@@ -1,5 +1,6 @@
 import * as CompanyServices from "../services/CompanyServices.js"
 
+
 // Controller function to handle student insertion
 export const addCompany = async (req, res) => {
   try {
@@ -12,14 +13,26 @@ export const addCompany = async (req, res) => {
   }
 };
 
+
+export const getAllCompanies = async (req, res) => {
+  try {
+    // Get companies from the service layer
+     const companies = await CompanyServices.getAllCompanies();
+    res.status(200).json(companies); // Return companies in JSON format
+  } catch (error) {
+    console.error("Error fetching companies:", error);
+    res.status(500).json({ error: "Failed to fetch companies" });
+  }
+};
+
 export const updateCompany = async (req, res) => {
   try {
-    const companyData = req.body; // JSON object received from frontend
-    const newCompany = await CompanyServices.updateCompany(companyData);
-    res.status(201).json({ message: "Company updated successfully", company: newCompany });
+    const { company_id, ...companyData } = req.body; // Extract company_id from body and the rest as companyData
+    const updatedCompany = await CompanyServices.updateCompany(company_id, companyData); // Call service function
+    res.status(200).json({ message: "Company updated successfully", company: updatedCompany }); // Send success response
   } catch (error) {
-    console.error("Error updating drive:", error);
-    res.status(500).json({ error: "Failed to update drive" });
+    console.error("Error updating company:", error);
+    res.status(500).json({ error: "Failed to update company" }); // Send error response
   }
 };
 
