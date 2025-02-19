@@ -11,7 +11,15 @@ export const addDrive = async (req, res) => {
     res.status(500).json({ error: "Failed to add drive" });
   }
 };
-
+export const getAllDrives = async (req, res) => {
+  try {
+      const drives = await DriveServices.getAllDrives();
+      return res.status(200).json({ drives });
+  } catch (error) {
+      console.error('Error fetching upcoming drives:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
 export const getUpcomingDrivesController = async (req, res) => {
     try {
         const drives = await DriveServices.getUpcomingDrives();

@@ -38,52 +38,16 @@ const dataPie = [
 
 
 
-const on_going = [
-  {
-      drive_id: 1,
-      company_name: "Tech Innovators Ltd",
-      job_role: "Software Engineer",
-      num_of_rounds: 3,
-      training_package: 5.5,
-      permanent_package: 10.0,
-      drive_mode: "On Campus",
-      drive_type: "Dream",
-      start_date: "2025-02-10",
-      last_date_to_submit: "2025-02-08",
-      no_of_backlogs_permitted: 1,
-      supply_history_allowed: true,
-      min_cgpa_required: 7.0,
-      focused_branches: ["CSE", "IT"],
-      work_location: "Bangalore, India",
-      registration_link: "https://techinnovators.com/register"
-  },
-{
-  drive_id: 2,
-      company_name: "NextGen Solutions",
-      job_role: "Data Analyst",
-      num_of_rounds: 4,
-      training_package: 6.0,
-      permanent_package: 12.0,
-      drive_mode: "Off Campus",
-      drive_type: "Open",
-      start_date: "2025-03-05",
-      last_date_to_submit: "2025-03-01",
-      no_of_backlogs_permitted: 2,
-      supply_history_allowed: false,
-      min_cgpa_required: 6.5,
-      focused_branches: ["CSE", "ECE"],
-      work_location: "Mumbai, India",
-      registration_link: "https://nextgensolutions.com/apply"
-    }
-  
-];
+
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00c49f'];
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('Existing-Company');
 const [companies, setCompanies] = useState([]);
+  const [drives, setDrives] = useState([]);
   const [choose, setChoose] = useState(false);
+  const [selectedDrive, setSelectedDrive] = useState("");
   const [companyId, setCompanyId] = useState(0);
   const [drivechoose, setDrivechoose] = useState(false);
 
@@ -97,6 +61,34 @@ const [companies, setCompanies] = useState([]);
     address:"",
     website_link: "",
    });
+
+
+   useEffect(() => {
+    let url = "http://localhost:3000/portal/getdrives"; // Default URL
+
+    if (selectedDrive === "On-Going-drive") {
+      url = "http://localhost:3000/portal/drives/ongoing";
+    } else if (selectedDrive === "Up-coming-Drives") {
+      url = "http://localhost:3000/portal/drives/upcoming";
+    } else if (selectedDrive === "Completed-drives") {
+      url = "http://localhost:3000/portal/drives/past";
+    }
+
+    axios.get(url)
+      .then((response) => {
+        console.log("Fetched drives:", response.data);
+        if (Array.isArray(response.data.drives)) {
+          setDrives(response.data.drives);
+        } else {
+          console.error("Drives data is not an array:", response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching drives:", error);
+      });
+
+  }, [selectedDrive]); 
+
   
 
   
@@ -315,7 +307,7 @@ const handleDeleteClick = async (company) => {
         </button>
         <button
           className={`px-6 py-2  font-bold flex-1 ${
-            selectedTab === 'On-going-drive' ? 'bg-[#005f69] text-white' : 'bg-gray-300'
+            selectedTab === 'DriveData' ? 'bg-[#005f69] text-white' : 'bg-gray-300'
           }`}
           onClick={() => setSelectedTab('DriveData')}
         >
@@ -389,19 +381,20 @@ const handleDeleteClick = async (company) => {
                 <select
                   name="course"
                   className=" w-50 border-[#005f69] text-black border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
-                  
+                    onChange={(e) => setSelectedDrive(e.target.value)}
                   required
-                >
-                  <option value="">Choose Specific Drive</option>
-                  <option value="B.Tech">On-Going-drive</option>
-                  <option value="M.Tech">Up-coming-Drives</option>
-                  <option value="PhD">Completed-drives</option>
+            >
+              <option value="">All Drives</option>
+                  <option value="On-Going-drive">On-Going Drive</option>
+<option value="Up-coming-Drives">Upcoming Drives</option>
+<option value="Completed-drives">Completed Drives</option>
+
                 </select>
               </div>
-    <Table striped bordered hover responsive>
+               <Table striped bordered hover responsive>
       <thead style={{ backgroundColor: "#005f69", color: "white" }}>
         <tr>
-          <th className="px-4 py-2 ">Drive ID</th>
+          <th className="px-4 py-2">Drive ID</th>
           <th className="px-4 py-2">Company Name</th>
           <th className="px-4 py-2">Job Role</th>
           <th className="px-4 py-2">Rounds</th>
@@ -416,29 +409,31 @@ const handleDeleteClick = async (company) => {
           <th className="px-4 py-2">Min CGPA</th>
           <th className="px-4 py-2">Focused Branches</th>
           <th className="px-4 py-2">Work Location</th>
-                <th className="px-4 py-2">Registration Link</th>
-                <th className="px-4 py-2">Update</th>
-                 <th className="px-4 py-2">Delete</th>
+          <th className="px-4 py-2">Description</th>
+          <th className="px-4 py-2">Registration Link</th>
+          <th className="px-4 py-2">Update</th>
+          <th className="px-4 py-2">Delete</th>
         </tr>
       </thead>
       <tbody>
-        {on_going.map((drive) => (
+        {drives.map((drive) => (
           <tr key={drive.drive_id}>
             <td className="px-4 py-3">{drive.drive_id}</td>
-            <td className="px-4 py-3">{drive.company_name}</td>
+            <td className="px-4 py-3">{drive.company_name || "Unknown"}</td>
             <td className="px-4 py-3">{drive.job_role}</td>
             <td className="px-4 py-3">{drive.num_of_rounds}</td>
             <td className="px-4 py-3">{drive.training_package} LPA</td>
             <td className="px-4 py-3">{drive.permanent_package} LPA</td>
             <td className="px-4 py-3">{drive.drive_mode}</td>
             <td className="px-4 py-3">{drive.drive_type}</td>
-            <td className="px-4 py-3">{drive.start_date}</td>
-            <td className="px-4 py-3">{drive.last_date_to_submit}</td>
+            <td className="px-4 py-3">{new Date(drive.start_date).toLocaleDateString()}</td>
+            <td className="px-4 py-3">{new Date(drive.last_date_to_submit).toLocaleDateString()}</td>
             <td className="px-4 py-3">{drive.no_of_backlogs_permitted}</td>
             <td className="px-4 py-3">{drive.supply_history_allowed ? "Yes" : "No"}</td>
             <td className="px-4 py-3">{drive.min_cgpa_required}</td>
             <td className="px-4 py-3">{drive.focused_branches.join(", ")}</td>
             <td className="px-4 py-3">{drive.work_location}</td>
+            <td className="px-4 py-3">{drive.description}</td>
             <td className="px-4 py-3">
               <a
                 href={drive.registration_link}
@@ -450,15 +445,23 @@ const handleDeleteClick = async (company) => {
               </a>
             </td>
             <td>
-                    <button className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[blue] transition" onClick={()=>handleDriveChange(drive)}>Update</button>
-                  </td>
-                  <td>
-                    <button className='px-6 py-2 bg-red-700 text-white rounded hover:bg-[#004b52] transition'>Delete</button>
-                  </td>
+              <button
+                className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[blue] transition"
+                onClick={() => handleDriveChange(drive)}
+              >
+                Update
+              </button>
+            </td>
+            <td>
+              <button className="px-6 py-2 bg-red-700 text-white rounded hover:bg-[#004b52] transition">
+                Delete
+              </button>
+            </td>
           </tr>
         ))}
       </tbody>
     </Table>
+
   </div>
       )}
 
