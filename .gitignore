@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 /Backend_server/src/db.js
+/Backend_server/src/.env
 
 dist
 dist-ssr

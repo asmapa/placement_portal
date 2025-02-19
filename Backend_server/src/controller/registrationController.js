@@ -18,7 +18,7 @@ export const registerStudent = async (req, res) => {
     }
 
     try {
-        const student = await verifyStudentDetails(ktuId, studentName, phoneNumber, ritEmail, yearOfGraduation, department);
+        const student = await verifyStudentDetails(ktuId, studentName, phoneNumber, ritEmail, yearOfGraduation, department,file);
         if (!student) {
             return res.status(404).json({ message: 'Student details not found' });
         }

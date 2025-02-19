@@ -9,7 +9,7 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const verifyStudentDetails = async (ktuId, studentName, phoneNumber, ritEmail, yearOfGraduation, department) => {
+export const verifyStudentDetails = async (ktuId, studentName, phoneNumber, ritEmail, yearOfGraduation, department,file) => {
     const reg_query = `
         SELECT * FROM student 
         WHERE ktu_id = $1;
@@ -17,8 +17,14 @@ export const verifyStudentDetails = async (ktuId, studentName, phoneNumber, ritE
     const values = [ktuId];
     const result = await query(reg_query, values);
     
-    if (!result.rows[0]) return null; // Student not found
-    if (result.rows[0].password) throw new Error("Student is already registered");
+    if (!result.rows[0]){
+         fs.unlinkSync(file.path);
+         return null; // Student not found
+    }
+    if (result.rows[0].password){ 
+        fs.unlinkSync(file.path);
+        throw new Error("Student is already registered");
+    }
     
     return result.rows[0];
 };
@@ -42,6 +48,7 @@ export const uploadResume = async (file) => {
     const result = await cloudinary.uploader.upload(file.path, {
         folder: "resumes",
         resource_type: "raw",
+        format: "pdf",
     });
     
     // Delete temp file after upload
