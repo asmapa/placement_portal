@@ -6,6 +6,10 @@ const router = express.Router();
 
 router.post("/add-drive", DriveController.addDrive);
 
+router.put("/updateDrive", DriveController.updateDrive);
+
+router.delete("/deleteDrive", DriveController.deleteDrive);
+
 router.get('/getdrives', DriveController.getAllDrives);
 
 // Route to get upcoming drives
@@ -24,3 +28,4 @@ export default router;
 //http://localhost:3000/portal/drives/past
 //http://localhost:3000/portal/drives/ongoing
 //http://localhost:3000/portal/getdrives
+//http://localhost:3000/portal/updateDrive

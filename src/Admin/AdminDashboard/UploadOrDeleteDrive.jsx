@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 const UploadOrDeleteDrive = () => {
   const navigate = useNavigate();
   const [placementDriveData, setPlacementDriveData] = useState({
@@ -52,7 +52,12 @@ const UploadOrDeleteDrive = () => {
     e.preventDefault();
     console.log("Console is triggerd !! dont worry");
     console.log("Submitting data:", JSON.stringify(placementDriveData, null, 2));
-
+    try {
+      const response = await axios.post("http://localhost:3000/portal/add-drive", placementDriveData);
+      console.log("Drive successfully Enterd into database !!",response.data);
+    } catch (error) {
+      console.log("There is an error for insertion :", error);
+    }
     navigate(`/Admin-dashboard/AddRounds/${round}`);
   };
 
@@ -113,7 +118,7 @@ const UploadOrDeleteDrive = () => {
       {/* Permanent Package */}
       <div className="mb-6">
         <label className="text-[#005f69] font-semibold">Permanent Package (₹):</label>
-        <input type="number" name="permenent_package" value={placementDriveData.permanent_package} onChange={handleChange} className="w-full text-gray-800 bg-white border border-[#005f69] rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2" required min="0" />
+        <input type="number" name="permanent_package" value={placementDriveData.permanent_package} onChange={handleChange} className="w-full text-gray-800 bg-white border border-[#005f69] rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2" required min="0" />
       </div>
 
           {/* Drive Mode */}

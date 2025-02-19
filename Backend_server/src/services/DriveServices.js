@@ -48,6 +48,14 @@ export const getAllDrives = async () => {
     return rows;
 };
 
+export const deleteDrive = async (drive_id) => {
+    const { rows } = await query(
+        `DELETE FROM placement_drive WHERE drive_id = $1 RETURNING *;`, 
+        [drive_id]
+    );
+    return rows[0]; // Returns the deleted company if successful
+};
+
 export const getUpcomingDrives = async () => {
     const { rows } = await query(`
         SELECT * FROM placement_drive
@@ -72,3 +80,61 @@ export const getOngoingDrives = async () => {
     `);
     return rows;
 };
+
+export const updateDrive = async (drive_id, updatedData) => {
+    const {
+        company_id, job_role, start_date, // These are part of the unique constraint
+    } = updatedData;
+
+    // Check if a row already exists with the same company_id, job_role, start_date (excluding current drive_id)
+    const existingDrive = await query(
+        `SELECT * FROM placement_drive 
+         WHERE company_id = $1 
+           AND job_role = $2 
+           AND start_date = $3 
+           AND drive_id <> $4`,  // Exclude the current row
+        [company_id, job_role, start_date, drive_id]
+    );
+
+    if (existingDrive.rows.length > 0) {
+        throw new Error("A placement drive with the same company, role, and start date already exists.");
+    }
+
+    // If no duplicate, proceed with update
+    const { rows } = await query(
+        `
+        UPDATE placement_drive 
+        SET 
+            company_id = $1, 
+            job_role = $2, 
+            num_of_rounds = $3, 
+            training_package = $4, 
+            permanent_package = $5, 
+            drive_mode = $6, 
+            drive_type = $7, 
+            start_date = $8, 
+            last_date_to_submit = $9, 
+            no_of_backlogs_permitted = $10, 
+            supply_history_allowed = $11, 
+            min_cgpa_required = $12, 
+            focused_branches = $13, 
+            description = $14, 
+            registration_link = $15, 
+            work_location = $16
+            
+        WHERE drive_id = $17
+        RETURNING *;
+        `,
+        [
+            company_id, job_role, updatedData.num_of_rounds, updatedData.training_package, 
+            updatedData.permanent_package, updatedData.drive_mode, updatedData.drive_type, 
+            start_date, updatedData.last_date_to_submit, updatedData.no_of_backlogs_permitted, 
+            updatedData.supply_history_allowed, updatedData.min_cgpa_required, 
+            updatedData.focused_branches, updatedData.description, updatedData.registration_link, 
+            updatedData.work_location, drive_id
+        ]
+    );
+
+    return rows[0]; // Returns the updated placement drive
+};
+

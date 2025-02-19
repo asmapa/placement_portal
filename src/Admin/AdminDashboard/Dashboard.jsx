@@ -111,44 +111,50 @@ useEffect(() => {
 }, []);
 
 
-  const [formDrive, setFormDrive] = useState({
-  drive_id: "",
-  company_name: "",
-  job_role: "",
-  num_of_rounds: "",
-  training_package: "",
-  permanent_package: "",
-  drive_mode: "",
-  drive_type: "",
-  start_date: "",
-  last_date_to_submit: "",
-  no_of_backlogs_permitted: "",
-  supply_history_allowed: false,
-  min_cgpa_required: "",
-  focused_branches: [],
-  work_location: "",
-  });
+const [formDrive, setFormDrive] = useState({
+    drive_id: "", // Primary key for updating drive
+    company_id: "", // Changed from company_name → company_id to match DB
+    job_role: "",
+    num_of_rounds: "",
+    training_package: "",
+    permanent_package: "",
+    drive_mode: "",
+    drive_type: "",
+    start_date: "",
+    last_date_to_submit: "",
+    no_of_backlogs_permitted: "",
+    supply_history_allowed: false, // Boolean field
+    min_cgpa_required: "",
+    focused_branches: [], // Array field
+    description: "", // Added to match DB
+    registration_link: "", // Added to match DB
+    work_location: "",
+   
+});
+
   
 
   const handleDriveChange = (drive) => {
-    setFormDrive({
-  drive_id: drive.drive_id,
-  company_name: drive.company_name,
-  job_role: drive.job_role || "",
-  num_of_rounds: drive.num_of_rounds || "",
-  training_package: drive.training_package || "",
-  permanent_package: drive.permanent_package || "",
-  drive_mode: drive.drive_mode || "",
-  drive_type: drive.drive_type || "",
-  start_date: drive.start_date || "",
-  last_date_to_submit: drive.last_date_to_submit || "",
-  no_of_backlogs_permitted: drive.no_of_backlogs_permitted || "",
-  supply_history_allowed: drive.supply_history_allowed ?? false, // Handling boolean values
-  min_cgpa_required: drive.min_cgpa_required || "",
-  focused_branches: drive.focused_branches || [],
-  work_location: drive.work_location || "",
-});
-
+   setFormDrive({
+        drive_id: drive.drive_id || "", // Ensuring primary key exists
+        company_id: drive.company_id || "", // Changed from company_name → company_id to match DB
+        job_role: drive.job_role || "",
+        num_of_rounds: drive.num_of_rounds || "",
+        training_package: drive.training_package || "",
+        permanent_package: drive.permanent_package || "",
+        drive_mode: drive.drive_mode || "",
+        drive_type: drive.drive_type || "",
+        start_date: drive.start_date || "",
+        last_date_to_submit: drive.last_date_to_submit || "",
+        no_of_backlogs_permitted: drive.no_of_backlogs_permitted || "",
+        supply_history_allowed: drive.supply_history_allowed ?? false, // Boolean handling
+        min_cgpa_required: drive.min_cgpa_required || "",
+        focused_branches: drive.focused_branches || [], // Ensuring array consistency
+        description: drive.description || "", // Added to match DB
+        registration_link: drive.registration_link || "", // Added to match DB
+        work_location: drive.work_location || "",
+        
+    });
 setTimeout(() => setDrivechoose(true), 10);
   }
 
@@ -191,6 +197,30 @@ const handleDeleteClick = async (company) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
+ const handleDriveSubmit = async (e) => {
+    e.preventDefault(); 
+
+    if (!formDrive.drive_id || isNaN(Number(formDrive.drive_id))) {
+        alert("Invalid drive ID. Please select a valid drive.");
+        return;
+    }
+
+    try {
+        const response = await axios.put('http://localhost:3000/portal/updateDrive', {
+            ...formDrive,
+            drive_id: Number(formDrive.drive_id),  // Convert `drive_id` to integer
+        });
+
+        if (response.status === 200) {  // Fix: response should check `status`
+            alert("Drive updated successfully!");
+            setDrivechoose(false);
+        }
+    } catch (error) {
+        console.error("Error updating Drive:", error);
+        alert("Failed to update Drive.");
+    }
+};
 
   //Updation of company from front
   const handleCompanySubmit = async (e) => {
@@ -395,7 +425,7 @@ const handleDeleteClick = async (company) => {
       <thead style={{ backgroundColor: "#005f69", color: "white" }}>
         <tr>
           <th className="px-4 py-2">Drive ID</th>
-          <th className="px-4 py-2">Company Name</th>
+          <th className="px-4 py-2">Company ID</th>
           <th className="px-4 py-2">Job Role</th>
           <th className="px-4 py-2">Rounds</th>
           <th className="px-4 py-2">Training Package</th>
@@ -419,7 +449,7 @@ const handleDeleteClick = async (company) => {
         {drives.map((drive) => (
           <tr key={drive.drive_id}>
             <td className="px-4 py-3">{drive.drive_id}</td>
-            <td className="px-4 py-3">{drive.company_name || "Unknown"}</td>
+            <td className="px-4 py-3">{drive.company_id || "Unknown"}</td>
             <td className="px-4 py-3">{drive.job_role}</td>
             <td className="px-4 py-3">{drive.num_of_rounds}</td>
             <td className="px-4 py-3">{drive.training_package} LPA</td>
@@ -471,7 +501,7 @@ const handleDeleteClick = async (company) => {
     <div className="bg-white p-6 rounded-2xl shadow-xl w-1/2">
       <h2 className="text-3xl text-[#005f69] font-bold mb-6 text-center my-7">Update Drive</h2>
 
-      <form action="#" className="space-y-4">
+      <form onSubmit={handleDriveSubmit} className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-3">
           {Object.keys(formDrive).map((key) => (
             <div key={key}>
@@ -482,7 +512,7 @@ const handleDeleteClick = async (company) => {
                 type={key === "supply_history_allowed" ? "checkbox" : "text"}
                 name={key}
                 value={formDrive[key]}
-                onChange={handleDriveChange}
+                onChange={handleDrive}
                 className="border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-2 focus:ring-blue-400"
                 readOnly={key === "drive_id"} 
               />
