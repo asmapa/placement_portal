@@ -2,20 +2,44 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
+import axios from "axios";
 const MySwal = withReactContent(Swal);
 
 const AddRounds = () => {
-  const { round } = useParams(); // Get 'round' from URL
+  const { round, drive_id } = useParams(); // Get 'round' and 'drive_id' from URL
   const navigate = useNavigate();
   const [rounds, setRounds] = useState([]);
+
+  const roundOptions = [
+    "Aptitude",
+    "Interview",
+    "Technical",
+    "HR",
+    "Group Discussion",
+    "Coding Test",
+    "System Design",
+    "Case Study",
+    "Puzzle Round",
+    "Managerial Round",
+    "Domain-Specific Round",
+  ];
 
   useEffect(() => {
     if (!isNaN(round) && round > 0) {
       setRounds(
-        Array(parseInt(round)).fill().map(() => ({
-          roundNo: "", roundType: "", mode: "", date: "", location: "", duration: "",
-        }))
+        Array(parseInt(round))
+          .fill()
+          .map((_, index) => ({
+            drive_id: drive_id,
+            round_number: index + 1, // Ensuring round numbers start from 1
+            round_name: "", 
+            round_date: "",
+            duration: "",
+            location:"",
+            mode: "",
+            
+            
+          }))
       );
     } else {
       MySwal.fire({
@@ -25,7 +49,7 @@ const AddRounds = () => {
         confirmButtonText: "OK",
       });
     }
-  }, [round]);
+  }, [round, drive_id]);
 
   const handleInputChange = (index, field, value) => {
     const newRounds = [...rounds];
@@ -33,10 +57,16 @@ const AddRounds = () => {
     setRounds(newRounds);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:3000/portal/create-round", rounds);
+      console.log("The insertion was successfull ROUNDS",response.data)
+    } catch (error) {
+      console.log("There is an error while insert round", error);
+    }
+    
 
-    // Show success alert
     MySwal.fire({
       title: "Good Job!",
       text: `You have successfully registered ${round} rounds!`,
@@ -45,7 +75,6 @@ const AddRounds = () => {
       timer: 2000,
     });
 
-    console.log(rounds);
     navigate("/Admin-dashboard");
   };
 
@@ -58,44 +87,79 @@ const AddRounds = () => {
       <form onSubmit={handleSubmit}>
         {rounds.map((round, index) => (
           <div key={index} className="bg-gray-100 p-4 rounded-lg shadow-md my-4">
-            <h3 className="text-lg font-semibold text-[#005f69] mb-2">Round {index + 1}</h3>
+            <h3 className="text-lg font-semibold text-[#005f69] mb-2">
+              Round {index + 1}
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
-                placeholder="Round Type"
+                placeholder="Round Number"
                 className="input-field"
-                onChange={(e) => handleInputChange(index, "roundType", e.target.value)}
+                value={round.round_number}
+                readOnly // Prevent accidental changes
               />
-              <input
-                type="text"
-                placeholder="Mode"
+
+              {/* ✅ Corrected Dropdown for Round Name */}
+              <select
+                value={round.round_name} // Ensure correct state handling
+                onChange={(e) => handleInputChange(index, "round_name", e.target.value)}
                 className="input-field"
-                onChange={(e) => handleInputChange(index, "mode", e.target.value)}
-              />
-              <input
-                type="date"
-                className="input-field"
-                onChange={(e) => handleInputChange(index, "date", e.target.value)}
-              />
-              <input
+                required
+              >
+                <option value="" disabled>Select Round</option>
+                {roundOptions.map((option, i) => (
+                  <option key={i} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+
+               <input
                 type="text"
                 placeholder="Location"
                 className="input-field"
+                value={round.location}
                 onChange={(e) => handleInputChange(index, "location", e.target.value)}
+                required
               />
+
+              {/* ✅ Corrected Dropdown for Mode */}
+              <select
+                value={round.mode} // Ensure correct state handling
+                onChange={(e) => handleInputChange(index, "mode", e.target.value)}
+                className="input-field"
+                required
+              >
+                <option value="" disabled>Select Mode</option>
+                <option value="Offline">Offline</option>
+                <option value="Online">Online</option>
+              </select>
+
+              <input
+                type="date"
+                className="input-field"
+                value={round.round_date}
+                onChange={(e) => handleInputChange(index, "round_date", e.target.value)}
+                required
+              />
+
               <input
                 type="text"
-                placeholder="Duration"
+                placeholder="Duration (e.g., 1 hour / 30 minutes)"
                 className="input-field"
+                value={round.duration}
                 onChange={(e) => handleInputChange(index, "duration", e.target.value)}
+                required
               />
             </div>
           </div>
         ))}
+
         <div className="flex justify-center my-6">
           <button
             type="submit"
             className="bg-[#005f69] text-white font-bold rounded-lg px-6 py-2 hover:bg-[#004f58] transition duration-300 w-1/2"
+            
           >
             Save Rounds
           </button>

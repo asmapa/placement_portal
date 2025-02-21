@@ -44,12 +44,15 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00c49f'];
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('Existing-Company');
+
  
 
   const [drives, setDrives] = useState([]);
   const [choose, setChoose] = useState(false);
   const [selectedDrive, setSelectedDrive] = useState("");
   const [companies, setCompanies] = useState([]);
+
+
   const [companyId, setCompanyId] = useState(0);
   const [drivechoose, setDrivechoose] = useState(false);
 
@@ -90,6 +93,7 @@ const Dashboard = () => {
       });
 
   }, [selectedDrive]); 
+
   
  const fetchCompanies = () => {
   axios
@@ -174,7 +178,7 @@ const [formDrive, setFormDrive] = useState({
 setTimeout(() => setDrivechoose(true), 10);
   }
 
-
+//delete Drive Data
   const handleDriveDelete = async (drive) => {
      alert("Hey Are You Sure ?? You Want to Delete ? There is no undo !!!!!");
     try {
@@ -437,27 +441,27 @@ setTimeout(() => setDrivechoose(true), 10);
       )}
 
       {selectedTab === "DriveData" && (
-        <div className="overflow-x-auto shadow-md rounded-lg border-Navy mt-8 p-4">
-           <div >
-                
-                <select
-                  name="course"
-                  className=" w-50 border-[#005f69] text-black border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
-                    onChange={(e) => setSelectedDrive(e.target.value)}
-                  required
-            >
-              <option value="">All Drives</option>
-                  <option value="On-Going-drive">On-Going Drive</option>
-<option value="Up-coming-Drives">Upcoming Drives</option>
-<option value="Completed-drives">Completed Drives</option>
+  <div className="overflow-x-auto shadow-md rounded-lg border-Navy mt-8 p-4">
+    <div>
+      <select
+        name="course"
+        className="w-50 border-[#005f69] text-black border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
+        onChange={(e) => setSelectedDrive(e.target.value)}
+        required
+      >
+        <option value="">All Drives</option>
+        <option value="On-Going-drive">On-Going Drive</option>
+        <option value="Up-coming-Drives">Upcoming Drives</option>
+        <option value="Completed-drives">Completed Drives</option>
+      </select>
+    </div>
 
-                </select>
-              </div>
-               <Table striped bordered hover responsive>
+    <Table striped bordered hover responsive>
       <thead style={{ backgroundColor: "#005f69", color: "white" }}>
         <tr>
           <th className="px-4 py-2">Drive ID</th>
           <th className="px-4 py-2">Company ID</th>
+          <th className="px-4 py-2">Company Name</th>
           <th className="px-4 py-2">Job Role</th>
           <th className="px-4 py-2">Rounds</th>
           <th className="px-4 py-2">Training Package</th>
@@ -472,11 +476,10 @@ setTimeout(() => setDrivechoose(true), 10);
           <th className="px-4 py-2">Focused Branches</th>
           <th className="px-4 py-2">Work Location</th>
           <th className="px-4 py-2">Description</th>
-                <th className="px-4 py-2">Registration Link</th>
-                 <th className="px-4 py-2">Round Details</th>
+          <th className="px-4 py-2">Registration Link</th>
+          <th className="px-4 py-2">Round Details</th>
           <th className="px-4 py-2">Update</th>
-                <th className="px-4 py-2">Delete</th>
-                
+          <th className="px-4 py-2">Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -484,6 +487,7 @@ setTimeout(() => setDrivechoose(true), 10);
           <tr key={drive.drive_id}>
             <td className="px-4 py-3">{drive.drive_id}</td>
             <td className="px-4 py-3">{drive.company_id || "Unknown"}</td>
+            <td className="px-4 py-3">{drive.company_name || "Unknown"}</td>
             <td className="px-4 py-3">{drive.job_role}</td>
             <td className="px-4 py-3">{drive.num_of_rounds}</td>
             <td className="px-4 py-3">{drive.training_package} LPA</td>
@@ -509,33 +513,32 @@ setTimeout(() => setDrivechoose(true), 10);
               </a>
             </td>
             <td>
-              <button className="px-6 py-2 bg-[gray] text-white font-bold rounded hover:bg-[#004b52] transition"
-              >
+              <button className="px-6 py-2 bg-gray-500 text-white font-bold rounded hover:bg-[#004b52] transition">
                 Round
               </button>
             </td>
             <td>
               <button
-                className="px-6 py-2 bg-[#005f69] font-bold text-white rounded hover:bg-[blue] transition"
+                className="px-6 py-2 bg-[#005f69] text-white font-bold rounded hover:bg-blue-700 transition"
                 onClick={() => handleDriveChange(drive)}
               >
                 Update
               </button>
             </td>
             <td>
-              <button className="px-6 py-2 bg-red-700 font-bold text-white rounded hover:bg-[#004b52] transition"
-              onClick={() => handleDriveDelete(drive)}>
+              <button
+                className="px-6 py-2 bg-red-700 text-white font-bold rounded hover:bg-[#004b52] transition"
+                onClick={() => handleDriveDelete(drive)}
+              >
                 Delete
               </button>
             </td>
-            
           </tr>
         ))}
       </tbody>
     </Table>
-
   </div>
-      )}
+)}
 
 
 {drivechoose && (

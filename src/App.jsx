@@ -79,7 +79,7 @@ const App = () => {
           <Route path="UploadOrDeleteDrive" element={<UploadOrDeleteDrive/>}/>
           <Route path="RegisterCompany" element={<RegisterCompany />} />
           <Route path="AddStudent" element={<AddStudent />} />
-          <Route path="AddRounds/:round" element={<AddRounds/>} />
+          <Route path="AddRounds/:round/:drive_id" element={<AddRounds/>} />
       </Route>
       </Routes>
     </Router>
