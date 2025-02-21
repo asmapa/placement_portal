@@ -7,20 +7,27 @@ CREATE TABLE company(
     address TEXT,
     website_link VARCHAR(255)
 );
+
+{/*This Is the Drive Register Table, Used to Enter Data From Admin Panel*/}
 CREATE TABLE placement_drive (
     drive_id SERIAL PRIMARY KEY,
     company_id INT NOT NULL,
     job_role VARCHAR(255) NOT NULL,
     num_of_rounds INT CHECK (num_of_rounds > 0),
-    package DECIMAL(10,2) CHECK (package >= 0),
+    training_package DECIMAL(10,2) CHECK (training_package >= 0),
+    permanent_package DECIMAL(10,2) CHECK (permanent_package >= 0),
     drive_mode VARCHAR(20) CHECK (drive_mode IN ('On Campus', 'Off Campus')),
     drive_type VARCHAR(10) CHECK (drive_type IN ('Dream', 'Open', 'Core', 'IT')),
     start_date DATE NOT NULL,
+    last_date_to_submit DATE NOT NULL,
     no_of_backlogs_permitted INT CHECK (no_of_backlogs_permitted >= 0),
     supply_history_allowed BOOLEAN NOT NULL,
     min_cgpa_required DECIMAL(3,2) CHECK (min_cgpa_required BETWEEN 0 AND 10),
     focused_branches TEXT[] NOT NULL,
-	description TEXT,
+    description TEXT,
+    registration_link TEXT NOT NULL,
+    work_location VARCHAR(255) NOT NULL,
+    duration INTERVAL,
     UNIQUE (company_id, job_role, start_date),
     FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE
 );
@@ -105,16 +112,7 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS public.student
     OWNER to postgres;
 
-ALTER TABLE placement_drive 
-DROP COLUMN package,
-ADD COLUMN training_package DECIMAL(10,2) CHECK (training_package >= 0),
-ADD COLUMN permanent_package DECIMAL(10,2) CHECK (permanent_package >= 0),
-ADD COLUMN last_date_to_submit DATE NOT NULL,
-ADD COLUMN registration_link TEXT NOT NULL,
-ADD COLUMN work_location VARCHAR(255) NOT NULL;
 
-ALTER TABLE placement_drive 
-ADD COLUMN duration INTERVAL;
 
 INSERT INTO company (
     company_name, contact_person_name, phone_number, official_mail, address, website_link
