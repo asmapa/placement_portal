@@ -44,14 +44,12 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00c49f'];
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('Existing-Company');
-const [companies, setCompanies] = useState([]);
-<<<<<<< HEAD
-  const [choose, setChoose] = useState(false);
-=======
+ 
+
   const [drives, setDrives] = useState([]);
   const [choose, setChoose] = useState(false);
   const [selectedDrive, setSelectedDrive] = useState("");
->>>>>>> f391e792cd0b61e733fb5a9762c3d34b9598a136
+  const [companies, setCompanies] = useState([]);
   const [companyId, setCompanyId] = useState(0);
   const [drivechoose, setDrivechoose] = useState(false);
 
@@ -92,10 +90,6 @@ const [companies, setCompanies] = useState([]);
       });
 
   }, [selectedDrive]); 
-
-  
-
-<<<<<<< HEAD
   
  const fetchCompanies = () => {
   axios
@@ -112,8 +106,7 @@ const [companies, setCompanies] = useState([]);
 useEffect(() => {
   fetchCompanies(); // Fetch initially
 }, []); 
-=======
->>>>>>> f391e792cd0b61e733fb5a9762c3d34b9598a136
+
   
 useEffect(() => {
   axios.get("http://localhost:3000/portal/get-company")
@@ -181,7 +174,22 @@ const [formDrive, setFormDrive] = useState({
 setTimeout(() => setDrivechoose(true), 10);
   }
 
-const handleDeleteClick = async (company) => {
+
+  const handleDriveDelete = async (drive) => {
+     alert("Hey Are You Sure ?? You Want to Delete ? There is no undo !!!!!");
+    try {
+      const result = await axios.delete(`http://localhost:3000/portal/deleteDrive/${drive.drive_id}`);
+      if (result.status === 200) {
+        alert("Its get deleted successfully");
+      }
+    } catch (error) {
+       console.error("Error deleting drive:", error);
+    alert("Failed to delete drive.");
+    }
+  }
+  //Delete The Company From DB
+  const handleDeleteClick = async (company) => {
+    alert("Hey Are You Sure ?? You Want to Delete ? There is no undo !!!!!");
   try {
     const res = await axios.delete(`http://localhost:3000/portal/delete-company/${company.company_id}`);
     
@@ -221,8 +229,7 @@ const handleDeleteClick = async (company) => {
   };
 
 
-<<<<<<< HEAD
-=======
+//Update the Drive
  const handleDriveSubmit = async (e) => {
     e.preventDefault(); 
 
@@ -247,7 +254,6 @@ const handleDeleteClick = async (company) => {
     }
 };
 
->>>>>>> f391e792cd0b61e733fb5a9762c3d34b9598a136
   //Updation of company from front
   const handleCompanySubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -466,9 +472,11 @@ const handleDeleteClick = async (company) => {
           <th className="px-4 py-2">Focused Branches</th>
           <th className="px-4 py-2">Work Location</th>
           <th className="px-4 py-2">Description</th>
-          <th className="px-4 py-2">Registration Link</th>
+                <th className="px-4 py-2">Registration Link</th>
+                 <th className="px-4 py-2">Round Details</th>
           <th className="px-4 py-2">Update</th>
-          <th className="px-4 py-2">Delete</th>
+                <th className="px-4 py-2">Delete</th>
+                
         </tr>
       </thead>
       <tbody>
@@ -501,18 +509,26 @@ const handleDeleteClick = async (company) => {
               </a>
             </td>
             <td>
+              <button className="px-6 py-2 bg-[gray] text-white font-bold rounded hover:bg-[#004b52] transition"
+              >
+                Round
+              </button>
+            </td>
+            <td>
               <button
-                className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[blue] transition"
+                className="px-6 py-2 bg-[#005f69] font-bold text-white rounded hover:bg-[blue] transition"
                 onClick={() => handleDriveChange(drive)}
               >
                 Update
               </button>
             </td>
             <td>
-              <button className="px-6 py-2 bg-red-700 text-white rounded hover:bg-[#004b52] transition">
+              <button className="px-6 py-2 bg-red-700 font-bold text-white rounded hover:bg-[#004b52] transition"
+              onClick={() => handleDriveDelete(drive)}>
                 Delete
               </button>
             </td>
+            
           </tr>
         ))}
       </tbody>
