@@ -44,7 +44,12 @@ export const insertDrive = async (driveData) => {
 };
 
 export const getAllDrives = async () => {
-    const { rows } = await query(`select *from placement_drive`);
+    const { rows } = await query(`
+        select drive_id,pd.company_id,company_name, job_role, num_of_rounds, training_package, permanent_package,
+            drive_mode, drive_type, start_date, last_date_to_submit, 
+            no_of_backlogs_permitted, supply_history_allowed, min_cgpa_required, 
+            focused_branches,work_location,  description, registration_link
+        from placement_drive pd join company c on pd.company_id=c.company_id`);
     return rows;
 };
 
@@ -60,7 +65,11 @@ export const deleteDrive = async (drive_id) => {
 
 export const getUpcomingDrives = async () => {
     const { rows } = await query(`
-        SELECT * FROM placement_drive
+        select drive_id,pd.company_id,company_name, job_role, num_of_rounds, training_package, permanent_package,
+            drive_mode, drive_type, start_date, last_date_to_submit, 
+            no_of_backlogs_permitted, supply_history_allowed, min_cgpa_required, 
+            focused_branches,work_location,  description, registration_link
+        from placement_drive pd join company c on pd.company_id=c.company_id
         WHERE start_date > CURRENT_DATE
     `);
     return rows;
@@ -68,7 +77,11 @@ export const getUpcomingDrives = async () => {
 
 export const getPastDrives = async () => {
     const { rows } = await query(`
-        SELECT * FROM placement_drive
+        select drive_id,pd.company_id,company_name, job_role, num_of_rounds, training_package, permanent_package,
+            drive_mode, drive_type, start_date, last_date_to_submit, 
+            no_of_backlogs_permitted, supply_history_allowed, min_cgpa_required, 
+            focused_branches,work_location,  description, registration_link
+        from placement_drive pd join company c on pd.company_id=c.company_id
         WHERE start_date + duration < CURRENT_DATE
     `);
     return rows;
@@ -76,7 +89,11 @@ export const getPastDrives = async () => {
 
 export const getOngoingDrives = async () => {
     const { rows } = await query(`
-        SELECT * FROM placement_drive
+        select drive_id,pd.company_id,company_name, job_role, num_of_rounds, training_package, permanent_package,
+            drive_mode, drive_type, start_date, last_date_to_submit, 
+            no_of_backlogs_permitted, supply_history_allowed, min_cgpa_required, 
+            focused_branches,work_location,  description, registration_link
+        from placement_drive pd join company c on pd.company_id=c.company_id
         WHERE start_date <= CURRENT_DATE
         AND start_date + duration >= CURRENT_DATE
     `);

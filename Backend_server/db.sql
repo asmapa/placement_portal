@@ -173,3 +173,15 @@ CREATE TABLE drive_registered (
     FOREIGN KEY (drive_id) REFERENCES placement_drive(drive_id) ON DELETE CASCADE,
     FOREIGN KEY (ktu_id) REFERENCES student(ktu_id) ON DELETE CASCADE
 );
+
+ALTER TABLE drive_result
+ADD CONSTRAINT drive_result_drive_registered_fk
+FOREIGN KEY (drive_id, ktu_id)
+REFERENCES drive_registered(drive_id, ktu_id)
+ON DELETE CASCADE;
+
+ALTER TABLE round_result
+ADD CONSTRAINT round_result_drive_registered_fk
+FOREIGN KEY (drive_id, ktu_id)
+REFERENCES drive_registered(drive_id, ktu_id)
+ON DELETE CASCADE;

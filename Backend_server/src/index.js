@@ -7,6 +7,7 @@ import driveRegistrationRoutes from "./routes/driveRegistrationRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
 import regRoutes from "./routes/registrationRoutes.js"
 import roundsRoutes from "./routes/RoundsRoutes.js"
+import resultRoutes from "./routes/ResultRoutes.js"
 
 //import StudentRoutes from "./routes/StudentRoutes.js"
 const app = express();
@@ -21,6 +22,7 @@ app.use('/portal', driveRegistrationRoutes);
 app.use('/portal', authRoutes);
 app.use('/portal', regRoutes);
 app.use('/portal', roundsRoutes);
+app.use('/portal', resultRoutes);
 
 
 app.listen(port, () => {
