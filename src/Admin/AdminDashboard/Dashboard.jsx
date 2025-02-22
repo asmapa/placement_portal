@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
-import Table from "react-bootstrap/Table";
+
 import axios from "axios";
+import { Table, Modal, Button, Form } from "react-bootstrap";
 import {
   FaUserFriends,
   FaBuilding,
@@ -44,17 +45,112 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00c49f'];
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('Existing-Company');
-
- 
-
   const [drives, setDrives] = useState([]);
   const [choose, setChoose] = useState(false);
   const [selectedDrive, setSelectedDrive] = useState("");
   const [companies, setCompanies] = useState([]);
-
-
-  const [companyId, setCompanyId] = useState(0);
   const [drivechoose, setDrivechoose] = useState(false);
+  const [editedRounds, setEditedRounds] = useState({});
+const [selectedDriveRounds, setSelectedDriveRounds] = useState([]);
+const [showForm, setShowForm] = useState(false);
+
+const RoundDrive = [
+  {
+    drive_id: 8,
+    round_number: 1,
+    round_name: "Aptitude Test",
+    round_date: "2025-03-10T10:00",
+    duration: { hours: 1, minutes: 30 },
+    location: "Online",
+    mode: "Remote",
+  },
+  {
+    drive_id: 8,
+    round_number: 2,
+    round_name: "Technical Interview",
+    round_date: "2025-03-12T14:00",
+    duration: { hours: 1, minutes: 0 },
+    location: "Company Office",
+    mode: "Offline",
+  },
+    {
+    drive_id: 8,
+    round_number: 2,
+    round_name: "Technical Interview",
+    round_date: "2025-03-12T14:00",
+    duration: { hours: 1, minutes: 0 },
+    location: "Company Office",
+    mode: "Offline",
+  },
+    {
+    drive_id: 8,
+    round_number: 2,
+    round_name: "Technical Interview",
+    round_date: "2025-03-12T14:00",
+    duration: { hours: 1, minutes: 0 },
+    location: "Company Office",
+    mode: "Offline",
+  },
+    {
+    drive_id: 8,
+    round_number: 2,
+    round_name: "Technical Interview",
+    round_date: "2025-03-12T14:00",
+    duration: { hours: 1, minutes: 0 },
+    location: "Company Office",
+    mode: "Offline",
+  },
+  
+  {
+    drive_id: 11,
+    round_number: 1,
+    round_name: "Coding Test",
+    round_date: "2025-03-15T09:00",
+    duration: { hours: 2, minutes: 0 },
+    location: "Online",
+    mode: "Remote",
+  },
+  {
+    drive_id: 11,
+    round_number: 2,
+    round_name: "HR Interview",
+    round_date: "2025-03-17T11:00",
+    duration: { hours: 0, minutes: 45 },
+    location: "Company HQ",
+    mode: "Offline",
+  },
+];
+
+
+const handleShowRounds = (driveId) => {
+  const rounds = RoundDrive.filter((round) => round.drive_id === driveId);
+  setSelectedDriveRounds(rounds);
+  setEditedRounds(
+    rounds.reduce((acc, round) => {
+      acc[`${round.drive_id}-${round.round_number}`] = { ...round };
+      return acc;
+    }, {})
+  );
+  setShowForm(true);
+};
+
+const handleRoundChange = (e, roundKey, field) => {
+  setEditedRounds({
+    ...editedRounds,
+    [roundKey]: {
+      ...editedRounds[roundKey],
+      [field]: e.target.value,
+    },
+  });
+};
+
+const handleUpdate = () => {
+  console.log("Updated Rounds: ", editedRounds);
+  setShowForm(false);
+};
+
+  
+ 
 
   //Comapny Form Data
    const [formData, setFormData] = useState({
@@ -513,7 +609,9 @@ setTimeout(() => setDrivechoose(true), 10);
               </a>
             </td>
             <td>
-              <button className="px-6 py-2 bg-gray-500 text-white font-bold rounded hover:bg-[#004b52] transition">
+              <button className="px-6 py-2 bg-gray-500 text-white font-bold rounded hover:bg-[#004b52] transition"
+                onClick={() => handleShowRounds(drive.drive_id)}
+              >
                 Round
               </button>
             </td>
@@ -687,8 +785,74 @@ setTimeout(() => setDrivechoose(true), 10);
 )}
 
 
- 
+       {showForm && (
+        <div className="fixed inset-0 flex  items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 border-[#005f69] border-5 overflow-x-auto ">
+            <h2 className="text-2xl font-bold mb-4 text-center text-[#2d939e]">Edit Round Details</h2>
+        <div className=" flex gap-8 p-12  ">
+          
+          {selectedDriveRounds.map((round) => {
+            const roundKey = `${round.drive_id}-${round.round_number}`;
+            return (
+              <div key={roundKey} className="mb-4 border-[#005f69] border-5 p-6 rounded-lg">
+                <label className="block font-bold  text-[#005f69]">Round Name</label>
+                <input
+                  type="text"
+                  className="w-full  border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
+                  value={editedRounds[roundKey].round_name}
+                  onChange={(e) => handleRoundChange(e, roundKey, "round_name")}
+                />
 
+                <label className="block mt-2 font-bold  text-[#005f69]">Round Date</label>
+                <input
+                  type="datetime-local"
+                  className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
+                  value={editedRounds[roundKey].round_date}
+                  onChange={(e) => handleRoundChange(e, roundKey, "round_date")}
+                />
+
+                <label className="block mt-2 font-bold  text-[#005f69]">Duration (hours/minutes)</label>
+                <input
+                  type="text"
+                  className="w-full border-[#005f69] rounded-md focus:ring focus:ring-blue-500"
+                  value={editedRounds[roundKey].duration.hours || editedRounds[roundKey].duration.minutes}
+                  onChange={(e) => handleRoundChange(e, roundKey, "duration")}
+                />
+
+                <label className="block mt-2 font-bold  text-[#005f69]">Location</label>
+                <input
+                  type="text"
+                  className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
+                  value={editedRounds[roundKey].location || ""}
+                  onChange={(e) => handleRoundChange(e, roundKey, "location")}
+                />
+
+                <label className="block mt-2 font-bold  text-[#005f69]">Mode</label>
+                <input
+                  type="text"
+                  className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
+                  value={editedRounds[roundKey].mode}
+                  onChange={(e) => handleRoundChange(e, roundKey, "mode")}
+                />
+              </div>
+            );
+          })}
+
+         
+            </div>
+             <div className="flex justify-center mt-4">
+            <button className="bg-red-600 text-white px-4 py-2 rounded-md mr-2" onClick={() => setShowForm(false)}>
+              Cancel Changes
+            </button>
+            <button className="bg-[#005f69] text-white px-4 py-2 rounded-md" onClick={handleUpdate}>
+              Save Changes
+            </button>
+          </div>
+            </div>
+      </div>
+    )}
+  
+ 
     </div>
   );
 };

@@ -48,23 +48,25 @@ const UploadOrDeleteDrive = () => {
   };
 
   // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Console is triggerd !! dont worry");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const roundCount = Number(placementDriveData.num_of_rounds || 0);
+  console.log("Console is triggered !! Don't worry");
 
+  try {
+    const response = await axios.post("http://localhost:3000/portal/add-drive", placementDriveData);
+    console.log("Drive successfully entered into database !!", response.data);
 
-    try {
-      const response = await axios.post("http://localhost:3000/portal/add-drive", placementDriveData);
-      console.log("Drive successfully Enterd into database !!",response.data);
-    } catch (error) {
-      console.log("There is an error for insertion :", error);
+    if (response?.data?.drive?.drive_id) {
+      navigate(`/Admin-dashboard/AddRounds/${roundCount}/${response.data.drive.drive_id}`);
+    } else {
+      console.error("Drive ID not found in response!");
     }
-   navigate(`/Admin-dashboard/AddRounds/${round}/${response.data.drive.drive_id}`);
-    console.log("Submitting data:", JSON.stringify(placementDriveData, null, 2));
+  } catch (error) {
+    console.log("There is an error for insertion :", error);
+  }
+};
 
-    navigate(`/Admin-dashboard/AddRounds/${round}`);
-
-  };
 
   return (
     <div className="p-8 flex justify-center">
@@ -126,8 +128,7 @@ const UploadOrDeleteDrive = () => {
 
         <input type="number" name="permanent_package" value={placementDriveData.permanent_package} onChange={handleChange} className="w-full text-gray-800 bg-white border border-[#005f69] rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2" required min="0" />
 
-        <input type="number" name="permenent_package" value={placementDriveData.permanent_package} onChange={handleChange} className="w-full text-gray-800 bg-white border border-[#005f69] rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2" required min="0" />
-
+        
       </div>
 
           {/* Drive Mode */}
