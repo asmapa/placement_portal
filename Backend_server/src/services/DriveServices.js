@@ -48,6 +48,7 @@ export const getAllDrives = async () => {
     return rows;
 };
 
+
 export const deleteDrive = async (drive_id) => {
     const { rows } = await query(
         `DELETE FROM placement_drive WHERE drive_id = $1 RETURNING *;`, 
@@ -55,6 +56,7 @@ export const deleteDrive = async (drive_id) => {
     );
     return rows[0]; // Returns the deleted company if successful
 };
+
 
 export const getUpcomingDrives = async () => {
     const { rows } = await query(`

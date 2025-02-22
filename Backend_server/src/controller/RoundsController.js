@@ -2,12 +2,24 @@ import * as roundsServices from "../services/RoundsServices.js";
 
 export const createPlacementRound = async (req, res) => {
   try {
-    const round = await roundsServices.addPlacementRound(req.body);
-    res.status(201).json(round);
+    const rounds = req.body; // Expecting an array of rounds
+
+    if (!Array.isArray(rounds) || rounds.length === 0) {
+      return res.status(400).json({ message: "Invalid round data. Must be an array." });
+    }
+
+    // Insert each round and collect results
+    const insertedRounds = await Promise.all(rounds.map(async (round) => {
+      return await roundsServices.addPlacementRound(round);
+    }));
+
+    res.status(201).json({ message: "Rounds added successfully!", rounds: insertedRounds });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error inserting rounds:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 export const getAllPlacementRounds = async (req, res) => {
   try {

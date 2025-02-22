@@ -42,7 +42,7 @@ export const getPastDrivesController = async (req, res) => {
 
 export const deleteDrive = async (req, res) => {
     try {
-        const { drive_id } = req.params; // Get company_id from the route params
+        const { drive_id } = req.params; // Get drive_id from the route params
         const deletedDrive = await DriveServices.deleteDrive(drive_id);
 
         if (!deletedDrive) {
@@ -51,7 +51,7 @@ export const deleteDrive = async (req, res) => {
 
         return res.status(200).json({
             message: 'drive deleted successfully',
-            data: deletedCompany
+            
         });
     } catch (error) {
         console.error('Error deleting error:', error);

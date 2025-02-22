@@ -44,14 +44,15 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00c49f'];
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('Existing-Company');
-const [companies, setCompanies] = useState([]);
-<<<<<<< HEAD
-  const [choose, setChoose] = useState(false);
-=======
+
+ 
+
   const [drives, setDrives] = useState([]);
   const [choose, setChoose] = useState(false);
   const [selectedDrive, setSelectedDrive] = useState("");
->>>>>>> f391e792cd0b61e733fb5a9762c3d34b9598a136
+  const [companies, setCompanies] = useState([]);
+
+
   const [companyId, setCompanyId] = useState(0);
   const [drivechoose, setDrivechoose] = useState(false);
 
@@ -94,9 +95,6 @@ const [companies, setCompanies] = useState([]);
   }, [selectedDrive]); 
 
   
-
-<<<<<<< HEAD
-  
  const fetchCompanies = () => {
   axios
     .get("http://localhost:3000/portal/get-company") 
@@ -112,8 +110,7 @@ const [companies, setCompanies] = useState([]);
 useEffect(() => {
   fetchCompanies(); // Fetch initially
 }, []); 
-=======
->>>>>>> f391e792cd0b61e733fb5a9762c3d34b9598a136
+
   
 useEffect(() => {
   axios.get("http://localhost:3000/portal/get-company")
@@ -181,7 +178,22 @@ const [formDrive, setFormDrive] = useState({
 setTimeout(() => setDrivechoose(true), 10);
   }
 
-const handleDeleteClick = async (company) => {
+//delete Drive Data
+  const handleDriveDelete = async (drive) => {
+     alert("Hey Are You Sure ?? You Want to Delete ? There is no undo !!!!!");
+    try {
+      const result = await axios.delete(`http://localhost:3000/portal/deleteDrive/${drive.drive_id}`);
+      if (result.status === 200) {
+        alert("Its get deleted successfully");
+      }
+    } catch (error) {
+       console.error("Error deleting drive:", error);
+    alert("Failed to delete drive.");
+    }
+  }
+  //Delete The Company From DB
+  const handleDeleteClick = async (company) => {
+    alert("Hey Are You Sure ?? You Want to Delete ? There is no undo !!!!!");
   try {
     const res = await axios.delete(`http://localhost:3000/portal/delete-company/${company.company_id}`);
     
@@ -221,8 +233,7 @@ const handleDeleteClick = async (company) => {
   };
 
 
-<<<<<<< HEAD
-=======
+//Update the Drive
  const handleDriveSubmit = async (e) => {
     e.preventDefault(); 
 
@@ -247,7 +258,6 @@ const handleDeleteClick = async (company) => {
     }
 };
 
->>>>>>> f391e792cd0b61e733fb5a9762c3d34b9598a136
   //Updation of company from front
   const handleCompanySubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -431,27 +441,27 @@ const handleDeleteClick = async (company) => {
       )}
 
       {selectedTab === "DriveData" && (
-        <div className="overflow-x-auto shadow-md rounded-lg border-Navy mt-8 p-4">
-           <div >
-                
-                <select
-                  name="course"
-                  className=" w-50 border-[#005f69] text-black border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
-                    onChange={(e) => setSelectedDrive(e.target.value)}
-                  required
-            >
-              <option value="">All Drives</option>
-                  <option value="On-Going-drive">On-Going Drive</option>
-<option value="Up-coming-Drives">Upcoming Drives</option>
-<option value="Completed-drives">Completed Drives</option>
+  <div className="overflow-x-auto shadow-md rounded-lg border-Navy mt-8 p-4">
+    <div>
+      <select
+        name="course"
+        className="w-50 border-[#005f69] text-black border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
+        onChange={(e) => setSelectedDrive(e.target.value)}
+        required
+      >
+        <option value="">All Drives</option>
+        <option value="On-Going-drive">On-Going Drive</option>
+        <option value="Up-coming-Drives">Upcoming Drives</option>
+        <option value="Completed-drives">Completed Drives</option>
+      </select>
+    </div>
 
-                </select>
-              </div>
-               <Table striped bordered hover responsive>
+    <Table striped bordered hover responsive>
       <thead style={{ backgroundColor: "#005f69", color: "white" }}>
         <tr>
           <th className="px-4 py-2">Drive ID</th>
           <th className="px-4 py-2">Company ID</th>
+          <th className="px-4 py-2">Company Name</th>
           <th className="px-4 py-2">Job Role</th>
           <th className="px-4 py-2">Rounds</th>
           <th className="px-4 py-2">Training Package</th>
@@ -467,6 +477,7 @@ const handleDeleteClick = async (company) => {
           <th className="px-4 py-2">Work Location</th>
           <th className="px-4 py-2">Description</th>
           <th className="px-4 py-2">Registration Link</th>
+          <th className="px-4 py-2">Round Details</th>
           <th className="px-4 py-2">Update</th>
           <th className="px-4 py-2">Delete</th>
         </tr>
@@ -476,6 +487,7 @@ const handleDeleteClick = async (company) => {
           <tr key={drive.drive_id}>
             <td className="px-4 py-3">{drive.drive_id}</td>
             <td className="px-4 py-3">{drive.company_id || "Unknown"}</td>
+            <td className="px-4 py-3">{drive.company_name || "Unknown"}</td>
             <td className="px-4 py-3">{drive.job_role}</td>
             <td className="px-4 py-3">{drive.num_of_rounds}</td>
             <td className="px-4 py-3">{drive.training_package} LPA</td>
@@ -501,15 +513,23 @@ const handleDeleteClick = async (company) => {
               </a>
             </td>
             <td>
+              <button className="px-6 py-2 bg-gray-500 text-white font-bold rounded hover:bg-[#004b52] transition">
+                Round
+              </button>
+            </td>
+            <td>
               <button
-                className="px-6 py-2 bg-[#005f69] text-white rounded hover:bg-[blue] transition"
+                className="px-6 py-2 bg-[#005f69] text-white font-bold rounded hover:bg-blue-700 transition"
                 onClick={() => handleDriveChange(drive)}
               >
                 Update
               </button>
             </td>
             <td>
-              <button className="px-6 py-2 bg-red-700 text-white rounded hover:bg-[#004b52] transition">
+              <button
+                className="px-6 py-2 bg-red-700 text-white font-bold rounded hover:bg-[#004b52] transition"
+                onClick={() => handleDriveDelete(drive)}
+              >
                 Delete
               </button>
             </td>
@@ -517,9 +537,8 @@ const handleDeleteClick = async (company) => {
         ))}
       </tbody>
     </Table>
-
   </div>
-      )}
+)}
 
 
 {drivechoose && (

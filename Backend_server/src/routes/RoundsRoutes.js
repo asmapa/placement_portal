@@ -11,3 +11,5 @@ router.put("/update-round/:drive_id/:round_number", roundsController.updatePlace
 router.delete("/delete-round/:drive_id/:round_number", roundsController.deletePlacementRound);
 
 export default router;
+//http://localhost:3000/portal/create-round
+//http://localhost:3000/portal/get-all-rounds
