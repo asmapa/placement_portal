@@ -1,31 +1,50 @@
-import React from 'react'
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 const ViewStudent = () => {
-    const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("all");
   const [students, setStudents] = useState([]);
   const [year, setYear] = useState("");
+  const [department, setDepartment] = useState("");
   const [departmentStats, setDepartmentStats] = useState([]);
 
   useEffect(() => {
+    const fetchStudents = async () => {
+      let url = "http://localhost:3000/portal/get-all-students";
+
+      if (activeTab === "placed") {
+        url = "http://localhost:3000/portal/get-placed-students";
+      } else if (activeTab === "registered") {
+        url = "http://localhost:3000/portal/get-registered-students";
+      } else if (activeTab === "year" && year) {
+        url = `http://localhost:3000/portal/get-students-by-year/${year}`;
+      } else if (activeTab === "department" && department) {
+        url = `http://localhost:3000/portal/get-department-wise-stats/${department}`;
+      }
+
+        try {
+          setStudents([]);
+setDepartmentStats([]);
+        const res = await axios.get(url);
+        const data = res.data;
+
+        if (activeTab === "department") {
+          setDepartmentStats(data);
+          setStudents([]);
+        } else {
+          setStudents(data.students || data);
+          setDepartmentStats([]);
+        }
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+
     fetchStudents();
-  }, [activeTab, year]);
-
-  const fetchStudents = async () => {
-    let url = "";
-    if (activeTab === "all") url = "/api/students/all";
-    else if (activeTab === "placed") url = "/api/students/placed";
-    else if (activeTab === "registered") url = "/api/students/registered";
-    else if (activeTab === "year") url = `/api/students/year/${year}`;
-    else if (activeTab === "department") url = `/api/students/stats/${year}`;
-
-    const res = await fetch(url);
-    const data = await res.json();
-    setStudents(data.students || data);
-  };
+  }, [activeTab, year, department]);
 
   return (
-    <div>
-       <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex space-x-4 mb-4">
         {["all", "placed", "registered", "year", "department"].map((tab) => (
           <button
@@ -33,7 +52,7 @@ const ViewStudent = () => {
             className={`px-4 py-2 rounded-lg flex-1 ${
               activeTab === tab
                 ? "bg-[#005f69] text-white font-bold"
-                : "bg-gray-200 border-[#005f69] border-5 hover:bg-gray-300 font-bold"
+                : "bg-gray-200 border-[#005f69] border-2 hover:bg-gray-300 font-bold"
             }`}
             onClick={() => setActiveTab(tab)}
           >
@@ -50,15 +69,15 @@ const ViewStudent = () => {
           value={year}
           onChange={(e) => setYear(e.target.value)}
         />
-              )}
-              
-               {activeTab === "department" && (
+      )}
+
+      {activeTab === "department" && (
         <input
           type="text"
           placeholder="Enter Department"
-          className="p-2  rounded-lg  border-[#005f69] border-2 w-1/2"
-          value={departmentStats}
-          onChange={(e) => setDepartmentStats(e.target.value)}
+          className="p-2 rounded-lg border-[#005f69] border-2 w-1/2"
+          value={department}
+          onChange={(e) => setDepartment(e.target.value)}
         />
       )}
 
@@ -69,7 +88,16 @@ const ViewStudent = () => {
               <th className="p-3 text-left">KTU ID</th>
               <th className="p-3 text-left">Name</th>
               <th className="p-3 text-left">Department</th>
-              <th className="p-3 text-left">Year</th>
+              <th className="p-3 text-left">RIT Mail</th>
+              <th className="p-3 text-left">Phone</th>
+              <th className="p-3 text-left">Program</th>
+              <th className="p-3 text-left">Semester</th>
+              <th className="p-3 text-left">DOB</th>
+              <th className="p-3 text-left">Year of Graduation</th>
+              <th className="p-3 text-left">Gender</th>
+              <th className="p-3 text-left">CGPA</th>
+              <th className="p-3 text-left">Number of Backlogs</th>
+              <th className="p-3 text-left">Supply History</th>
             </tr>
           </thead>
           <tbody>
@@ -77,14 +105,23 @@ const ViewStudent = () => {
               students.map((student) => (
                 <tr key={student.ktu_id} className="border-b">
                   <td className="p-3">{student.ktu_id}</td>
-                  <td className="p-3">{student.name}</td>
+                  <td className="p-3">{student.student_name}</td>
                   <td className="p-3">{student.department}</td>
+                  <td className="p-3">{student.rit_email}</td>
+                  <td className="p-3">{student.phone_number}</td>
+                  <td className="p-3">{student.program}</td>
+                  <td className="p-3">{student.semester}</td>
+                  <td className="p-3">{student.date_of_birth}</td>
                   <td className="p-3">{student.year_of_graduation}</td>
+                  <td className="p-3">{student.gender}</td>
+                  <td className="p-3">{student.cgpa}</td>
+                  <td className="p-3">{student.no_of_backlogs}</td>
+                  <td className="p-3">{student.supply_history}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="p-3 text-center">
+                <td colSpan="13" className="p-3 text-center">
                   No students found
                 </td>
               </tr>
@@ -93,8 +130,7 @@ const ViewStudent = () => {
         </table>
       </div>
     </div>
-    </div>
-  )
-}
+  );
+};
 
-export default ViewStudent
+export default ViewStudent;
