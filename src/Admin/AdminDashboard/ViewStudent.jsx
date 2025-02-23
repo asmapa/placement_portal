@@ -13,9 +13,9 @@ const ViewStudent = () => {
       let url = "http://localhost:3000/portal/get-all-students";
 
       if (activeTab === "placed") {
-        url = "http://localhost:3000/portal/get-placed-students";
+        url = "http://localhost:3000/portal/get-students/placed";
       } else if (activeTab === "registered") {
-        url = "http://localhost:3000/portal/get-registered-students";
+        url = "http://localhost:3000/portal/get-students/registered";
       } else if (activeTab === "year" && year) {
         url = `http://localhost:3000/portal/get-students-by-year/${year}`;
       } else if (activeTab === "department" && department) {
