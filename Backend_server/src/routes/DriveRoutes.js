@@ -11,7 +11,9 @@ router.put("/updateDrive", DriveController.updateDrive);
 
 router.delete("/deleteDrive/:drive_id", DriveController.deleteDrive);
 
+//The below Route is for student Dashborad because i need company name also in front so i jin them and get needed data
 
+router.get("/getPlacement", DriveController.getPlacementDrives);
 
 router.get('/getdrives', DriveController.getAllDrives);
 

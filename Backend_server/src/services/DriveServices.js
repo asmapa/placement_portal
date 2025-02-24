@@ -160,3 +160,17 @@ export const updateDrive = async (drive_id, updatedData) => {
     return rows[0]; // Returns the updated placement drive
 };
 
+export const getAllPlacementDrives = async () => {
+    try {
+        const { rows: drives } = await query(`
+            SELECT pd.*, c.company_name 
+            FROM placement_drive pd
+            INNER JOIN company c ON pd.company_id = c.company_id;
+        `);
+
+        return drives; // Returning the combined result
+    } catch (error) {
+        console.error("Error fetching placement drives:", error);
+        throw new Error("Failed to fetch placement drives.");
+    }
+};

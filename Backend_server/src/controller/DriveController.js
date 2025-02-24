@@ -97,3 +97,13 @@ export const updateDrive = async (req, res) => {
         res.status(500).json({ error: error.message || "Failed to update Drive" });
     }
 };
+
+export const getPlacementDrives = async (req, res) => {
+  try {
+    const drives = await DriveServices.getAllPlacementDrives();
+    res.status(200).json({ message: "Drives fetched successfully", drives });
+  } catch (error) {
+    console.error("Error fetching drives:", error);
+    res.status(500).json({ error: "Failed to fetch drives" });
+  }
+};
