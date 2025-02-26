@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const ViewStudent = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [students, setStudents] = useState([]);
   const [year, setYear] = useState("");
   const [department, setDepartment] = useState("");
-  const [departmentStats, setDepartmentStats] = useState([]);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -22,19 +23,10 @@ const ViewStudent = () => {
         url = `http://localhost:3000/portal/get-department-wise-stats/${department}`;
       }
 
-        try {
-          setStudents([]);
-setDepartmentStats([]);
+      try {
+        setStudents([]); // Reset before fetching new data
         const res = await axios.get(url);
-        const data = res.data;
-
-        if (activeTab === "department") {
-          setDepartmentStats(data);
-          setStudents([]);
-        } else {
-          setStudents(data.students || data);
-          setDepartmentStats([]);
-        }
+        setStudents(res.data.students || res.data); // Handle both array and object response
       } catch (error) {
         console.error("Error fetching students:", error);
       }
@@ -42,6 +34,25 @@ setDepartmentStats([]);
 
     fetchStudents();
   }, [activeTab, year, department]);
+
+  // Function to Export Data to Excel
+  const exportToExcel = () => {
+    if (students.length === 0) {
+      alert("No data available to download!");
+      return;
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(students);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+
+    // File name based on active tab
+    const fileName = `students_${activeTab}.xlsx`;
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const fileData = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(fileData, fileName);
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -60,6 +71,28 @@ setDepartmentStats([]);
           </button>
         ))}
       </div>
+
+      {/* Download Button */}
+      <button
+        onClick={exportToExcel}
+        className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 flex items-center gap-2 mb-4"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 4v12m0 0l-3-3m3 3l3-3M6 20h12"
+          />
+        </svg>
+        Download {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Data
+      </button>
 
       {activeTab === "year" && (
         <input

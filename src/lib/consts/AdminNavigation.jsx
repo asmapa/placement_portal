@@ -4,44 +4,51 @@ import {
 	HiOutlineOfficeBuilding,
 	HiOutlineCloudUpload,
 	HiOutlineClipboardCheck,
-	HiUserAdd
+	HiUserAdd,
+	HiOutlineSearch // Added icon for "Get Students"
 } from 'react-icons/hi';
 
 export const DASHBOARD_SIDEBAR_LINKS = [
 	{
 		key: 'dashboard',
 		label: 'Dashboard',
-		path: '/Admin-dashboard', // Full path for the root
-		icon: <HiOutlineViewGrid className/> // Dashboard overview icon
+		path: '/Admin-dashboard',
+		icon: <HiOutlineViewGrid /> 
 	},
 	{
 		key: 'ViewStudents',
 		label: 'View Students',
-		path: '/Admin-dashboard/ViewStudents', // Correct relative path
-		icon: <HiOutlineUserGroup /> // Group/people icon for students
+		path: '/Admin-dashboard/ViewStudents',
+		icon: <HiOutlineUserGroup /> 
 	},
 	{
 		key: 'RegisterCompany',
 		label: 'Register Company',
-		path: '/Admin-dashboard/RegisterCompany', // Correct relative path
-		icon: <HiOutlineOfficeBuilding /> // Office/organization icon for companies
+		path: '/Admin-dashboard/RegisterCompany',
+		icon: <HiOutlineOfficeBuilding /> 
 	},
 	{
 		key: 'UploadOrDeleteDrive',
 		label: 'Upload Drive',
-		path: '/Admin-dashboard/UploadOrDeleteDrive', // Correct relative path
-		icon: <HiOutlineCloudUpload /> // Cloud upload icon for file operations
+		path: '/Admin-dashboard/UploadOrDeleteDrive',
+		icon: <HiOutlineCloudUpload /> 
 	},
 	{
 		key: 'PublishResult',
 		label: 'Publish Result',
-		path: '/Admin-dashboard/PublishResult', // Correct relative path
-		icon: <HiOutlineClipboardCheck /> // Clipboard check icon for results
+		path: '/Admin-dashboard/PublishResult',
+		icon: <HiOutlineClipboardCheck /> 
 	},
 	{
 		key: 'AddStudents',
 		label: 'Add Students',
-		path: '/Admin-dashboard/AddStudent', // Correct relative path
-		icon: <HiUserAdd /> // Clipboard check icon for results
+		path: '/Admin-dashboard/AddStudent',
+		icon: <HiUserAdd /> 
+	},
+	{
+		key: 'GetStudents',
+		label: 'Get Students',
+		path: '/Admin-dashboard/GetStudents', // Added path for Get Students
+		icon: <HiOutlineSearch /> // Added search icon for "Get Students"
 	}
 ];
