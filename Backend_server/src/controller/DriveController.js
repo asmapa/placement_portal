@@ -1,4 +1,5 @@
 import * as DriveServices from "../services/DriveServices.js"
+import ResultService from "../services/resultServices.js";
 
 // Controller function to handle student insertion
 export const addDrive = async (req, res) => {
@@ -107,3 +108,20 @@ export const getPlacementDrives = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch drives" });
   }
 };
+
+export const fetchDrivesByCompany = async (req, res) => {
+    const { companyName } = req.params;
+    const companyId = await ResultService.getCompanyId(companyName);
+
+    if (!companyId || isNaN(companyId)) {
+        return res.status(400).json({ message: 'Invalid company ID' });
+    }
+
+    try {
+        const drives = await DriveServices.getDrivesByCompany(companyId);
+        res.status(200).json(drives);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
