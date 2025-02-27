@@ -27,4 +27,22 @@ const isStudentRegistered = async (ktu_id, drive_id) => {
     }
 };
 
+
+export const getRegisteredStudents = async (driveId) => {
+    const drive_query = `
+        SELECT s.ktu_id, s.student_name, s.department, s.rit_email, s.phone_number, 
+               s.program, s.semester, s.cgpa, s.no_of_backlogs, s.skills, s.resume_url
+        FROM drive_registered dr
+        JOIN student s ON dr.ktu_id = s.ktu_id
+        WHERE dr.drive_id = $1;
+    `;
+
+    try {
+        const { rows } = await query(drive_query, [driveId]);
+        return rows;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 export { registerForDrive, isStudentRegistered };

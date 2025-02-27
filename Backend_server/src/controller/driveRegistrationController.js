@@ -1,4 +1,4 @@
-import { registerForDrive, isStudentRegistered } from "../services/driveRegistrationService.js";
+import { registerForDrive, isStudentRegistered,getRegisteredStudents } from "../services/driveRegistrationService.js";
 
 // Controller function to handle drive registration
 const handleDriveRegistration = async (req, res) => {
@@ -23,5 +23,22 @@ const handleDriveRegistration = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 };
+
+
+export const fetchRegisteredStudents = async (req, res) => {
+    const { driveId } = req.params;
+
+    if (!driveId || isNaN(driveId)) {
+        return res.status(400).json({ message: 'Invalid drive ID' });
+    }
+
+    try {
+        const students = await getRegisteredStudents(driveId);
+        res.status(200).json(students);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 
 export { handleDriveRegistration };
