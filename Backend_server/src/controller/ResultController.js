@@ -1,4 +1,4 @@
-import ResultService from "../services/resultServices.js";
+import ResultService from "../services/ResultServices.js";
 
 const ResultController = {
   async getCompanyId(req, res) {
