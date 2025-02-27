@@ -59,7 +59,7 @@ const GetStudents = () => {
         {onCampusDrives.map((drive) => (
           <div
             key={drive.drive_id}
-            className="flex flex-col items-center p-6 border-[#005f69] border-2 rounded-2xl shadow-lg text-white transform transition-all hover:-translate-y-2 hover:shadow-xl"
+            className="flex flex-col items-center p-6 border-[#005f69] border-5 rounded-2xl shadow-lg text-white transform transition-all hover:-translate-y-2 hover:shadow-xl"
           >
             <span className="font-bold text-2xl text-[#005f69]">
               {drive.company_name} - {drive.job_role}
