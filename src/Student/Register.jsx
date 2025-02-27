@@ -20,14 +20,46 @@ const Register = () => {
     dob: ""
   });
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
+
+  const handleChange = async (e) => {
+    console.log("handle change updated");
+  const { name, value } = e.target;
+  setFormData((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+
+  if (name === "ktuid" && value.trim() !== "") {
+    try {
+      const response = await axios.get("http://localhost:3000/portal/get-all-students");
+      const allStudents = response.data;
+
+      // Find student with matching KTU ID
+      const studentData = allStudents.find(student => student.ktu_id === value);
+
+      if (studentData) {
+        setFormData((prevData) => ({
+          ...prevData,
+          name: studentData.student_name || "",
+          gender: studentData.gender || "",
+          yearOfStudy: studentData.year_of_graduation ? (studentData.year_of_graduation - 2022) : "",
+          course: studentData.program || "",
+          branch: studentData.department || "",
+          cgpa: studentData.cgpa || "",
+          program: studentData.program || "",
+          ritmail: studentData.rit_email || "",
+          phoneNumber: studentData.phone_number || "",
+          dob: studentData.date_of_birth ? studentData.date_of_birth.split("T")[0] : "", // Format YYYY-MM-DD
+        }));
+      } else {
+        console.log("Student not found");
+      }
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+    }
+  }
+};
+
 
 
 
@@ -69,23 +101,15 @@ const handleRegister = async (e) => {
         <div className="sm:w-2/3 px-16">
           <div className="text-center mb-10">
             <h1 className="text-3xl font-bold text-white">Registration Form</h1>
+            <p className='text-lg text-white mt-9'>✨ "Type your KTU ID carefully, like it's your Netflix password! 🎬 If you're a valid student, all your details will magically appear . Set your password, show off your skills, and upload that resume like a pro! 🚀"
+
+</p>
           </div>
 
           <form onSubmit={handleRegister}>
             {/* Row 1 */}
             <div className="flex gap-10 mb-6">
-              <div className="flex-1">
-                <label className="text-white">Your Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  className="input w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
-                  placeholder="Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+              
               <div className="flex-1">
                 <label className="text-white">KTU ID</label>
                 <input
@@ -96,6 +120,20 @@ const handleRegister = async (e) => {
                   value={formData.ktuid}
                   onChange={handleChange}
                   required
+                />
+              </div>
+
+              <div className="flex-1">
+                <label className="text-white">Your Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  className="input w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+                  placeholder="Name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  readOnly
                 />
               </div>
             </div>
@@ -136,27 +174,23 @@ const handleRegister = async (e) => {
                   placeholder="Phone"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  required
+                  readOnly
                 />
               </div>
-              <div className="flex-1">
-                <label className="text-white">Gender</label>
-                <div className="flex gap-4">
-                  {["Male", "Female", "Others"].map((option) => (
-                    <label key={option} className="flex items-center text-white">
-                      <input
-                        type="radio"
-                        name="gender"
-                        value={option}
-                        checked={formData.gender === option}
-                        onChange={handleChange}
-                        required
-                      />
-                      <span className="ml-2">{option}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
+             <div className="flex-1">
+  <label className="text-white">Gender</label>
+  <input
+    type="text"
+    name="gender"
+    className="input w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+    placeholder="Gender"
+    value={formData.gender}
+    onChange={handleChange}
+    required
+    readOnly
+  />
+</div>
+
             </div>
 
             {/* Row 4 */}
@@ -169,44 +203,41 @@ const handleRegister = async (e) => {
                   className="w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
                   value={formData.dob}
                   onChange={handleChange}
-                  required
+                  readOnly
                 />
               </div>
-              <div className="flex-1">
-                <label className="text-white">Course</label>
-                <select
-                  name="course"
-                  className="w-full bg-transparent text-white border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
-                  value={formData.course}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Course</option>
-                  <option value="B.Tech">B.Tech</option>
-                  <option value="M.Tech">M.Tech</option>
-                  <option value="PhD">PhD</option>
-                </select>
-              </div>
+           <div className="flex-1">
+  <label className="text-white">Course</label>
+  <input
+    type="text"
+    name="course"
+    className="input w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+    placeholder="Course"
+    value={formData.course}
+    onChange={handleChange}
+   
+    readOnly
+  />
+</div>
+
             </div>
 
             {/* Row 5 */}
             <div className="flex gap-10 mb-6">
-              <div className="flex-1">
-                <label className="text-white">Year of Study</label>
-                <select
-                  name="yearOfStudy"
-                  className="w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
-                  value={formData.yearOfStudy}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Choose Year</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-              </div>
+             <div className="flex-1">
+  <label className="text-white">Year of Study</label>
+  <input
+    type="text"
+    name="yearOfStudy"
+    className="input w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+    placeholder="Year of Study"
+    value={formData.yearOfStudy}
+    onChange={handleChange}
+    required
+    readOnly
+  />
+</div>
+
               <div className="flex-1">
                 <label className="text-white">CGPA</label>
                 <input
@@ -216,26 +247,55 @@ const handleRegister = async (e) => {
                   placeholder="CGPA"
                   value={formData.cgpa}
                   onChange={handleChange}
-                  required
+                  readOnly
                 />
               </div>
             </div>
 
-            {/* Row 6 */}
-            <div className="flex gap-10 mb-6">
-              <div className="flex-1">
-                <label className="text-white">College Email</label>
-                <input
-                  type="email"
-                  name="ritmail"
-                  className="input w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
-                  placeholder="Email"
-                  value={formData.ritmail}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
+           {/* Row 6 */}
+<div className="flex gap-10 mb-6">
+  {/* College Email */}
+  <div className="flex-1">
+    <label className="text-white">College Email</label>
+    <input
+      type="email"
+      name="ritmail"
+      className="input w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+      placeholder="Email"
+      value={formData.ritmail}
+      onChange={handleChange}
+      readOnly
+    />
+  </div>
+
+  {/* Skills Input */}
+  <div className="flex-1">
+    <label className="text-white">Skills (Comma Separated)</label>
+    <input
+      type="text"
+      name="skills"
+      className="input w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+      placeholder="e.g. Java, Python, React"
+      value={formData.skills}
+      onChange={handleChange}
+    />
+  </div>
+</div>
+
+{/* Row 7 - File Upload */}
+<div className="flex gap-10 mb-6">
+  <div className="flex-1">
+    <label className="text-white">Upload Resume</label>
+    <input
+      type="file"
+      name="resume"
+      className="input w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+    
+      accept=".pdf,.doc,.docx"
+    />
+  </div>
+</div>
+
 
             {/* Submit Button */}
             <div className="text-center">
