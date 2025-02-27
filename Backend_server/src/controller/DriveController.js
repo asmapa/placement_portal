@@ -1,5 +1,5 @@
 import * as DriveServices from "../services/DriveServices.js"
-import ResultService from "../services/resultServices.js";
+import ResultService from "../services/ResultServices.js";
 
 // Controller function to handle student insertion
 export const addDrive = async (req, res) => {

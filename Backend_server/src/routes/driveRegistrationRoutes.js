@@ -6,8 +6,8 @@ const router = express.Router();
 
 // POST request to register a student for a drive
 router.post("/student-drive-register", DriveRegistrationController.handleDriveRegistration);
-router.get('/drive/:driveId/students', DriveRegistrationController.fetchRegisteredStudents);
+router.get('/Getstudents/:driveId', DriveRegistrationController.fetchRegisteredStudents);
 
 export default router;
 //http://localhost:3000/portal/student-drive-register
-//http://localhost:3000/portal//drive/:driveId/students
+//http://localhost:3000/portal/Getstudents/:driveId

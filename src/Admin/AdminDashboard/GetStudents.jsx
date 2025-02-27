@@ -1,9 +1,37 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const GetStudents = () => {
   const [onCampusDrives, setOnCampusDrives] = useState([]);
   const [selectedDrive, setSelectedDrive] = useState("");
+  const [students, setStudents] = useState([]);
+
+const exportToExcel = async (drive_id) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/portal/Getstudents/${drive_id}`);
+    const data = response.data;
+
+    if (data.length === 0) {
+      alert("No data available to download!");
+      return;
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+
+    const fileName = `students_drive_${drive_id}.xlsx`;
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const fileData = new Blob([excelBuffer], { type: "application/octet-stream" });
+
+    saveAs(fileData, fileName);
+  } catch (error) {
+    console.log("Error in getting data for Excel:", error);
+  }
+};
+
 
   useEffect(() => {
     let url = "http://localhost:3000/portal/getdrives"; // Default URL
@@ -62,13 +90,15 @@ const GetStudents = () => {
             className="flex flex-col items-center p-6 border-[#005f69] border-5 rounded-2xl shadow-lg text-white transform transition-all hover:-translate-y-2 hover:shadow-xl"
           >
             <span className="font-bold text-2xl text-[#005f69]">
-              {drive.company_name} - {drive.job_role}
+              {drive.company_name} - {drive.job_role}- DriveId :  {drive.drive_id}
             </span>
             <hr className="border-blue-500 w-full my-2" />
             <p className="text-[#005f69] text-center">{drive.description}</p>
             <p className="text-[#005f69] text-center">{drive.start_date}</p>
 
-            <button className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 flex items-center gap-2 mb-4">
+            <button
+               onClick={() => exportToExcel(drive.drive_id)} 
+              className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 flex items-center gap-2 mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
