@@ -26,6 +26,8 @@ router.get('/drives/past', DriveController.getPastDrivesController);
 // Route to get ongoing drives
 router.get('/drives/ongoing', DriveController.getOngoingDrivesController);
 
+router.get('/company/:companyName/drives', DriveController.fetchDrivesByCompany);
+
 export default router;
 
 //http://localhost:3000/portal/deleteDrive/:drive_id

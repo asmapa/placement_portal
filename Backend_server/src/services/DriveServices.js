@@ -191,3 +191,19 @@ export const getAllPlacementDrives = async () => {
         throw new Error("Failed to fetch placement drives.");
     }
 };
+
+export const getDrivesByCompany = async (companyId) => {
+    const drive_query = `
+        SELECT pd.*, c.company_name 
+        FROM placement_drive pd
+        INNER JOIN company c ON pd.company_id = c.company_id
+        WHERE pd.company_id = $1;
+    `;
+
+    try {
+        const { rows } = await query(drive_query, [companyId]);
+        return rows;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
