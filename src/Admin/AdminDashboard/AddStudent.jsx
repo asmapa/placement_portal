@@ -66,31 +66,40 @@ const AddStudent = () => {
     }
   };
 
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-    if (excelFile !== null) {
-      const workbook = XLSX.read(excelFile, { type: "array" });
-      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      let data = XLSX.utils.sheet_to_json(worksheet, { raw: false });
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (excelFile !== null) {
+    const workbook = XLSX.read(excelFile, { type: "array" });
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    let data = XLSX.utils.sheet_to_json(worksheet, { raw: false });
 
-      setExcelData(data);
+    // Convert date format for each entry
+    data = data.map((student) => {
+      if (student.date_of_birth) {
+        const excelDate = new Date(student.date_of_birth);
+        const formattedDate = excelDate.toISOString().split("T")[0]; // Convert to YYYY-MM-DD
+        return { ...student, date_of_birth: formattedDate };
+      }
+      return student;
+    });
 
-      try {
-        const res = await axios.post("http://localhost:3000/portal/add-student", data);
-        if (result.status === 200) {
+    setExcelData(data);
+
+    try {
+      const res = await axios.post("http://localhost:3000/portal/add-student", data);
+      if (res.status === 200) {
         alert("It Added successfully");
       }
-      } catch (error) {
-         console.error("Error adding student:", error);
-        alert("Failed to Adding student.");
-      }
-      
-
-      console.log(data);
-    } else {
-      setExcelData([]);
+    } catch (error) {
+      console.error("Error adding student:", error);
+      alert("Failed to Add student.");
     }
-  };
+
+    console.log(data);
+  } else {
+    setExcelData([]);
+  }
+};
 
   return (
     <div className="container mx-auto p-6">
