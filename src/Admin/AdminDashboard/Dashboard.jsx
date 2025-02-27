@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
-import Table from "react-bootstrap/Table";
+
 import axios from "axios";
+import { Table, Modal, Button, Form } from "react-bootstrap";
 import {
   FaUserFriends,
   FaBuilding,
@@ -38,23 +39,95 @@ const dataPie = [
 
 
 
-
-
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00c49f'];
 
 const Dashboard = () => {
+
+
+const roundOptions = [
+    "Aptitude",
+    "Interview",
+    "Technical",
+    "HR",
+    "Group Discussion",
+    "Coding Test",
+    "System Design",
+    "Case Study",
+    "Puzzle Round",
+    "Managerial Round",
+    "Domain-Specific Round",
+  ];
+
   const [selectedTab, setSelectedTab] = useState('Existing-Company');
-
- 
-
   const [drives, setDrives] = useState([]);
   const [choose, setChoose] = useState(false);
   const [selectedDrive, setSelectedDrive] = useState("");
   const [companies, setCompanies] = useState([]);
-
-
-  const [companyId, setCompanyId] = useState(0);
   const [drivechoose, setDrivechoose] = useState(false);
+  const [editedRounds, setEditedRounds] = useState({});
+const [selectedDriveRounds, setSelectedDriveRounds] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [RoundDrive, setRoundDrive] = useState([]);
+  
+
+
+useEffect(() => {
+  const fetchRounds = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/portal/get-all-rounds");
+      setRoundDrive(response.data); // Assuming response.data is an array of rounds
+    } catch (error) {
+      console.error("Error fetching rounds:", error);
+    }
+  };
+
+  fetchRounds();
+}, []);
+
+const handleShowRounds = (driveId) => {
+  const rounds = RoundDrive.filter((round) => round.drive_id === driveId);
+  setSelectedDriveRounds(rounds);
+  setEditedRounds(
+    rounds.reduce((acc, round) => {
+      acc[`${round.drive_id}-${round.round_number}`] = { ...round };
+      return acc;
+    }, {})
+  );
+  setShowForm(true);
+};
+
+const handleRoundChange = (e, roundKey, field) => {
+  setEditedRounds({
+    ...editedRounds,
+    [roundKey]: {
+      ...editedRounds[roundKey],[field]: e.target.value,
+    },
+  });
+};
+
+const handleUpdate = async() => {
+  console.log("Updated Rounds: ", editedRounds);
+try {
+    await Promise.all(
+      Object.entries(editedRounds).map(([key, roundData]) => {
+        const [drive_id, round_number] = key.split("-"); // Extract IDs
+
+        return axios.put(
+          `http://localhost:3000/portal/update-round/${drive_id}/${round_number}`,
+          roundData
+        );
+      })
+    );
+  alert("All rounds updated");
+    console.log("✅ All rounds updated successfully!");
+  } catch (error) {
+    console.error("❌ Error updating rounds:", error.response?.data || error.message);
+  }
+  setShowForm(false);
+};
+
+  
+ 
 
   //Comapny Form Data
    const [formData, setFormData] = useState({
@@ -513,7 +586,9 @@ setTimeout(() => setDrivechoose(true), 10);
               </a>
             </td>
             <td>
-              <button className="px-6 py-2 bg-gray-500 text-white font-bold rounded hover:bg-[#004b52] transition">
+              <button className="px-6 py-2 bg-gray-500 text-white font-bold rounded hover:bg-[#004b52] transition"
+                onClick={() => handleShowRounds(drive.drive_id)}
+              >
                 Round
               </button>
             </td>
@@ -686,9 +761,92 @@ setTimeout(() => setDrivechoose(true), 10);
   </div>
 )}
 
+      {/*This is the form for rounds */}
+       {showForm && (
+        <div className="fixed inset-0 flex  items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 border-[#005f69] border-5 overflow-x-auto ">
+            <h2 className="text-2xl font-bold mb-4 text-center text-[#2d939e]">Edit Round Details</h2>
+        <div className=" flex gap-8  p-9">
+          
+          {selectedDriveRounds.map((round) => {
+            const roundKey = `${round.drive_id}-${round.round_number}`;
+            return (
+              <div key={roundKey} className="mb-4 border-[#005f69] border-5 p-6  rounded-lg ">
+                <label className="block font-bold  text-[#005f69]">Round Number</label>
+                <input
+        type="text"
+        className="w-full border-[#005f69] p-2 rounded-md bg-gray-200 cursor-not-allowed"
+        value={round.round_number}
+        readOnly
+      />
+                <label className="block font-bold  text-[#005f69]">Round Name</label>
 
+                 <select
+                value={editedRounds[roundKey].round_name}
+                onChange={(e) => handleRoundChange(e, roundKey, "round_name")}
+                className="w-full  border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
+                required
+              >
+                <option value="" disabled>Select Round</option>
+                {roundOptions.map((option, i) => (
+                  <option key={i} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+
+               
+
+                <label className="block mt-2 font-bold  text-[#005f69]">Round Date</label>
+                <input
+                  type="date"
+                  className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
+                  value={editedRounds[roundKey].round_date}
+                  onChange={(e) => handleRoundChange(e, roundKey, "round_date")}
+                />
+
+                <label className="block mt-2 font-bold  text-[#005f69]">Duration (hours/minutes)</label>
+                <input
+                  type="text"
+                  className="w-full border-[#005f69] rounded-md focus:ring focus:ring-blue-500"
+                  value={editedRounds[roundKey].duration.hours || editedRounds[roundKey].duration.minutes}
+                  onChange={(e) => handleRoundChange(e, roundKey, "duration")}
+                />
+
+                <label className="block mt-2 font-bold  text-[#005f69]">Location</label>
+                <input
+                  type="text"
+                  className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
+                  value={editedRounds[roundKey].location || ""}
+                  onChange={(e) => handleRoundChange(e, roundKey, "location")}
+                />
+
+                <label className="block mt-2 font-bold  text-[#005f69]">Mode</label>
+                <input
+                  type="text"
+                  className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
+                  value={editedRounds[roundKey].mode}
+                  onChange={(e) => handleRoundChange(e, roundKey, "mode")}
+                />
+              </div>
+            );
+          })}
+
+         
+            </div>
+             <div className="flex justify-center mt-4">
+            <button className="bg-red-600 text-white px-4 py-2 rounded-md mr-2" onClick={() => setShowForm(false)}>
+              Cancel Changes
+            </button>
+            <button className="bg-[#005f69] text-white px-4 py-2 rounded-md" onClick={handleUpdate}>
+              Save Changes
+            </button>
+          </div>
+            </div>
+      </div>
+    )}
+  
  
-
     </div>
   );
 };

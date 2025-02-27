@@ -26,11 +26,15 @@ import RegisterCompany from './Admin/AdminDashboard/RegisterCompany';
 import AddStudent from './Admin/AdminDashboard/AddStudent';
 import AddRounds from './Admin/AdminDashboard/AddRounds';
 import AdminLogin from './Admin/AdminDashboard/AdminLogin';
+import ViewStudent from './Admin/AdminDashboard/ViewStudent';
+import GetStudents from './Admin/AdminDashboard/GetStudents';
 
 const App = () => {
   return (
     <Router>
+
       <Routes>
+        
         {/* Public Routes */}
         <Route
           path="/"
@@ -62,16 +66,19 @@ const App = () => {
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/AdminLogin" element={<AdminLogin/> } />
-        {/* Dashboard Routes */}
+        <Route path="/AdminLogin" element={<AdminLogin />} />
+        
+
+        {/* Student Dashboard Routes*/}
         <Route path="/student-dashboard" element={<Layout />}>
-        {/* Default route */}
-        <Route index element={<Placement />} />
-        {/* Nested routes */}
-        <Route path="Result" element={<Result />} />
-        <Route path="UpdateProfile" element={<UpdateProfile />} />
-        <Route path="MyApplication" element={<MyApplication />} />
-      </Route>
+            <Route index element={<Placement />} />
+            <Route path="Result" element={<Result />} />
+            <Route path="UpdateProfile" element={<UpdateProfile />} />
+            <Route path="MyApplication" element={<MyApplication />} />
+        </Route>
+        
+
+        { /* Admin Dashboard Routes */}
 
       <Route path="/Admin-dashboard" element={<AdminLayout/>}>
           <Route index element={<Dashboard/>}/>
@@ -79,8 +86,13 @@ const App = () => {
           <Route path="UploadOrDeleteDrive" element={<UploadOrDeleteDrive/>}/>
           <Route path="RegisterCompany" element={<RegisterCompany />} />
           <Route path="AddStudent" element={<AddStudent />} />
-          <Route path="AddRounds/:round/:drive_id" element={<AddRounds/>} />
-      </Route>
+          <Route path="AddRounds/:round/:drive_id" element={<AddRounds />} />
+          <Route path="ViewStudents" element={<ViewStudent />} />
+          <Route path="GetStudents" element={<GetStudents/>} />
+        </Route>
+        
+
+
       </Routes>
     </Router>
   );

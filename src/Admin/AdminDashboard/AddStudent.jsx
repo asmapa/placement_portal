@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
-
+import axios from "axios";
 const Data = ({ excelData }) => {
   return excelData.map((individualExcelData, index) => (
     <tr key={index}>
@@ -12,19 +12,19 @@ const Data = ({ excelData }) => {
 const IndividualData = ({ individualExcelData }) => {
   return (
     <>
-      <td>{individualExcelData.ktu_id}</td>
-      <td>{individualExcelData.student_name}</td>
-      <td>{individualExcelData.department}</td>
-      <td>{individualExcelData.rit_email}</td>
-      <td>{individualExcelData.phone_number}</td>
-      <td>{individualExcelData.program}</td>
-      <td>{individualExcelData.semester}</td>
-      <td>{individualExcelData.date_of_birth}</td>
-      <td>{individualExcelData.year_of_graduation}</td>
-      <td>{individualExcelData.gender}</td>
-      <td>{individualExcelData.cgpa}</td>
-      <td>{individualExcelData.no_of_backlogs}</td>
-      <td>{individualExcelData.supply_history ? "Yes" : "No"}</td>
+      <td className="p-6">{individualExcelData.ktu_id}</td>
+      <td className="p-6">{individualExcelData.student_name}</td>
+      <td className="p-6">{individualExcelData.department}</td>
+      <td className="p-6"> {individualExcelData.rit_email}</td>
+      <td className="p-6">{individualExcelData.phone_number}</td>
+      <td className="p-6">{individualExcelData.program}</td>
+      <td className="p-6">{individualExcelData.semester}</td>
+      <td className="p-6">{individualExcelData.date_of_birth}</td>
+      <td className="p-6">{individualExcelData.year_of_graduation}</td>
+      <td className="p-6">{individualExcelData.gender}</td>
+      <td className="p-6">{individualExcelData.cgpa}</td>
+      <td className="p-6">{individualExcelData.no_of_backlogs}</td>
+      <td className="p-6">{individualExcelData.supply_history ? "Yes" : "No"}</td>
     </>
   );
 };
@@ -66,7 +66,7 @@ const AddStudent = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if (excelFile !== null) {
       const workbook = XLSX.read(excelFile, { type: "array" });
@@ -74,6 +74,19 @@ const AddStudent = () => {
       let data = XLSX.utils.sheet_to_json(worksheet, { raw: false });
 
       setExcelData(data);
+
+      try {
+        const res = await axios.post("http://localhost:3000/portal/add-student", data);
+        if (result.status === 200) {
+        alert("It Added successfully");
+      }
+      } catch (error) {
+         console.error("Error adding student:", error);
+        alert("Failed to Adding student.");
+      }
+      
+
+      console.log(data);
     } else {
       setExcelData([]);
     }

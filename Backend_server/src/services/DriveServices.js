@@ -1,5 +1,6 @@
 import { query } from "../db.js";
 
+
 export const insertDrive = async (driveData) => {
     const { 
         company_id,
@@ -53,14 +54,33 @@ export const getAllDrives = async () => {
     return rows;
 };
 
-
 export const deleteDrive = async (drive_id) => {
-    const { rows } = await query(
-        `DELETE FROM placement_drive WHERE drive_id = $1 RETURNING *;`, 
-        [drive_id]
-    );
-    return rows[0]; // Returns the deleted company if successful
+    try {
+        await query("BEGIN");
+
+        // Delete all rounds associated with the drive
+        await query(`DELETE FROM placement_round WHERE drive_id = $1;`, [drive_id]);
+
+        // Delete the drive itself
+        const { rows } = await query(
+            `DELETE FROM placement_drive WHERE drive_id = $1 RETURNING *;`, 
+            [drive_id]
+        );
+
+        if (rows.length === 0) {
+            await query("ROLLBACK");
+            return { success: false, message: "Drive not found" };
+        }
+
+        await query("COMMIT");
+        return { success: true, message: "Drive and all related rounds deleted successfully" };
+    } catch (error) {
+        console.error("🔥 DELETE ERROR:", error.message);
+        await query("ROLLBACK");
+        throw error;
+    }
 };
+
 
 
 export const getUpcomingDrives = async () => {
@@ -157,3 +177,17 @@ export const updateDrive = async (drive_id, updatedData) => {
     return rows[0]; // Returns the updated placement drive
 };
 
+export const getAllPlacementDrives = async () => {
+    try {
+        const { rows: drives } = await query(`
+            SELECT pd.*, c.company_name 
+            FROM placement_drive pd
+            INNER JOIN company c ON pd.company_id = c.company_id;
+        `);
+
+        return drives; // Returning the combined result
+    } catch (error) {
+        console.error("Error fetching placement drives:", error);
+        throw new Error("Failed to fetch placement drives.");
+    }
+};

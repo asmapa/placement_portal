@@ -3,14 +3,27 @@ import * as StudentServices from "../services/StudentServices.js"
 // Controller function to handle student insertion
 export const addStudent = async (req, res) => {
   try {
-    const studentData = req.body; // JSON object received from frontend
-    const newStudent = await StudentServices.insertStudent(studentData);
-    res.status(201).json({ message: "Student added successfully", student: newStudent });
+    const students = req.body; // Receiving an array of students
+
+    if (!Array.isArray(students)) {
+      return res.status(400).json({ error: "Expected an array of students" });
+    }
+
+    const insertedStudents = [];
+    for (const student of students) {
+      console.log("📢 Inserting student:", student);
+      const newStudent = await StudentServices.insertStudent(student);
+      insertedStudents.push(newStudent);
+    }
+
+    res.status(201).json({ message: "✅ Students added successfully", students: insertedStudents });
   } catch (error) {
-    console.error("Error inserting student:", error);
-    res.status(500).json({ error: "Failed to add student" });
+    console.error("❌ Error inserting students:", error);
+    res.status(500).json({ error: "Failed to add students" });
   }
 };
+
+
 
 export const getEligibleDrives = async (req, res) => {
     try {

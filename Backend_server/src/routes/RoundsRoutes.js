@@ -13,3 +13,4 @@ router.delete("/delete-round/:drive_id/:round_number", roundsController.deletePl
 export default router;
 //http://localhost:3000/portal/create-round
 //http://localhost:3000/portal/get-all-rounds
+//http://localhost:3000/portal/update-round/:drive_id/:round_number

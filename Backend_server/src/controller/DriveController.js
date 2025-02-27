@@ -40,24 +40,28 @@ export const getPastDrivesController = async (req, res) => {
     }
 };
 
+
 export const deleteDrive = async (req, res) => {
-    try {
-        const { drive_id } = req.params; // Get drive_id from the route params
-        const deletedDrive = await DriveServices.deleteDrive(drive_id);
+  try {
+    const { drive_id } = req.params;
 
-        if (!deletedDrive) {
-            return res.status(404).json({ message: 'Drive not found' });
-        }
-
-        return res.status(200).json({
-            message: 'drive deleted successfully',
-            
-        });
-    } catch (error) {
-        console.error('Error deleting error:', error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+    if (!drive_id) {
+      return res.status(400).json({ message: "Invalid drive_id" });
     }
+
+    const response = await DriveServices.deleteDrive(drive_id);
+
+    if (!response.success) {
+      return res.status(404).json({ message: response.message });
+    }
+
+    res.json({ message: response.message });
+  } catch (error) {
+    console.error("🔥 DELETE DRIVE CONTROLLER ERROR:", error.message); // Log error
+    res.status(500).json({ message: error.message });
+  }
 };
+
 
 
 export const getOngoingDrivesController = async (req, res) => {
@@ -92,4 +96,14 @@ export const updateDrive = async (req, res) => {
         console.error("Error updating Drive:", error.message);
         res.status(500).json({ error: error.message || "Failed to update Drive" });
     }
+};
+
+export const getPlacementDrives = async (req, res) => {
+  try {
+    const drives = await DriveServices.getAllPlacementDrives();
+    res.status(200).json({ message: "Drives fetched successfully", drives });
+  } catch (error) {
+    console.error("Error fetching drives:", error);
+    res.status(500).json({ error: "Failed to fetch drives" });
+  }
 };

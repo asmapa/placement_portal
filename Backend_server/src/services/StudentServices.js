@@ -1,41 +1,37 @@
 import { query } from "../db.js"
 
+
 export const insertStudent = async (studentData) => {
     const { 
-     ktu_id,
-     student_name,
-     department,
-     rit_email,
-     phone_number,
-     program,
-    semester,
-     date_of_birth,
-     year_of_graduation,
-     gender,
-     cgpa,
-      no_of_backlogs,
-     supply_history
-} = studentData; 
+        ktu_id, student_name, department, rit_email, phone_number, program,
+        semester, date_of_birth, year_of_graduation, gender, cgpa,
+        no_of_backlogs, supply_history
+    } = studentData; 
+
+    // Debugging: Check if ktu_id exists
+    if (!ktu_id) {
+        console.error("❌ Error: ktu_id is missing or undefined in studentData", studentData);
+        throw new Error("ktu_id is required but missing");
+    }
 
     const { rows } = await query(
-    `
-    INSERT INTO student (
-      ktu_id, student_name, department, rit_email, phone_number, program,
-      semester, date_of_birth, year_of_graduation, gender,cgpa,
-      no_of_backlogs, supply_history
-    ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
-    ) RETURNING *;
-  `,
-    [ktu_id, student_name, department, rit_email, phone_number, program,
-      semester, date_of_birth, year_of_graduation, gender, cgpa,
-      no_of_backlogs, supply_history]
-);
+        `
+        INSERT INTO student (
+            ktu_id, student_name, department, rit_email, phone_number, program,
+            semester, date_of_birth, year_of_graduation, gender, cgpa,
+            no_of_backlogs, supply_history
+        ) VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+        ) RETURNING *;
+        `,
+        [ktu_id, student_name, department, rit_email, phone_number, program,
+            semester, date_of_birth, year_of_graduation, gender, cgpa,
+            no_of_backlogs, supply_history]
+    );
 
-return rows[0];  // Returns the newly inserted student
+    return rows[0];
+};
 
-
-}
 
 export const fetchEligibleDrives = async (ktu_id) => {
     try {
