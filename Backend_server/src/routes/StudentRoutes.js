@@ -73,7 +73,22 @@ router.get("/department-wise-stats/:year", StudentController.fetchDepartmentWise
         "placed_count": "1"
     }
 ]*/
-
+router.get("/placed-students/count-by-year", StudentController.getPlacedStudentCountByLast10YearController);
+/*{
+  "placement_data": {
+    "2015": 45,
+    "2016": 50,
+    "2017": 60,
+    "2018": 55,
+    "2019": 70,
+    "2020": 65,
+    "2021": 80,
+    "2022": 75,
+    "2023": 90,
+    "2024": 85
+  }
+}
+*/
 
 export default router;
 

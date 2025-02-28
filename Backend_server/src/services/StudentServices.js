@@ -153,3 +153,29 @@ export const getDepartmentWiseStats = async (year) => {
 };
 
 
+export const getPlacedStudentCountByLast10Years = async () => {
+    try {
+        const stud_query = `
+            SELECT s.year_of_graduation AS year, COUNT(DISTINCT dr.ktu_id) AS placed_count
+            FROM drive_result dr
+            JOIN student s ON dr.ktu_id = s.ktu_id
+            WHERE dr.result = 'Selected'
+            AND s.year_of_graduation >= EXTRACT(YEAR FROM CURRENT_DATE) - 10
+            GROUP BY s.year_of_graduation
+            ORDER BY s.year_of_graduation;
+        `;
+
+        const { rows } = await query(stud_query);
+        
+        // Convert query result into the desired JSON format
+        const placementData = {};
+        rows.forEach(row => {
+            placementData[row.year] = row.placed_count;
+        });
+
+        return { placement_data: placementData };
+    } catch (error) {
+        throw error;
+    }
+};
+

@@ -10,7 +10,7 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const verifyStudentDetails = async (ktuId, studentName, phoneNumber, ritEmail, yearOfGraduation, department, file) => {
+export const verifyStudentDetails = async (ktuId,file) => {
     const reg_query = `
         SELECT * FROM student 
         WHERE ktu_id = $1;
@@ -38,14 +38,14 @@ export const verifyStudentDetails = async (ktuId, studentName, phoneNumber, ritE
     }
 };
 
-export const updateStudentDetails = async (ktuId, skills, resumeUrl, password) => {
+export const updateStudentDetails = async (ktuId,skills, resumeUrl, password) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const reg_query = `
         UPDATE student 
         SET skills = $1, resume_url = $2, password = $3 
         WHERE ktu_id = $4
     `;
-    const values = [skills, resumeUrl, hashedPassword, ktuId];
+    const values = [skills,resumeUrl, hashedPassword, ktuId];
 
     try {
         await query(reg_query, values);

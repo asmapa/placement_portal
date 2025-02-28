@@ -32,12 +32,37 @@ const ResultService = {
 
   async insertRoundResult(driveId, roundNumber, ktuId, status) {
     const result_query = `
-      INSERT INTO round_result (drive_id, round_number, ktu_id, status) 
-      VALUES ($1, $2, $3, $4) 
-      ON CONFLICT (drive_id, round_number, ktu_id) 
-      DO UPDATE SET status = EXCLUDED.status
+        INSERT INTO round_result (drive_id, round_number, ktu_id, status) 
+        VALUES ($1, $2, $3, $4) 
+        ON CONFLICT (drive_id, round_number, ktu_id) 
+        DO UPDATE SET status = EXCLUDED.status
     `;
     await query(result_query, [driveId, roundNumber, ktuId, status]);
+
+    // Check if student has failed any round
+    const failCheckQuery = `
+        SELECT COUNT(*) AS failed_rounds 
+        FROM round_result 
+        WHERE drive_id = $1 AND ktu_id = $2 AND status = 'Not Cleared'
+    `;
+    const failResult = await query(failCheckQuery, [driveId, ktuId]);
+    const failedRounds = parseInt(failResult.rows[0].failed_rounds, 10);
+
+    if (failedRounds > 0) {
+        // Student failed at least one round, mark as "Not Selected"
+        await this.insertDriveResult(driveId, ktuId, "Not Selected");
+        return;
+    }
+
+    // Check if this is the last round in the drive
+    const numRoundsQuery = `SELECT num_of_rounds FROM placement_drive WHERE drive_id = $1`;
+    const numRoundsResult = await query(numRoundsQuery, [driveId]);
+    const totalRounds = numRoundsResult.rows[0]?.num_of_rounds || 0;
+
+    if (roundNumber === totalRounds && status === "Cleared") {
+        // If the student passed the last round, mark as "Selected"
+        await this.insertDriveResult(driveId, ktuId, "Selected");
+    }
   },
 
   async insertDriveResult(driveId, ktuId, result) {

@@ -8,6 +8,7 @@ router.post("/add-company", CompanyController.addCompany);
 router.put("/update-company", CompanyController.updateCompany);
 router.get("/get-company", CompanyController.getAllCompanies);
 router.delete("/delete-company/:company_id", CompanyController.deleteCompany);
+router.get("/registered-companies/count", CompanyController.getRegisteredCompanyCountController);
 
 
 export default router;

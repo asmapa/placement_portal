@@ -64,3 +64,13 @@ export const getCompanies = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getRegisteredCompanyCountController = async (req, res) => {
+    try {
+        const data = await CompanyServices.getRegisteredCompanyCount();
+        res.status(200).json(data);
+    } catch (error) {
+        console.error("Error fetching company count:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};

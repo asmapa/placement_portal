@@ -2,11 +2,11 @@ import { verifyStudentDetails, updateStudentDetails, uploadResume, generateToken
 import logger from '../utils/logger.js';
 
 export const registerStudent = async (req, res) => {
-    const { ktuId, studentName, phoneNumber, ritEmail, yearOfGraduation, department, skills, password, confirmPassword } = req.body;
+    const { ktuId, studentName,skills, password, confirmPassword } = req.body;
     const file = req.file;
 
     // Validate required fields
-    if (!ktuId || !studentName || !phoneNumber || !ritEmail || !yearOfGraduation || !department || !skills || !password || !confirmPassword) {
+    if (!ktuId || !studentName || !skills || !password || !confirmPassword) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
@@ -24,13 +24,13 @@ export const registerStudent = async (req, res) => {
     }
 
     try {
-        const student = await verifyStudentDetails(ktuId, studentName, phoneNumber, ritEmail, yearOfGraduation, department, file);
+        const student = await verifyStudentDetails(ktuId,file);
         if (!student) {
             return res.status(404).json({ message: 'Student details not found' });
         }
 
         const resumeUrl = await uploadResume(file,ktuId, studentName);
-        await updateStudentDetails(ktuId, skills, resumeUrl, password);
+        await updateStudentDetails(ktuId,skills, resumeUrl, password);
 
         const token = generateToken(ktuId);
         res.status(200).json({ message: 'Registration successful', token });

@@ -11,7 +11,15 @@ router.get("/drive-id/:companyName/:jobRole/:year", ResultController.getDriveId)
 }
 */
 router.post("/round-result", ResultController.insertRoundResult);
-router.post("/drive-result", ResultController.insertDriveResult);
+/*
+{
+  "driveId": 1,
+  "roundNumber": 3,
+  "ktuId": "KTE24CS010",
+  "status": "Cleared"
+}
+*/
+router.post("/drive-result", ResultController.insertDriveResult);//automatically inserted
 router.get("/round-results/:driveId/:roundNumber", ResultController.getRoundResults);
 router.get("/drive-results/:driveId", ResultController.getDriveResults);
 router.delete("/round-result/:driveId/:roundNumber/:ktuId", ResultController.deleteRoundResult);

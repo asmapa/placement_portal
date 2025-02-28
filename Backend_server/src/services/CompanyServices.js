@@ -80,3 +80,13 @@ export const deleteCompany = async (company_id) => {
     );
     return rows[0]; // Returns the deleted company if successful
 };
+
+export const getRegisteredCompanyCount = async () => {
+    try {
+        const comp_query = `SELECT COUNT(*) AS company_count FROM company;`;
+        const { rows } = await query(comp_query);
+        return { company_count: parseInt(rows[0].company_count, 10) };
+    } catch (error) {
+        throw error;
+    }
+};
