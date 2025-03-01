@@ -56,7 +56,7 @@ const MyApplication = () => {
                   <strong>Salary:</strong> {company.permanent_package} LPA
                 </p>
               </div>
-              <button onClick={() => navigate("/student-dashboard/Result")} className="mt-2 px-4 py-2 bg-blue-950 text-white font-semibold rounded-lg hover:bg-blue-800 transition w-1/2 flex justify-center">
+              <button onClick={() => navigate(`/student-dashboard/Result/${company.drive_id}`)} className="mt-2 px-4 py-2 bg-blue-950 text-white font-semibold rounded-lg hover:bg-blue-800 transition w-1/2 flex justify-center">
                 Result
               </button>
             </div>

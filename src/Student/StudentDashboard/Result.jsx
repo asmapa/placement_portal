@@ -2,20 +2,53 @@ import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { CheckCircle, XCircle, Hourglass } from "lucide-react";
 import Confetti from "react-confetti";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const Result = () => {
-  const companyData = {
-    company: "Google",
-    rounds: [
-      { name: "Aptitude Test", result: "Pass" },
-      { name: "Technical Interview", result: "Pass" },
-      { name: "HR Interview", result: "Pass" },
-      { name: "Final Discussion", result: "Pass" },
-    ],
-  };
+  const { driveId } = useParams(); // Get driveId from the URL
+  const [companyData, setCompanyData] = useState(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No token found, please log in.");
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:3000/portal/drive/${driveId}/round-results`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (response.data.length > 0) {
+          setCompanyData({
+           
+            rounds: response.data.map((round) => ({
+              name: round.round_name,
+              result: round.status, // Assuming backend returns "Cleared", "Pending", etc.
+            })),
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching round results:", error.response?.data?.message || error.message);
+      }
+    };
+
+    fetchResults();
+  }, [driveId]);
+
+  if (!companyData) {
+    return <p className="text-white">Loading results...</p>;
+  }
 
   const totalRounds = companyData.rounds.length;
-  const passedRounds = companyData.rounds.filter((round) => round.result === "Pass").length;
+  const passedRounds = companyData.rounds.filter((round) => round.result === "Cleared").length;
   const remainingRounds = totalRounds - passedRounds;
   const passPercentage = ((passedRounds / totalRounds) * 100).toFixed(2);
 
@@ -26,17 +59,15 @@ const Result = () => {
 
   const COLORS = ["#22C55E", "#FACC15"];
 
-  // Confetti effect when all rounds are passed
-  const [showConfetti, setShowConfetti] = useState(false);
   useEffect(() => {
-    if (passedRounds === totalRounds) {
+    if (passedRounds === totalRounds && totalRounds > 0) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 5000);
     }
   }, [passedRounds, totalRounds]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center ">
+    <div className="min-h-screen flex flex-col items-center">
       {showConfetti && <Confetti />}
 
       <h1 className="text-2xl font-bold mb-6 text-Navy">{companyData.company} - Placement Result</h1>
@@ -50,16 +81,16 @@ const Result = () => {
               <div
                 key={i}
                 className={`p-4 flex items-center gap-4 rounded-lg text-lg font-semibold transition-all ${
-                  round.result === "Pass"
+                  round.result === "Cleared"
                     ? "bg-green-500 text-white"
-                    : round.result === "Fail"
-                    ? "bg-red-500 text-white"
-                    : "bg-yellow-500 text-black"
+                    : round.result === "Pending"
+                    ? "bg-yellow-500 text-black"
+                    : "bg-red-500 text-white"
                 }`}
               >
-                {round.result === "Pass" && <CheckCircle size={24} />}
-                {round.result === "Fail" && <XCircle size={24} />}
+                {round.result === "Cleared" && <CheckCircle size={24} />}
                 {round.result === "Pending" && <Hourglass size={24} />}
+                {round.result === "Failed" && <XCircle size={24} />}
                 {round.name}: {round.result}
               </div>
             ))}
