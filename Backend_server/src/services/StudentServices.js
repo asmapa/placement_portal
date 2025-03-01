@@ -48,7 +48,8 @@ export const fetchEligibleDrives = async (ktu_id) => {
 
         // 🔹 2. Fetch drives where the student meets CGPA, backlog, and supply history criteria
         const driveQuery = `
-            SELECT * FROM placement_drive 
+            SELECT pd.* ,company_name
+            FROM placement_drive pd JOIN company c ON pd.company_id=c.company_id
             WHERE min_cgpa_required <= $1
             AND no_of_backlogs_permitted >= $2
             AND (supply_history_allowed OR $3 = false)
