@@ -25,6 +25,7 @@ fetch("/api/some-endpoint", {
 in file driveRegistrationRoutes.js*/
 
 router.get('/registered-drives', authenticateToken, getStudentRegisteredDrives);
+// http://localhost:3000/portal/registered-drives
 /*
 just add the token in the header
 response object:

@@ -8,6 +8,8 @@ const MySwal = withReactContent(Swal);
 
 const Register = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0); 
 
   const [formData, setFormData] = useState({
     ktuid: "",
@@ -65,7 +67,9 @@ const Register = () => {
   };
 
   const handleRegister = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    setLoading(true);
+    setProgress(20);
 
   // Create a FormData object
   const formDataToSend = new FormData();
@@ -85,7 +89,8 @@ const Register = () => {
   }
   formDataToSend.append('resume', resumeFile);
 
-  try {
+    try {
+    setProgress(50);
     const response = await axios.post("http://localhost:3000/portal/students/register", formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -94,17 +99,26 @@ const Register = () => {
 
     console.log("Response:", response.data); // Log success response
 
-    // Show success alert
-    alert("Student successfully registered!");
+    setProgress(100);
+      MySwal.fire({
+        icon: "success",
+        title: "Registration Successful!",
+        text: "You have successfully registered. Redirecting to login...",
+        timer: 2000,
+        showConfirmButton: false,
+      });
 
-    // Navigate to the login page
-    navigate("/Login");
-  } catch (error) {
-    console.error("Error registering student:", error.response ? error.response.data : error.message);
-
-    // Show error alert
-    alert(`Registration failed: ${error.response ? error.response.data.message : error.message}`);
-  }
+    setTimeout(() => navigate("/Login"), 2000);
+  }catch (error) {
+      MySwal.fire({
+        icon: "error",
+        title: "Registration Failed!",
+        text: error.response ? error.response.data.message : "Something went wrong!",
+      });
+    } finally {
+      setLoading(false);
+      setProgress(0);
+    }
 };
 
 
@@ -126,6 +140,12 @@ const Register = () => {
             <h1 className="text-3xl font-bold text-white">Registration Form</h1>
             <p className='text-lg text-white mt-9'>✨ "Type your KTU ID carefully, like it's your Netflix password! 🎬 If you're a valid student, all your details will magically appear. Set your password, show off your skills, and upload that resume like a pro! 🚀"</p>
           </div>
+               {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-80 rounded-2xl">
+            <div className="animate-spin h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+          </div>
+        )}
+
 
           <form onSubmit={handleRegister}>
             {/* Row 1 */}

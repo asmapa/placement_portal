@@ -6,7 +6,8 @@ import { authenticateToken } from '../middlewares/authMiddleware.js';
 const router = express.Router();
 
 // POST request to register a student for a drive
-router.post("/student-drive-register/:driveId",authenticateToken, DriveRegistrationController.handleDriveRegistration);
+router.post("/student-drive-register/:driveId", authenticateToken, DriveRegistrationController.handleDriveRegistration);
+
 /*
 add token in header
 sample response:

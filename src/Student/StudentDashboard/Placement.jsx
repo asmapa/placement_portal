@@ -19,7 +19,23 @@ const [offCampusDrives, setOffCampusDrives] = useState([]);
    
 
 
+  const handleConfirm = async (driveId) => {
+    try {
+      const tok = localStorage.getItem("token");
+      if (!tok) {
+        console.log("No token found! User not authenticated.");
+        return;
+      }
+       const res = await axios.post(`http://localhost:3000/portal/student-drive-register/${driveId}`, {
+        headers: {
+          Authorization: `Bearer ${tok}`, // Send token in the header
+        },
+      });
 
+    } catch (error) {
+      console.log("Error while register drive", error);
+   }
+}
   
 useEffect(() => {
   const fetchEligibleDrives = async () => {
@@ -36,7 +52,7 @@ useEffect(() => {
           Authorization: `Bearer ${token}`, // Send token in the header
         },
       });
-
+      console.log(res.data.on_campus);
       setOnCampusDrives(res.data.on_campus || []);
       setOffCampusDrives(res.data.off_campus || []);
 
@@ -159,7 +175,8 @@ useEffect(() => {
               alert(
                 "You have successfully Registered, PREPARE WELL!!! THE DATA ARE AUTOMATICALLY ENTERED TO DATABASE. ARE YOU SURE??"
               );
-              setSelectedDrive(null); // Close the popup after confirmation
+                setSelectedDrive(null); // Close the popup after confirmation
+              handleConfirm(selectedDrive.drive_id)
             }}
             className="block mt-4 bg-blue-500 text-white text-center py-2 rounded hover:bg-blue-600"
           >
@@ -185,16 +202,17 @@ useEffect(() => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {offCampusDrives.map((drive) => (
                 <div
-                  key={drive.id}
+                  key={drive.drive.id}
                   className="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow"
                 >
-                  <span className="font-medium">{drive.name}</span>
+                  <span className="font-medium">{drive.company_name} - {drive.job_role}</span>
+                   <hr className="border-blue-500 w-full my-2" />
                   <p className="text-gray-700 text-center">{drive.description}</p>
                   <button
-                    onClick={() => setSelectedDrive(drive)}
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 mt-4"
+                     onClick={() => window.open(drive.registration_link, "_blank")}
+                    className="px-4 py-2 bg-Navy text-white rounded hover:bg-green-600 mt-4"
                   >
-                    More Details
+                    Register via Link
                   </button>
                 </div>
               ))}
