@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import { Data } from "../AdminDashboard/ExcelComponent/Data";
+import axios from "axios";
 
 const PublishResult = () => {
     const [excelFile, setExcelFile] = useState(null);
@@ -54,7 +55,7 @@ const PublishResult = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         if (excelFile !== null) {
             const workbook = XLSX.read(excelFile, { type: "array" });
@@ -70,8 +71,50 @@ const PublishResult = () => {
                 }
                 return row;
             });
-
+            console.log(data);
             setExcelData(data);
+
+             if (!excelData || excelData.length === 0) {
+                    alert("No data to process!");
+                     return;
+             }
+            
+            
+            for (const row of excelData) {
+        try {
+            console.log(`Processing KTU ID: ${row.ktu_id} for ${row.company_name}`);
+
+            const { data: driveResponse } = await axios.get(
+                `http://localhost:3000/portal/drive-id/${row.company_name}/${row.job_role}/${row.year}`
+            );
+
+            if (!driveResponse.driveId) {
+                console.error(`Drive ID not found for:`, row);
+                continue;
+            }
+
+            const driveId = driveResponse.driveId;
+
+            const roundResultPayload = {
+                driveId,
+                roundNumber: row.round_number,
+                ktuId: row.ktu_id,
+                status: row.round_status,
+            };
+
+            await axios.post("http://localhost:3000/portal/round-result", roundResultPayload);
+
+            console.log(`✅ Successfully posted round result for KTU ID: ${row.ktu_id}`);
+
+        } catch (error) {
+            console.error(`❌ Error processing row:`, row, error.response ? error.response.data : error.message);
+        }
+    }
+
+    alert("All data processed successfully!");
+
+            
+            
         } else {
             setExcelData(null);
         }
@@ -134,12 +177,12 @@ const PublishResult = () => {
                     <table className="min-w-full table-auto">
                         <thead>
                             <tr className="bg-[#005f69] text-left text-white border-Navy">
-                                <th className="px-4 py-2">ID</th>
-                                <th className="px-4 py-2">Company</th>
-                                <th className="px-4 py-2">Date</th>
-                                <th className="px-4 py-2">Round</th>
-                                <th className="px-4 py-2">Student</th>
-                                <th className="px-4 py-2">Status</th>
+                                <th className="px-4 py-2">Company Name</th>
+                                <th className="px-4 py-2">Job Role</th>
+                                <th className="px-4 py-2">Year</th>
+                                <th className="px-4 py-2">Ktu id</th>
+                                <th className="px-4 py-2">Round Number</th>
+                                <th className="px-4 py-2">Round status</th>
                             </tr>
                         </thead>
                         <tbody>
