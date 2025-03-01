@@ -60,6 +60,16 @@ export const getStudentsByYear = async (req, res) => {
   }
 };
 
+export const getStudentsByDepartment = async (req, res) => {
+  try {
+    const { dept } = req.params;
+    const students = await StudentServices.getStudentsByDepartment(dept);
+    res.status(200).json(students);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const getPlaced = async (req, res) => {
   try {
     const students = await StudentServices.getPlacedStudents();

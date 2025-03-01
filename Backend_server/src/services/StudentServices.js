@@ -48,7 +48,8 @@ export const fetchEligibleDrives = async (ktu_id) => {
 
         // 🔹 2. Fetch drives where the student meets CGPA, backlog, and supply history criteria
         const driveQuery = `
-            SELECT * FROM placement_drive 
+            SELECT pd.* ,company_name
+            FROM placement_drive pd JOIN company c ON pd.company_id=c.company_id
             WHERE min_cgpa_required <= $1
             AND no_of_backlogs_permitted >= $2
             AND (supply_history_allowed OR $3 = false)
@@ -101,6 +102,12 @@ export const getAllStudents = async () => {
 export const getStudentsByGraduationYear = async (year) => {
   const stud_query = "SELECT * FROM student WHERE year_of_graduation = $1";
   const { rows } = await query(stud_query, [year]);
+  return rows;
+};
+
+export const getStudentsByDepartment = async (department) => {
+  const stud_query = "SELECT * FROM student WHERE department = $1";
+  const { rows } = await query(stud_query, [department]);
   return rows;
 };
 
