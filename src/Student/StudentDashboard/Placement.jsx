@@ -13,19 +13,39 @@ import {
 const Placement = () => {
   const [selectedTab, setSelectedTab] = useState('on-campus');
   const [selectedDrive, setSelectedDrive] = useState(null);
+ 
   const [onCampusDrives, setOnCampusDrives] = useState([]);
+const [offCampusDrives, setOffCampusDrives] = useState([]);
+   
 
+
+
+  
 useEffect(() => {
-  const fetchData = async () => {
+  const fetchEligibleDrives = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/portal/getPlacement");
-         setOnCampusDrives(res.data.drives || []);
+      const token = localStorage.getItem("token"); // Get token from localStorage
+
+      if (!token) {
+        console.log("No token found! User not authenticated.");
+        return;
+      }
+
+      const res = await axios.get("http://localhost:3000/portal/eligible-drives", {
+        headers: {
+          Authorization: `Bearer ${token}`, // Send token in the header
+        },
+      });
+
+      setOnCampusDrives(res.data.on_campus || []);
+      setOffCampusDrives(res.data.off_campus || []);
+
     } catch (error) {
-      console.log("Error in Fetching Data !!!", error);
+      console.error("Error fetching eligible drives:", error);
     }
   };
 
-  fetchData();
+  fetchEligibleDrives();
 }, []);
 
   return (

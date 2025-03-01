@@ -28,6 +28,7 @@ import AddRounds from './Admin/AdminDashboard/AddRounds';
 import AdminLogin from './Admin/AdminDashboard/AdminLogin';
 import ViewStudent from './Admin/AdminDashboard/ViewStudent';
 import GetStudents from './Admin/AdminDashboard/GetStudents';
+import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 
 const App = () => {
   return (
@@ -67,15 +68,19 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/AdminLogin" element={<AdminLogin />} />
-        
 
-        {/* Student Dashboard Routes*/}
+        <Route element={<ProtectedRoute/>}>
+           {/* Student Dashboard Routes*/}
         <Route path="/student-dashboard" element={<Layout />}>
             <Route index element={<Placement />} />
             <Route path="Result" element={<Result />} />
             <Route path="UpdateProfile" element={<UpdateProfile />} />
             <Route path="MyApplication" element={<MyApplication />} />
         </Route>
+        </Route>
+        
+
+       
         
 
         { /* Admin Dashboard Routes */}
