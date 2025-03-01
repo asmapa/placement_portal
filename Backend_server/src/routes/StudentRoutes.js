@@ -1,11 +1,71 @@
 import express from "express"
 
 import * as StudentController from "../controller/StudentController.js"
+import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 router.post("/add-student", StudentController.addStudent);
-router.get("/eligible-drives/:ktu_id", StudentController.getEligibleDrives);
+router.get("/eligible-drives", authenticateToken,StudentController.getEligibleDrives);
+/*
+http://localhost:3000/portal/eligible-drives and add token in header
+
+sample response:
+{
+    "on_campus": [
+        {
+            "drive_id": 15,
+            "company_id": 6,
+            "job_role": "Software Engineer",
+            "num_of_rounds": 4,
+            "drive_mode": "On Campus",
+            "drive_type": "Dream",
+            "start_date": "2025-06-14T18:30:00.000Z",
+            "no_of_backlogs_permitted": 1,
+            "supply_history_allowed": false,
+            "min_cgpa_required": "8.00",
+            "focused_branches": [
+                "CSE",
+                "IT"
+            ],
+            "description": "Hiring for software engineering roles.",
+            "training_package": "6.50",
+            "permanent_package": "12.50",
+            "last_date_to_submit": "2025-06-09T18:30:00.000Z",
+            "registration_link": "https://example.com/register1",
+            "work_location": "Bangalore",
+            "duration": null
+        },
+    ],
+    "off_campus": [
+        {
+            "drive_id": 16,
+            "company_id": 8,
+            "job_role": "Data Analyst",
+            "num_of_rounds": 3,
+            "drive_mode": "Off Campus",
+            "drive_type": "Open",
+            "start_date": "2025-07-09T18:30:00.000Z",
+            "no_of_backlogs_permitted": 2,
+            "supply_history_allowed": true,
+            "min_cgpa_required": "7.50",
+            "focused_branches": [
+                "CSE",
+                "ECE",
+                "EEE"
+            ],
+            "description": "Looking for skilled data analysts with SQL and Python knowledge.",
+            "training_package": "5.00",
+            "permanent_package": "9.80",
+            "last_date_to_submit": "2025-07-04T18:30:00.000Z",
+            "registration_link": "https://example.com/register2",
+            "work_location": "Hyderabad",
+            "duration": null
+        },
+        
+    ]
+}
+*/
 router.get("/get-all-students", StudentController.getStudents);
 router.get("/get-students-by-year/:year", StudentController.getStudentsByYear);
 router.get("/get-students/placed", StudentController.getPlaced);

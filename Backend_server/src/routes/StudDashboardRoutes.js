@@ -1,5 +1,5 @@
 import express from 'express';
-import { viewProfile, editProfile,getStudentRegisteredDrives,getRoundResultsForDrive } from '../controller/StudDashboardController.js';
+import { viewProfile, editProfile,fetchStudentDriveStats,getStudentRegisteredDrives,getRoundResultsForDrive,getProgressForDrive,fetchDriveStatus } from '../controller/StudDashboardController.js';
 import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -123,4 +123,37 @@ router.get('/drive/:driveId/round-results', authenticateToken, getRoundResultsFo
 ]
 */
 
+
+//to fetch the drives for which a student is eligible use http://localhost:3000/portal/eligible-drives in studentRoutes.js and add token in header
+
+router.get('/drive/:driveId/progress', authenticateToken, getProgressForDrive);
+/*add token in request header
+sample response object:
+{
+    "driveId": "1",
+    "ktuId": "KTE24CS010",
+    "totalRounds": 3,
+    "clearedRounds": 2,
+    "progressPercentage": "66.67"
+}
+*/
+
+router.get('/drive/:driveId/status', authenticateToken, fetchDriveStatus);
+/*add token in request header
+{
+    "status": 200,
+    "driveStatus": "Completed",
+    "result": "Selected"
+}
+*/
+
+router.get('/student/drives/stats', authenticateToken, fetchStudentDriveStats);
+/*add token in request header
+{
+    "status": 200,
+    "totalRegistered": 3,
+    "ongoingDrives": 1,
+    "placedDrives": 2
+}
+*/
 export default router;

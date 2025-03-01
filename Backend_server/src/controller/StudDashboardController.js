@@ -1,4 +1,4 @@
-import { getStudentProfile, updateStudentProfile,getRegisteredDrives ,getStudentRoundResults} from '../services/StudDashboardServices.js';
+import { getStudentDriveStats,getStudentProfile, updateStudentProfile,getRegisteredDrives ,getStudentRoundResults,getStudentProgress,getDriveStatus} from '../services/StudDashboardServices.js';
 
 export const viewProfile = async (req, res) => {
     try {
@@ -67,5 +67,52 @@ export const getRoundResultsForDrive = async (req, res) => {
         return res.status(200).json(roundResults);
     } catch (error) {
         return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+
+export const getProgressForDrive = async (req, res) => {
+    try {
+        const ktuId = req.user.ktu_id; // Extract KTU ID from token
+        console.log(ktuId);
+        const { driveId } = req.params; // Extract drive ID from parameters
+        console.log(driveId);
+
+        if (!driveId) {
+            return res.status(400).json({ message: "Drive ID is required" });
+        }
+
+        const progressData = await getStudentProgress(ktuId, driveId);
+
+        return res.status(200).json(progressData);
+    } catch (error) {
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+
+export const fetchDriveStatus = async (req, res) => {
+    try {
+        const ktu_id = req.user.ktu_id; // Extracted from JWT token
+        const { driveId } = req.params;
+
+        const response = await getDriveStatus(ktu_id, driveId);
+
+        return res.status(response.status).json(response);
+    } catch (error) {
+        console.error("Error in fetching drive status:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+
+export const fetchStudentDriveStats = async (req, res) => {
+    try {
+        const ktu_id = req.user.ktu_id; // Extract from JWT token
+        const response = await getStudentDriveStats(ktu_id);
+        return res.status(response.status).json(response);
+    } catch (error) {
+        console.error("Error fetching student drive stats:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 };

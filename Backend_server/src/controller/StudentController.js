@@ -27,8 +27,8 @@ export const addStudent = async (req, res) => {
 
 export const getEligibleDrives = async (req, res) => {
     try {
-        const { ktu_id } = req.params;
-        const eligibleDrives = await StudentServices.fetchEligibleDrives(ktu_id);
+        const ktuId =  req.user.ktu_id;
+        const eligibleDrives = await StudentServices.fetchEligibleDrives(ktuId);
 
         if (!eligibleDrives) {
             return res.status(404).json({ message: "Student not found or no eligible drives" });

@@ -67,3 +67,119 @@ export const getStudentRoundResults = async (ktuId, driveId) => {
         throw new Error(error.message);
     }
 };
+
+
+export const getStudentProgress = async (ktuId, driveId) => {
+    try {
+        // Get total number of rounds for the given drive
+        const totalRoundsQuery = `
+            SELECT num_of_rounds FROM placement_drive WHERE drive_id = $1
+        `;
+        const totalRoundsResult = await query(totalRoundsQuery, [driveId]);
+
+        if (totalRoundsResult.rows.length === 0) {
+            throw new Error("Drive not found");
+        }
+
+        const totalRounds = totalRoundsResult.rows[0].num_of_rounds;
+
+        // Get the number of rounds the student has cleared
+        const clearedRoundsQuery = `
+            SELECT COUNT(*) AS cleared_rounds
+            FROM round_result
+            WHERE drive_id = $1 AND ktu_id = $2 AND status = 'Cleared'
+        `;
+        const clearedRoundsResult = await query(clearedRoundsQuery, [driveId, ktuId]);
+        const clearedRounds = parseInt(clearedRoundsResult.rows[0].cleared_rounds, 10);
+
+        // Calculate progress percentage
+        const progressPercentage = totalRounds > 0 ? (clearedRounds / totalRounds) * 100 : 0;
+
+        return {
+            driveId,
+            ktuId,
+            totalRounds,
+            clearedRounds,
+            progressPercentage: progressPercentage.toFixed(2) // Keep two decimal places
+        };
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+
+export const getDriveStatus = async (ktu_id, drive_id) => {
+    try {
+        // Check if the student is registered for the drive
+        const registeredCheckQuery = `
+            SELECT * FROM drive_registered 
+            WHERE drive_id = $1 AND ktu_id = $2
+        `;
+        const registeredResult = await query(registeredCheckQuery, [drive_id, ktu_id]);
+
+        if (registeredResult.rowCount === 0) {
+            return { status: 404, message: "Student is not registered for this drive" };
+        }
+
+        // Check if drive result exists
+        const resultQuery = `
+            SELECT result FROM drive_result 
+            WHERE drive_id = $1 AND ktu_id = $2
+        `;
+        const driveResult = await query(resultQuery, [drive_id, ktu_id]);
+
+        if (driveResult.rowCount > 0) {
+            return { status: 200, driveStatus: "Completed", result: driveResult.rows[0].result };
+        } else {
+            return { status: 200, driveStatus: "Ongoing" };
+        }
+    } catch (error) {
+        console.error("Error retrieving drive status:", error);
+        return { status: 500, message: "Internal Server Error" };
+    }
+};
+
+
+
+export const getStudentDriveStats = async (ktu_id) => {
+    try {
+        // Count total registered drives
+        const totalDrivesQuery = `
+            SELECT COUNT(*) AS total_registered
+            FROM drive_registered
+            WHERE ktu_id = $1
+        `;
+        const totalDrivesResult = await query(totalDrivesQuery, [ktu_id]);
+        const totalRegistered = totalDrivesResult.rows[0].total_registered;
+
+        // Count ongoing drives (drives where no entry exists in drive_result)
+        const ongoingDrivesQuery = `
+            SELECT COUNT(*) AS ongoing_drives
+            FROM drive_registered dr
+            LEFT JOIN drive_result drs 
+            ON dr.drive_id = drs.drive_id AND dr.ktu_id = drs.ktu_id
+            WHERE dr.ktu_id = $1 AND drs.ktu_id IS NULL
+        `;
+        const ongoingDrivesResult = await query(ongoingDrivesQuery, [ktu_id]);
+        const ongoingDrives = ongoingDrivesResult.rows[0].ongoing_drives;
+
+        // Count drives where student is placed
+        const placedDrivesQuery = `
+            SELECT COUNT(*) AS placed_count
+            FROM drive_result
+            WHERE ktu_id = $1 AND result = 'Selected'
+        `;
+        const placedDrivesResult = await query(placedDrivesQuery, [ktu_id]);
+        const placedCount = placedDrivesResult.rows[0].placed_count;
+
+        return {
+            status: 200,
+            totalRegistered: parseInt(totalRegistered),
+            ongoingDrives: parseInt(ongoingDrives),
+            placedDrives: parseInt(placedCount)
+        };
+    } catch (error) {
+        console.error("Error retrieving student drive stats:", error);
+        return { status: 500, message: "Internal Server Error" };
+    }
+};
