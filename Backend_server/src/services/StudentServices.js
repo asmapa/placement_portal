@@ -104,6 +104,12 @@ export const getStudentsByGraduationYear = async (year) => {
   return rows;
 };
 
+export const getStudentsByDepartment = async (department) => {
+  const stud_query = "SELECT * FROM student WHERE department = $1";
+  const { rows } = await query(stud_query, [department]);
+  return rows;
+};
+
 export const getPlacedStudents = async () => {
   const stud_query = `
     SELECT s.*, dr.drive_id, c.company_name, pd.job_role, pd.permanent_package

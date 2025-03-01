@@ -20,7 +20,7 @@ const ViewStudent = () => {
       } else if (activeTab === "year" && year) {
         url = `http://localhost:3000/portal/get-students-by-year/${year}`;
       } else if (activeTab === "department" && department) {
-        url = `http://localhost:3000/portal/get-department-wise-stats/${department}`;
+        url = `http://localhost:3000/portal/get-students-by-department/${department}`;
       }
 
       try {
@@ -149,7 +149,7 @@ const ViewStudent = () => {
                   <td className="p-3">{student.gender}</td>
                   <td className="p-3">{student.cgpa}</td>
                   <td className="p-3">{student.no_of_backlogs}</td>
-                  <td className="p-3">{student.supply_history}</td>
+                  <td className="p-3">{student.supply_history ? "Yes" : "No"}</td>
                 </tr>
               ))
             ) : (
