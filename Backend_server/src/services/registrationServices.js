@@ -9,6 +9,7 @@ import logger from "../utils/logger.js"; // Assuming you have a logger utility
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
 export const verifyStudentDetails = async (ktuId,file) => {
     const reg_query = `
@@ -90,5 +91,5 @@ export const uploadResume = async (file,ktuId, studentName) => {
 };
 
 export const generateToken = (ktuId) => {
-    return jwt.sign({ ktuId }, JWT_SECRET, { expiresIn: "1h" }); // Token expires in 1 hour
+    return jwt.sign({ ktu_id: ktuId }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN }); // Token expires in 1 hour
 };
