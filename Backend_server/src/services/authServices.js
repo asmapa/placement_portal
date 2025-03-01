@@ -31,7 +31,7 @@ export const loginUser = async (rit_email, password) => {
 
     // Generate JWT Token
     const token = jwt.sign(
-      { ktu_id: user.ktu_id},
+      { ktu_id: user.ktu_id , student_name :user.student_name , gender:user.gender},
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN }
     );

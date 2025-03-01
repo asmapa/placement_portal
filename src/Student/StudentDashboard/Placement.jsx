@@ -14,6 +14,7 @@ const Placement = () => {
   const [selectedTab, setSelectedTab] = useState('on-campus');
   const [selectedDrive, setSelectedDrive] = useState(null);
   const [onCampusDrives, setOnCampusDrives] = useState([]);
+    const [student, setStudent] = useState(null);
 
 useEffect(() => {
   const fetchData = async () => {
