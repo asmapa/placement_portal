@@ -25,16 +25,11 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 	},
 	{
 	  key: 'MyApplication',
-	  label: 'My Application',
+		label: 'My Application / Result',
 	  path: '/student-dashboard/MyApplication', // Correct relative path
 	  icon: <HiOutlineDocumentText />
-	},
-	{
-	  key: 'Result',
-	  label: 'Result',
-	  path: '/student-dashboard/Result', // Correct relative path
-	  icon: <HiOutlineChartSquareBar />
 	}
+	
   ];
   
 

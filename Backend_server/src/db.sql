@@ -222,3 +222,23 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.round_result
     OWNER to postgres;
+
+
+
+    CREATE TABLE admins (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    role VARCHAR(50) CHECK (role IN ('placement officer', 'internship coordinator', 'placement coordinator')) NOT NULL
+);
+
+
+INSERT INTO admins (name, email, password, phone, role)
+VALUES 
+('John Doe', 'johndoe@college.edu', 'securepassword', '1234567890', 'placement officer'),
+('Jane Smith', 'janesmith@college.edu', 'securepassword2', '0987654321', 'internship coordinator'),
+('Mark Lee', 'marklee@college.edu', 'securepassword3', '1122334455', 'placement coordinator');
+
+

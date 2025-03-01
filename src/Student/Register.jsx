@@ -314,7 +314,7 @@ const Register = () => {
 
             {/* Submit Button */}
             <div className="text-center">
-              <button type="submit" className="stylebt px-6 py-2 bg-white text-Navy rounded">
+              <button type="submit" className="stylebt px-6 py-2 bg-white text-Navy rounded hover:bg-Navy hover:text-green-700">
                 Register Now
               </button>
             </div>
