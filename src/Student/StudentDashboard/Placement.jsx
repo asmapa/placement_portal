@@ -26,11 +26,15 @@ const [offCampusDrives, setOffCampusDrives] = useState([]);
         console.log("No token found! User not authenticated.");
         return;
       }
-       const res = await axios.post(`http://localhost:3000/portal/student-drive-register/${driveId}`, {
+       const res = await axios.post(
+      `http://localhost:3000/portal/student-drive-register/${driveId}`,
+      {}, 
+      {
         headers: {
-          Authorization: `Bearer ${tok}`, // Send token in the header
+          Authorization: `Bearer ${tok}`, 
         },
-      });
+      }
+    );
 
     } catch (error) {
       console.log("Error while register drive", error);
@@ -202,7 +206,7 @@ useEffect(() => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {offCampusDrives.map((drive) => (
                 <div
-                  key={drive.drive.id}
+                  key={drive.drive_id}
                   className="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow"
                 >
                   <span className="font-medium">{drive.company_name} - {drive.job_role}</span>
