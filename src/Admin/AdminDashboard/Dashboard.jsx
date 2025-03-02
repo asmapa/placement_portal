@@ -13,20 +13,6 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { PieChart, Pie, Cell, Tooltip as PieTooltip, Legend as PieLegend } from 'recharts';
 
-const dataBar = [
-  { name: 'January', placements: 5 },
-  { name: 'February', placements: 10 },
-  { name: 'March', placements: 8 },
-  { name: 'April', placements: 12 },
-  { name: 'May', placements: 9 },
-  { name: 'June', placements: 15 },
-  { name: 'July', placements: 20 },
-  { name: 'August', placements: 18 },
-  { name: 'September', placements: 14 },
-  { name: 'October', placements: 16 },
-  { name: 'November', placements: 19 },
-  { name: 'December', placements: 22 },
-];
 
 const dataPie = [
   { name: 'CSE', value: 120 },
@@ -68,6 +54,8 @@ const roundOptions = [
 const [selectedDriveRounds, setSelectedDriveRounds] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [RoundDrive, setRoundDrive] = useState([]);
+  const [companyCount, setCompanyCount] = useState(0);
+  const [dataBar, setDataBar] = useState([]);
   
 
 
@@ -75,7 +63,7 @@ useEffect(() => {
   const fetchRounds = async () => {
     try {
       const response = await axios.get("http://localhost:3000/portal/get-all-rounds");
-      setRoundDrive(response.data); // Assuming response.data is an array of rounds
+      setRoundDrive(response.data); 
     } catch (error) {
       console.error("Error fetching rounds:", error);
     }
@@ -83,6 +71,30 @@ useEffect(() => {
 
   fetchRounds();
 }, []);
+  
+  {/*Fetch statistics by Year */}
+  
+ useEffect(() => {
+    const fetchStatisticsByYear = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/portal/placed-students/count-by-year");
+        console.log("Fetched Data:", response.data); 
+        const placementData = response.data.placement_data;
+
+        
+        const formattedData = Object.entries(placementData).map(([year, count]) => ({
+          name: year, // X-Axis (Year)
+          placements: count // Y-Axis (Placement count)
+        }));
+
+        setDataBar(formattedData);
+      } catch (error) {
+        console.error("Error occurred while getting data by year:", error);
+      }
+    };
+
+    fetchStatisticsByYear();
+  }, []);
 
 const handleShowRounds = (driveId) => {
   const rounds = RoundDrive.filter((round) => round.drive_id === driveId);
@@ -202,6 +214,23 @@ useEffect(() => {
       console.error("Error fetching companies:", error);
     });
 }, []);
+  
+
+  { /*Retrive each count for the admin dashboard */}
+
+   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/portal/registered-companies/count");
+        setCompanyCount(res.data.company_count);
+      } catch (error) {
+        console.error("Error fetching company count:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
 
 const [formDrive, setFormDrive] = useState({
@@ -362,7 +391,7 @@ setTimeout(() => setDrivechoose(true), 10);
         <div className="flex flex-col items-center flex-1 bg-blue-800 text-white p-4 rounded-lg mx-2 shadow-md">
           <FaBuilding size={40} className="mb-2" />
           <h2 className="text-lg font-bold">Total Companies Registered</h2>
-          <p className="text-4xl font-bold">50</p>
+          <p className="text-4xl font-bold">{ companyCount}</p>
         </div>
 
         <div className="flex flex-col items-center flex-1 bg-blue-900 text-white p-4 rounded-lg mx-2 shadow-md">
@@ -394,7 +423,7 @@ setTimeout(() => setDrivechoose(true), 10);
       <div className="flex flex-row justify-center items-center mt-6 space-x-8">
         {/* Bar Chart */}
         <div className="p-6 bg-white rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">Monthly Placements Overview</h2>
+          <h2 className="text-xl font-bold mb-4">Yearly Placements Overview</h2>
           <ResponsiveContainer width={600} height={300}>
             <BarChart data={dataBar}>
               <CartesianGrid strokeDasharray="3 3" />

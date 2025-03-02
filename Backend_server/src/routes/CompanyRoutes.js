@@ -16,3 +16,4 @@ export default router;
 //http://localhost:3000/portal/add-company
 ////http://localhost:3000/portal/update-company
 //http://localhost:3000/portal/delete-company/12
+//http://localhost:3000/portal/registered-companies/count
