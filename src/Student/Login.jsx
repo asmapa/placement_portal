@@ -24,7 +24,6 @@ const Login = () => {
       });
 
       localStorage.setItem("token", response.data.token); // Store the token
-
       // Show SweetAlert2 success message
       MySwal.fire({
         title: "Login Successful 🎉",

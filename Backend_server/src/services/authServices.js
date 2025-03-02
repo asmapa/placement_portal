@@ -35,7 +35,7 @@ export const loginUser = async (rit_email, password) => {
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN }
     );
-
+  
     logger.info(`User logged in successfully: ${rit_email}`);
     return { success: true, token };
   } catch (error) {

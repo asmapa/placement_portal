@@ -73,7 +73,7 @@ const App = () => {
            {/* Student Dashboard Routes*/}
         <Route path="/student-dashboard" element={<Layout />}>
             <Route index element={<Placement />} />
-            <Route path="Result" element={<Result />} />
+            <Route path="Result/:driveId" element={<Result />} />
             <Route path="UpdateProfile" element={<UpdateProfile />} />
             <Route path="MyApplication" element={<MyApplication />} />
         </Route>

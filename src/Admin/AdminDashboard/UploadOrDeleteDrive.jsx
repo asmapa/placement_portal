@@ -232,10 +232,12 @@ const handleSubmit = async (e) => {
               required
             >
               <option value="CSE">CSE</option>
-              <option value="IT">IT</option>
+              <option value="IT">CE</option>
+              <option value="IT">ME</option>
+              <option value="IT">MCA</option>
               <option value="ECE">ECE</option>
               <option value="EEE">EEE</option>
-              <option value="MCA">MCA</option>
+              <option value="MCA">Robotics</option>
             </select>
           </div>
 

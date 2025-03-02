@@ -10,6 +10,7 @@ const Result = () => {
   const [companyData, setCompanyData] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  // Fetch results on component mount
   useEffect(() => {
     const fetchResults = async () => {
       try {
@@ -28,7 +29,7 @@ const Result = () => {
 
         if (response.data.length > 0) {
           setCompanyData({
-           
+            company: "Company Name", // Replace with actual company name or fetch it from the backend
             rounds: response.data.map((round) => ({
               name: round.round_name,
               result: round.status, // Assuming backend returns "Cleared", "Pending", etc.
@@ -43,14 +44,11 @@ const Result = () => {
     fetchResults();
   }, [driveId]);
 
-  if (!companyData) {
-    return <p className="text-white">Loading results...</p>;
-  }
-
-  const totalRounds = companyData.rounds.length;
-  const passedRounds = companyData.rounds.filter((round) => round.result === "Cleared").length;
+  // Calculate derived data
+  const totalRounds = companyData ? companyData.rounds.length : 0;
+  const passedRounds = companyData ? companyData.rounds.filter((round) => round.result === "Cleared").length : 0;
   const remainingRounds = totalRounds - passedRounds;
-  const passPercentage = ((passedRounds / totalRounds) * 100).toFixed(2);
+  const passPercentage = totalRounds > 0 ? ((passedRounds / totalRounds) * 100).toFixed(2) : 0;
 
   const data = [
     { name: "Completed", value: passedRounds },
@@ -59,12 +57,18 @@ const Result = () => {
 
   const COLORS = ["#22C55E", "#FACC15"];
 
+  // Show confetti if all rounds are passed
   useEffect(() => {
     if (passedRounds === totalRounds && totalRounds > 0) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 5000);
     }
   }, [passedRounds, totalRounds]);
+
+  // Early return if data is not yet loaded
+  if (!companyData) {
+    return <p className="text-white">Loading results...</p>;
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center">
