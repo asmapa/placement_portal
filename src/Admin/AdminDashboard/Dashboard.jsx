@@ -180,7 +180,7 @@ try {
   }, [selectedDrive]); 
 
   
- const fetchCompanies = () => {
+ /*const fetchCompanies = () => {
   axios
     .get("http://localhost:3000/portal/get-company") 
     .then((response) => {
@@ -194,7 +194,7 @@ try {
 
 useEffect(() => {
   fetchCompanies(); // Fetch initially
-}, []); 
+}, []); */
 
   
 useEffect(() => {

@@ -134,17 +134,52 @@ export const getRegisteredStudents = async () => {
   return { count: rows.length, students: rows };
 };
 
-// Get count of placed students for a particular year_of_graduation
-export const getPlacedCountByGraduationYear = async (year) => {
-  const stud_query = `
+export const getPlacementStatsByGraduationYear = async (year) => {
+  const placedCountQuery = `
     SELECT COUNT(DISTINCT s.ktu_id) AS placed_count
     FROM student s
     JOIN drive_result dr ON s.ktu_id = dr.ktu_id
     WHERE s.year_of_graduation = $1 AND dr.result = 'Selected'
   `;
-  const { rows } = await query(stud_query, [year]);
-  return rows[0];
+
+  const ongoingRoundsQuery = `
+    SELECT COUNT(*) AS ongoing_rounds
+    FROM placement_drive
+    WHERE start_date <= CURRENT_DATE
+    AND start_date + duration >= CURRENT_DATE
+  `;
+
+  const upcomingDeadlinesQuery = `
+    SELECT COUNT(*) AS upcoming_deadlines
+    FROM placement_drive
+    WHERE last_date_to_submit > CURRENT_DATE
+  `;
+
+  const registeredStudentsQuery = `
+    SELECT COUNT(DISTINCT dr.ktu_id) AS registered_students
+    FROM drive_registered dr
+    JOIN student s ON dr.ktu_id = s.ktu_id
+    WHERE s.year_of_graduation = $1
+  `;
+
+  const placedCountResult = await query(placedCountQuery, [year]);
+  const ongoingRoundsResult = await query(ongoingRoundsQuery);
+  const upcomingDeadlinesResult = await query(upcomingDeadlinesQuery);
+  const registeredStudentsResult = await query(registeredStudentsQuery, [year]);
+
+  const placedCount = placedCountResult.rows[0]?.placed_count || 0;
+  const registeredStudents = registeredStudentsResult.rows[0]?.registered_students || 0;
+  const placementSuccessRate = registeredStudents > 0 ? (placedCount / registeredStudents) * 100 : 0;
+
+  return {
+    placed_count: placedCount,
+    ongoing_rounds: ongoingRoundsResult.rows[0]?.ongoing_rounds || 0,
+    upcoming_deadlines: upcomingDeadlinesResult.rows[0]?.upcoming_deadlines || 0,
+    registered_students: registeredStudents,
+    placement_success_rate: placementSuccessRate.toFixed(2),
+  };
 };
+
 
 // Get department-wise placement statistics
 export const getDepartmentWiseStats = async (year) => {

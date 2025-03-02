@@ -88,16 +88,16 @@ export const getRegistered = async (req, res) => {
   }
 };
 
-// Controller to get count of placed students by graduation year
-export const fetchPlacedCountByGraduationYear = async (req, res) => {
+export const fetchPlacementStatsByGraduationYear = async (req, res) => {
   try {
     const { year } = req.params;
-    const count = await StudentServices.getPlacedCountByGraduationYear(year);
-    res.json(count);
+    const stats = await StudentServices.getPlacementStatsByGraduationYear(year);
+    res.json(stats);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Controller to get department-wise placement statistics
 export const fetchDepartmentWiseStats = async (req, res) => {

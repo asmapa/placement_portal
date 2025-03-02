@@ -119,9 +119,14 @@ router.get("/get-students/registered", StudentController.getRegistered);
         }
     ]
 }*/
-router.get("/placed-count/:year", StudentController.fetchPlacedCountByGraduationYear);
+router.get("/placement-stats/:year", StudentController.fetchPlacementStatsByGraduationYear);
+
 /*{
-    "placed_count": "0"
+    "placed_count": "2",
+    "ongoing_rounds": "0",
+    "upcoming_deadlines": "7",
+    "registered_students": "3",
+    "placement_success_rate": "66.67"
 }*/
 router.get("/department-wise-stats/:year", StudentController.fetchDepartmentWiseStats);
 /*[

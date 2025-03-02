@@ -1,4 +1,5 @@
 import { query } from "../db.js";
+import sendEmailNotification from "./emailServices.js";
 
 const ResultService = {
   async getCompanyId(companyName) {
@@ -30,16 +31,28 @@ const ResultService = {
     return rows.length > 0 && rows[0].status === "Cleared";
   },
 
-  async insertRoundResult(driveId, roundNumber, ktuId, status) {
-    const result_query = `
+async insertRoundResult(driveId, roundNumber, ktuId, status) {
+    // Insert or update the round result
+    const resultQuery = `
         INSERT INTO round_result (drive_id, round_number, ktu_id, status) 
         VALUES ($1, $2, $3, $4) 
         ON CONFLICT (drive_id, round_number, ktu_id) 
         DO UPDATE SET status = EXCLUDED.status
     `;
-    await query(result_query, [driveId, roundNumber, ktuId, status]);
+    await query(resultQuery, [driveId, roundNumber, ktuId, status]);
 
-    // Check if student has failed any round
+    const driveQuery = `
+    SELECT c.company_name, pr.round_name, pd.num_of_rounds 
+    FROM placement_drive pd
+    JOIN placement_round pr ON pd.drive_id = pr.drive_id
+    JOIN company c ON pd.company_id = c.company_id
+    WHERE pd.drive_id = $1 AND pr.round_number = $2
+  `;
+
+    const driveResult = await query(driveQuery, [driveId, roundNumber]);
+    const { company_name, round_name, num_of_rounds } = driveResult.rows[0] || {};
+
+    // Check if student failed any round
     const failCheckQuery = `
         SELECT COUNT(*) AS failed_rounds 
         FROM round_result 
@@ -48,22 +61,45 @@ const ResultService = {
     const failResult = await query(failCheckQuery, [driveId, ktuId]);
     const failedRounds = parseInt(failResult.rows[0].failed_rounds, 10);
 
+    let finalStatus = null;
     if (failedRounds > 0) {
-        // Student failed at least one round, mark as "Not Selected"
-        await this.insertDriveResult(driveId, ktuId, "Not Selected");
+        finalStatus = "Not Selected"; // If failed any round, mark as "Not Selected"
+    } else if (roundNumber === num_of_rounds && status === "Cleared") {
+        finalStatus = "Selected"; // If cleared last round, mark as "Selected"
+    }
+
+    if (finalStatus) {
+        await this.insertDriveResult(driveId, ktuId, finalStatus);
+    }
+
+    // Fetch student's email
+    const studentQuery = `SELECT rit_email FROM student WHERE ktu_id = $1`;
+    const studentResult = await query(studentQuery, [ktuId]);
+    const ritEmail = studentResult.rows[0]?.rit_email;
+    console.log(ritEmail);
+    if (!ritEmail) {
+        console.error(`No email found for KTU ID: ${ktuId}`);
         return;
     }
 
-    // Check if this is the last round in the drive
-    const numRoundsQuery = `SELECT num_of_rounds FROM placement_drive WHERE drive_id = $1`;
-    const numRoundsResult = await query(numRoundsQuery, [driveId]);
-    const totalRounds = numRoundsResult.rows[0]?.num_of_rounds || 0;
+    // Email Details
+    const resultStatus = status === "Cleared" ? "Passed" : "Not Cleared";
+    const loginLink = "http://localhost:3000/portal/login";
+    const currentDate = new Date().toLocaleDateString("en-GB");
 
-    if (roundNumber === totalRounds && status === "Cleared") {
-        // If the student passed the last round, mark as "Selected"
-        await this.insertDriveResult(driveId, ktuId, "Selected");
-    }
-  },
+    const message = `
+        <p>Dear Student,</p>
+        <p>Your result for <strong>${round_name}</strong> at <strong>${company_name}</strong> has been updated.</p>
+        <p><strong>Status:</strong> ${resultStatus}</p>
+        <p><strong>Update Date:</strong> ${currentDate}</p>
+        <p>Please check the placement portal for further details:</p>
+        <p><a href="${loginLink}" target="_blank" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">View Result</a></p>
+        <p>Best Regards,<br>Placement Cell</p>
+    `;
+
+    // Send Email
+    await sendEmailNotification(ritEmail, `Placement Round Result Update - ${company_name}`, message, true);
+},
 
   async insertDriveResult(driveId, ktuId, result) {
     const result_query = `
