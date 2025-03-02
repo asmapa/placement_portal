@@ -5,6 +5,7 @@ import { authenticateToken } from '../middlewares/authMiddleware.js';
 const router = express.Router();
 
 router.get('/profile', authenticateToken, viewProfile);
+//http://localhost:3000/portal/profile
 router.put('/Update-profile', authenticateToken, editProfile);
 /*
 {

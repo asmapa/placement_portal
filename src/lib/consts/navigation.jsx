@@ -19,7 +19,7 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 	},
 	{
 	  key: 'UpdateProfile',
-	  label: 'Update Profile',
+	  label: 'View/Update Profile',
 	  path: '/student-dashboard/UpdateProfile', // Correct relative path
 	  icon: <HiOutlineUsers />
 	},
