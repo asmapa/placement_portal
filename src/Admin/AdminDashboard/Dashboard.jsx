@@ -43,7 +43,7 @@ const roundOptions = [
     "Managerial Round",
     "Domain-Specific Round",
   ];
-
+  const[lastYear,setLastYear] = useState(null);
   const [selectedTab, setSelectedTab] = useState('Existing-Company');
   const [drives, setDrives] = useState([]);
   const [choose, setChoose] = useState(false);
@@ -55,8 +55,18 @@ const [selectedDriveRounds, setSelectedDriveRounds] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [RoundDrive, setRoundDrive] = useState([]);
   const [companyCount, setCompanyCount] = useState(0);
+const[placementCount,setPlacementCount] = useState(0);
+const[ongoingRounds,setongoingRounds] = useState(0);
+const[upcomingDeadlines,setupcomingDeadlines] = useState(0);
+const[registeredStudents,setregisteredStudents] = useState(0);
+const[placementSuccessRate,setPlacementSucessRate] = useState(0);
   const [dataBar, setDataBar] = useState([]);
   
+
+
+useEffect(()=>{
+    setLastYear(new Date().getFullYear()-1);
+},[]);
 
 
 useEffect(() => {
@@ -216,12 +226,35 @@ useEffect(() => {
 }, []);
   
 
+
+
+
+
+
+   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/portal/placement-stats/${lastYear}`);
+        setPlacementCount(response.data.placed_count);
+        setongoingRounds(response.data.ongoing_rounds);
+        setupcomingDeadlines(response.data.upcoming_deadlines);
+        setregisteredStudents(response.data.registered_students);
+        setPlacementSucessRate(response.data.placement_success_rate);
+      } catch (error) {
+        console.error("Error fetching company count:", error);
+      }
+    };
+
+    fetchData();
+  }, [lastYear]);
+
   { /*Retrive each count for the admin dashboard */}
 
    useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get("http://localhost:3000/portal/registered-companies/count");
+        
         setCompanyCount(res.data.company_count);
       } catch (error) {
         console.error("Error fetching company count:", error);
@@ -385,7 +418,7 @@ setTimeout(() => setDrivechoose(true), 10);
         <div className="flex flex-col items-center flex-1 bg-[#005f69] text-white p-4 rounded-lg mx-2 shadow-md">
           <FaUserFriends size={40} className="mb-2" />
           <h2 className="text-lg font-bold">Total Students Registered</h2>
-          <p className="text-4xl font-bold">245</p>
+          <p className="text-4xl font-bold">{registeredStudents}</p>
         </div>
 
         <div className="flex flex-col items-center flex-1 bg-blue-800 text-white p-4 rounded-lg mx-2 shadow-md">
@@ -397,25 +430,25 @@ setTimeout(() => setDrivechoose(true), 10);
         <div className="flex flex-col items-center flex-1 bg-blue-900 text-white p-4 rounded-lg mx-2 shadow-md">
           <FaSpinner size={40} className="mb-2 animate-spin" />
           <h2 className="text-lg font-bold">Ongoing Drives</h2>
-          <p className="text-4xl font-bold">3</p>
+          <p className="text-4xl font-bold">{ongoingRounds}</p>
         </div>
 
         <div className="flex flex-col items-center flex-1 bg-red-600 text-white p-4 rounded-lg mx-2 shadow-md">
           <FaClipboardCheck size={40} className="mb-2" />
           <h2 className="text-lg font-bold">Upcoming Deadlines</h2>
-          <p className="text-4xl font-bold">2</p>
+          <p className="text-4xl font-bold">{upcomingDeadlines}</p>
         </div>
 
         <div className="flex flex-col items-center flex-1 bg-teal-700 text-white p-4 rounded-lg mx-2 shadow-md">
           <FaGraduationCap size={40} className="mb-2" />
           <h2 className="text-lg font-bold">Students Placed</h2>
-          <p className="text-4xl font-bold">180</p>
+          <p className="text-4xl font-bold">{placementCount}</p>
         </div>
 
         <div className="flex flex-col items-center flex-1 bg-emerald-600 text-white p-4 rounded-lg mx-2 shadow-md">
           <FaChartLine size={40} className="mb-2" />
           <h2 className="text-lg font-bold">Placement Success Rate</h2>
-          <p className="text-4xl font-bold">73%</p>
+          <p className="text-4xl font-bold">{placementSuccessRate}</p>
         </div>
       </div>
 

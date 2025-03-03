@@ -120,7 +120,7 @@ router.get("/get-students/registered", StudentController.getRegistered);
     ]
 }*/
 router.get("/placement-stats/:year", StudentController.fetchPlacementStatsByGraduationYear);
-
+//http://localhost:3000/portal/placement-stats/:year
 /*{
     "placed_count": "2",
     "ongoing_rounds": "0",

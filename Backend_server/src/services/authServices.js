@@ -22,6 +22,12 @@ export const loginUser = async (rit_email, password) => {
 
     const user = result.rows[0];
 
+    // Check if the account has expired
+    if (user.expires_at && new Date(user.expires_at) < new Date()) {
+      logger.warn(`Login attempt failed: Account expired (${rit_email})`);
+      return { success: false, message: "Your account has expired. Please contact the admin." };
+    }
+
     // Validate password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {

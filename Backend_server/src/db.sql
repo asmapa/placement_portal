@@ -556,3 +556,26 @@ VALUES
 (33, 2, '2025-07-23', '2 hours', 'Online', 'Online', 'Coding Test'),
 (33, 3, '2025-07-27', '1.5 hours', 'Bangalore', 'Offline', 'Technical'),
 (33, 4, '2025-07-31', '1 hour', 'Bangalore', 'Offline', 'HR');
+
+ALTER TABLE student ADD COLUMN created_at TIMESTAMP DEFAULT NOW();
+
+UPDATE student
+SET created_at = MAKE_DATE(year_of_graduation - 1, 6, 1);
+
+ALTER TABLE student ADD COLUMN expires_at TIMESTAMP GENERATED ALWAYS AS (created_at + INTERVAL '1 year') STORED;
+
+CREATE OR REPLACE FUNCTION prevent_created_at_update()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.created_at IS DISTINCT FROM NEW.created_at THEN
+        RAISE EXCEPTION 'created_at cannot be modified';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trigger_prevent_created_at_update
+BEFORE UPDATE ON student
+FOR EACH ROW
+EXECUTE FUNCTION prevent_created_at_update();
