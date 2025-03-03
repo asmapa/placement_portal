@@ -85,8 +85,25 @@ const StudentUpdate = () => {
           { label: "Gender", value: student.gender, icon: <FaUserCircle /> },
           { label: "CGPA", value: student.cgpa, icon: <FaBook /> },
           { label: "Number of Backlogs", value: student.no_of_backlogs, icon: <FaBook /> },
-          { label: "Supply History", value: student.supply_history, icon: <FaBriefcase /> },
-          { label: "Resume", value: <a href={student.resumeUrl} className="text-blue-600 hover:underline">View Resume</a>, icon: <FaFileAlt /> }
+          { 
+            label: "Supply History", 
+            value: student.supply_history ? "Yes" : "No", 
+            icon: <FaBriefcase /> 
+          },
+          { 
+            label: "Resume", 
+            value: student.resume_url ? (
+              <a 
+                href={student.resume_url.startsWith("http") ? student.resume_url : `https://${student.resume_url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                View Resume
+              </a>
+            ) : "Not Uploaded",
+            icon: <FaFileAlt />
+          }
         ].map((item, index) => (
           <div key={index} className="flex items-center p-4">
             <div className="text-blue-600 text-2xl mr-4">{item.icon}</div>
