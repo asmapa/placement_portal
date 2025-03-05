@@ -4,6 +4,8 @@ import Rit from '../../assets/placed_1.png';
 import homeimage1 from '../../assets/placed_2.png';
 import homeimage2 from '../../assets/placed_3.png';
 import axios from "axios"
+import Swal from "sweetalert2";
+
 import {
   FaUserGraduate, // For Placements Attended
   FaRegHandshake, // For Number of Offers
@@ -18,15 +20,15 @@ const Placement = () => {
 const [offCampusDrives, setOffCampusDrives] = useState([]);
    
 
+const handleConfirm = async (driveId) => {
+  try {
+    const tok = localStorage.getItem("token");
+    if (!tok) {
+      console.log("No token found! User not authenticated.");
+      return;
+    }
 
-  const handleConfirm = async (driveId) => {
-    try {
-      const tok = localStorage.getItem("token");
-      if (!tok) {
-        console.log("No token found! User not authenticated.");
-        return;
-      }
-       const res = await axios.post(
+    const res = await axios.post(
       `http://localhost:3000/portal/student-drive-register/${driveId}`,
       {}, 
       {
@@ -36,10 +38,29 @@ const [offCampusDrives, setOffCampusDrives] = useState([]);
       }
     );
 
-    } catch (error) {
-      console.log("Error while register drive", error);
-   }
-}
+    // Show success message
+    Swal.fire({
+      icon: "success",
+      title: "Registered Successfully!",
+      text: "You have successfully registered for this drive.",
+    });
+
+  } catch (error) {
+    if (error.response) {
+      const errorMessage = error.response.data.message;
+
+      // Show error message in SweetAlert
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: errorMessage, // Shows the exact error message from the backend
+      });
+    } else {
+      console.log("Error while registering for drive", error);
+    }
+  }
+};
+  
   
 useEffect(() => {
   const fetchEligibleDrives = async () => {
@@ -176,9 +197,13 @@ useEffect(() => {
             </a>
           <a
             onClick={() => {
-              alert(
-                "You have successfully Registered, PREPARE WELL!!! THE DATA ARE AUTOMATICALLY ENTERED TO DATABASE. ARE YOU SURE??"
-              );
+                MySwal.fire({
+        title: "Registed SuccessFully,Prepare Well 🎉",
+        text: "Redirecting to dashboard...",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
                 setSelectedDrive(null); // Close the popup after confirmation
               handleConfirm(selectedDrive.drive_id)
             }}
