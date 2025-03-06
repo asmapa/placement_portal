@@ -15,31 +15,46 @@ const ViewStudent = () => {
     noSupplyHistory: ""
   });
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      let url = "http://localhost:3000/portal/get-all-students";
+useEffect(() => {
+  const fetchStudents = async () => {
+    let url = "http://localhost:3000/portal/get-all-students";
 
-      if (activeTab === "filter") {
-        const queryParams = new URLSearchParams();
-        Object.entries(filters).forEach(([key, value]) => {
-          if (value) queryParams.append(key, value);
-        });
-        url = `http://localhost:3000/portal/filter-students?${queryParams.toString()}`;
+    if (activeTab === "filter") {
+      const queryParams = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) queryParams.append(key, value);
+      });
+
+      url = `http://localhost:3000/portal/filter-students?${queryParams.toString()}`;
+    }
+
+    console.log("Fetching from:", url); 
+
+    try {
+      setStudents([]); 
+      const res = await axios.get(url);
+      console.log("Response Data:", res.data);
+
+      if (activeTab === "all") {
+        
+        setStudents(res.data);
+      } else if (activeTab === "filter" && res.data.success && Array.isArray(res.data.data)) {
+       
+        setStudents(res.data.data);
+      } else {
+        console.error("Unexpected response format", res.data);
       }
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
+  };
 
-      try {
-        setStudents([]); // Reset before fetching new data
-        const res = await axios.get(url);
-        setStudents(res.data.students || res.data);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-      }
-    };
+  fetchStudents();
+}, [activeTab, filters]);
 
-    fetchStudents();
-  }, [activeTab, filters]);
 
-  // Function to Export Data to Excel
+
+
   const exportToExcel = () => {
     if (students.length === 0) {
       alert("No data available to download!");
@@ -75,18 +90,14 @@ const ViewStudent = () => {
         ))}
       </div>
 
-
-      
-
       {activeTab === "filter" && (
         <div className="bg-white p-4 rounded-lg shadow-md mb-4">
-
-          <div className="bg-blue-100 p-4 rounded-lg mb-4">
-  <h3 className="text-xl font-bold text-blue-800">Available Filters</h3>
-  <p className="text-lg text-blue-700">
+         <div className="bg-blue-100 p-4 rounded-lg mb-4">
+  <h3 className="text-lg font-bold text-blue-800">Available Filters</h3>
+  <p className="text-sm text-blue-700">
     You can filter students using <b>any combination</b> of the following:
   </p>
-  <ul className="list-disc pl-5 text-lg text-blue-700">
+  <ul className="list-disc pl-5 text-sm text-blue-700">
     <li><b>Department:</b> CSE, ECE, ME, etc.</li>
     <li><b>Minimum CGPA:</b> Example: 5.0, 6.5</li>
     <li><b>No. of Backlogs:</b> Example: 0, 1, 2, etc.</li>
@@ -94,7 +105,7 @@ const ViewStudent = () => {
     <li><b>Graduation Year:</b> Example: 2026, 2025</li>
     <li><b>No Supply History:</b> true / false</li>
   </ul>
-  <p className="text-lg text-blue-700 mt-2">
+  <p className="text-sm text-blue-700 mt-2">
     ✅ You can apply <b>one filter</b> or <b>multiple filters together</b>.  
     <br /> Example: Filter by <b>Department = CSE</b> & <b>CGPA ≥ 6.5</b> at the same time.
   </p>
@@ -117,7 +128,7 @@ const ViewStudent = () => {
         </div>
       )}
 
-      <button onClick={exportToExcel} className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 flex items-center gap-2 mb-4">
+      <button onClick={exportToExcel} className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 mb-4">
         Download {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Data
       </button>
 
