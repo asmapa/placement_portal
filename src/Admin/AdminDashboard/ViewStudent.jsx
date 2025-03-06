@@ -6,34 +6,38 @@ import { saveAs } from "file-saver";
 const ViewStudent = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [students, setStudents] = useState([]);
-  const [year, setYear] = useState("");
-  const [department, setDepartment] = useState("");
+  const [filters, setFilters] = useState({
+    department: "",
+    minCgpa: "",
+    no_of_backlogs: "",
+    placed: "",
+    graduationYear: "",
+    noSupplyHistory: ""
+  });
 
   useEffect(() => {
     const fetchStudents = async () => {
       let url = "http://localhost:3000/portal/get-all-students";
 
-      if (activeTab === "placed") {
-        url = "http://localhost:3000/portal/get-students/placed";
-      } else if (activeTab === "registered") {
-        url = "http://localhost:3000/portal/get-students/registered";
-      } else if (activeTab === "year" && year) {
-        url = `http://localhost:3000/portal/get-students-by-year/${year}`;
-      } else if (activeTab === "department" && department) {
-        url = `http://localhost:3000/portal/get-students-by-department/${department}`;
+      if (activeTab === "filter") {
+        const queryParams = new URLSearchParams();
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value) queryParams.append(key, value);
+        });
+        url = `http://localhost:3000/portal/filter-students?${queryParams.toString()}`;
       }
 
       try {
         setStudents([]); // Reset before fetching new data
         const res = await axios.get(url);
-        setStudents(res.data.students || res.data); // Handle both array and object response
+        setStudents(res.data.students || res.data);
       } catch (error) {
         console.error("Error fetching students:", error);
       }
     };
 
     fetchStudents();
-  }, [activeTab, year, department]);
+  }, [activeTab, filters]);
 
   // Function to Export Data to Excel
   const exportToExcel = () => {
@@ -46,7 +50,6 @@ const ViewStudent = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
 
-    // File name based on active tab
     const fileName = `students_${activeTab}.xlsx`;
 
     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
@@ -57,7 +60,7 @@ const ViewStudent = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex space-x-4 mb-4">
-        {["all", "placed", "registered", "year", "department"].map((tab) => (
+        {["all", "filter"].map((tab) => (
           <button
             key={tab}
             className={`px-4 py-2 rounded-lg flex-1 ${
@@ -72,47 +75,51 @@ const ViewStudent = () => {
         ))}
       </div>
 
-      {/* Download Button */}
-      <button
-        onClick={exportToExcel}
-        className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 flex items-center gap-2 mb-4"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4v12m0 0l-3-3m3 3l3-3M6 20h12"
-          />
-        </svg>
+
+      
+
+      {activeTab === "filter" && (
+        <div className="bg-white p-4 rounded-lg shadow-md mb-4">
+
+          <div className="bg-blue-100 p-4 rounded-lg mb-4">
+  <h3 className="text-xl font-bold text-blue-800">Available Filters</h3>
+  <p className="text-lg text-blue-700">
+    You can filter students using <b>any combination</b> of the following:
+  </p>
+  <ul className="list-disc pl-5 text-lg text-blue-700">
+    <li><b>Department:</b> CSE, ECE, ME, etc.</li>
+    <li><b>Minimum CGPA:</b> Example: 5.0, 6.5</li>
+    <li><b>No. of Backlogs:</b> Example: 0, 1, 2, etc.</li>
+    <li><b>Placed:</b> true / false</li>
+    <li><b>Graduation Year:</b> Example: 2026, 2025</li>
+    <li><b>No Supply History:</b> true / false</li>
+  </ul>
+  <p className="text-lg text-blue-700 mt-2">
+    ✅ You can apply <b>one filter</b> or <b>multiple filters together</b>.  
+    <br /> Example: Filter by <b>Department = CSE</b> & <b>CGPA ≥ 6.5</b> at the same time.
+  </p>
+</div>
+
+          <input type="text" placeholder="Department" className="p-2 border rounded w-full mb-2" onChange={(e) => setFilters({ ...filters, department: e.target.value })} />
+          <input type="number" placeholder="Minimum CGPA" className="p-2 border rounded w-full mb-2" onChange={(e) => setFilters({ ...filters, minCgpa: e.target.value })} />
+          <input type="number" placeholder="No. of Backlogs" className="p-2 border rounded w-full mb-2" onChange={(e) => setFilters({ ...filters, no_of_backlogs: e.target.value })} />
+          <select className="p-2 border rounded w-full mb-2" onChange={(e) => setFilters({ ...filters, placed: e.target.value })}>
+            <option value="">Placed?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+          <input type="number" placeholder="Graduation Year" className="p-2 border rounded w-full mb-2" onChange={(e) => setFilters({ ...filters, graduationYear: e.target.value })} />
+          <select className="p-2 border rounded w-full mb-2" onChange={(e) => setFilters({ ...filters, noSupplyHistory: e.target.value })}>
+            <option value="">No Supply History?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+      )}
+
+      <button onClick={exportToExcel} className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 flex items-center gap-2 mb-4">
         Download {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Data
       </button>
-
-      {activeTab === "year" && (
-        <input
-          type="number"
-          placeholder="Enter Graduation Year"
-          className="p-2 border-[#005f69] border-2 rounded-lg w-1/2"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
-        />
-      )}
-
-      {activeTab === "department" && (
-        <input
-          type="text"
-          placeholder="Enter Department"
-          className="p-2 rounded-lg border-[#005f69] border-2 w-1/2"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-        />
-      )}
 
       <div className="overflow-x-auto mt-4">
         <table className="min-w-full bg-white shadow-md rounded-lg border-[#005f69]">
@@ -154,9 +161,7 @@ const ViewStudent = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="13" className="p-3 text-center">
-                  No students found
-                </td>
+                <td colSpan="13" className="p-3 text-center">No students found</td>
               </tr>
             )}
           </tbody>
