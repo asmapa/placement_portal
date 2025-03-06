@@ -11,6 +11,7 @@ import resultRoutes from "./routes/ResultRoutes.js"
 import studDashboardRoutes from "./routes/StudDashboardRoutes.js"
 import studFilterRoutes from "./routes/FilterRoutes.js"
 import otpRoutes from "./routes/otpRoutes.js"
+import chatRoutes from "./routes/chatRoutes.js"
 
 //import StudentRoutes from "./routes/StudentRoutes.js"
 const app = express();
@@ -29,6 +30,7 @@ app.use('/portal', resultRoutes);
 app.use('/portal', studDashboardRoutes);
 app.use('/portal', studFilterRoutes);
 app.use('/portal', otpRoutes);
+app.use('/portal', chatRoutes);
 
 app.listen(port, () => {
     console.log(`Its listening at port ${port}`);

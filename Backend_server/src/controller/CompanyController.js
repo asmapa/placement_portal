@@ -25,6 +25,30 @@ export const getAllCompanies = async (req, res) => {
   }
 };
 
+export const getCompanyByName = async (req, res) => {
+  try {
+    // Get companies from the service layer
+      const {companyName}=req.params;
+     const companies = await CompanyServices.getCompanyByName(companyName);
+    res.status(200).json(companies); // Return companies in JSON format
+  } catch (error) {
+    console.error("Error fetching companies:", error);
+    res.status(500).json({ error: "Failed to fetch companies" });
+  }
+};
+
+export const getCompanyById = async (req, res) => {
+  try {
+    // Get companies from the service layer
+      const {companyId}=req.params;
+     const companies = await CompanyServices.getCompanyById(companyId);
+    res.status(200).json(companies); // Return companies in JSON format
+  } catch (error) {
+    console.error("Error fetching companies:", error);
+    res.status(500).json({ error: "Failed to fetch companies" });
+  }
+};
+
 export const updateCompany = async (req, res) => {
   try {
     const { company_id, ...companyData } = req.body; // Extract company_id from body and the rest as companyData

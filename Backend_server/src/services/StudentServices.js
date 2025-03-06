@@ -94,7 +94,7 @@ export const fetchEligibleDrives = async (ktu_id) => {
 };
 
 export const getAllStudents = async () => {
-  const stud_query = "SELECT * FROM student";
+  const stud_query = "SELECT * FROM student WHERE  password IS NOT NULL";
   const { rows } = await query(stud_query);
   return rows;
 };

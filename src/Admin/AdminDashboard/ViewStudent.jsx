@@ -121,9 +121,9 @@ useEffect(() => {
           </select>
           <input type="number" placeholder="Graduation Year" className="p-2 border rounded w-full mb-2" onChange={(e) => setFilters({ ...filters, graduationYear: e.target.value })} />
           <select className="p-2 border rounded w-full mb-2" onChange={(e) => setFilters({ ...filters, noSupplyHistory: e.target.value })}>
-            <option value="">No Supply History?</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
+            <option value="">Supply History?</option>
+            <option value="true">No Supply History</option>
+            <option value="false">Have Supply</option>
           </select>
         </div>
       )}

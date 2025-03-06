@@ -43,6 +43,14 @@ export const getCompanyById = async (company_id) => {
     return rows[0]; // Returns the company if found
 };
 
+export const getCompanyByName = async (company_id) => {
+    const { rows } = await query(
+        `SELECT * FROM company WHERE company_name = $1;`, 
+        [company_id]
+    );
+    return rows[0]; // Returns the company if found
+};
+
 // Function to update a company by ID
 export const updateCompany = async (company_id, companyData) => {
     const { 
