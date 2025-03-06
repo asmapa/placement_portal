@@ -13,6 +13,7 @@ import Layout from './Student/StudentDashboard/shared/Layout';
 import Register from './Student/Register';
 import Result from './Student/StudentDashboard/Result';
 import UpdateProfile from './Student/StudentDashboard/UpdateProfile';
+import Chatbot from './Student/StudentDashboard/chatbot.jsx';
 import MyApplication from './Student/StudentDashboard/MyApplication';
 import Placement from './Student/StudentDashboard/Placement';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -75,6 +76,7 @@ const App = () => {
             <Route index element={<Placement />} />
             <Route path="Result/:driveId" element={<Result />} />
             <Route path="UpdateProfile" element={<UpdateProfile />} />
+            <Route path="chatbot" element={<Chatbot />} />
             <Route path="MyApplication" element={<MyApplication />} />
         </Route>
         </Route>

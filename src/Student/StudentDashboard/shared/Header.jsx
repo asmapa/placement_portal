@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { HiOutlineChatAlt, HiOutlineSearch } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
+import ChatBot from '../chatbot'; // Import the ChatBot component
 
 const Header = () => {
   const [isModalOpen, setModalOpen] = useState(false); // state for modal visibility
   const [isDropdownOpen, setDropdownOpen] = useState(false); // state for dropdown visibility
+  const [isChatOpen, setChatOpen] = useState(false); // state for chatbot visibility
 
   const toggleModal = () => {
     setModalOpen(!isModalOpen); // toggle the modal visibility
@@ -13,6 +15,10 @@ const Header = () => {
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen); // toggle the dropdown visibility
+  };
+
+  const toggleChat = () => {
+    setChatOpen(!isChatOpen); // toggle the chatbot visibility
   };
 
   return (
@@ -40,7 +46,7 @@ const Header = () => {
         <HiOutlineChatAlt
           fontSize={24}
           className='hover:bg-slate-200 cursor-pointer'
-          onClick={toggleModal} // Open the modal when clicked
+          onClick={toggleChat} // Open the chatbot when clicked
         />
 
         {/* User Icon with Dropdown */}
@@ -66,20 +72,26 @@ const Header = () => {
 
       {/* Modal */}
       {isModalOpen && (
-  <div className="fixed inset-0 z-50 flex justify-center items-center bg-gray-800 bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg w-80 shadow-lg">
-      <p className="text-black">
-        Best Opportunity For Final year students, TCS is going to visit. Must apply for the Drive!
-      </p>
-      <button
-        onClick={toggleModal}
-        className="mt-4 bg-red-500 text-white px-4 py-2 rounded">
-        Close
-      </button>
-    </div>
-  </div>
-)}
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg w-80 shadow-lg">
+            <p className="text-black">
+              Best Opportunity For Final year students, TCS is going to visit. Must apply for the Drive!
+            </p>
+            <button
+              onClick={toggleModal}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
+      {/* Chatbot */}
+      {isChatOpen && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <ChatBot onClose={toggleChat} /> {/* Pass a function to close the chatbot */}
+        </div>
+      )}
     </div>
   );
 };
