@@ -9,6 +9,7 @@ import regRoutes from "./routes/registrationRoutes.js"
 import roundsRoutes from "./routes/RoundsRoutes.js"
 import resultRoutes from "./routes/ResultRoutes.js"
 import studDashboardRoutes from "./routes/StudDashboardRoutes.js"
+import studFilterRoutes from "./routes/FilterRoutes.js"
 
 //import StudentRoutes from "./routes/StudentRoutes.js"
 const app = express();
@@ -25,6 +26,7 @@ app.use('/portal', regRoutes);
 app.use('/portal', roundsRoutes);
 app.use('/portal', resultRoutes);
 app.use('/portal', studDashboardRoutes);
+app.use('/portal', studFilterRoutes);
 
 app.listen(port, () => {
     console.log(`Its listening at port ${port}`);
