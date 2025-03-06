@@ -23,12 +23,23 @@ export const filterStudents = async ({ department, minCgpa, no_of_backlogs,noSup
   }
 
   if (placed !== undefined) {
-  params.push(placed === "true" ? "Selected" : "Not Selected");
-  stud_query += ` AND EXISTS (
-    SELECT 1 FROM drive_result dr 
-    WHERE dr.ktu_id = student.ktu_id 
-    AND dr.result = $${params.length}
-  )`;
+  if (placed === "true") {
+    params.push("Selected");
+    stud_query += ` AND EXISTS (
+      SELECT 1 FROM drive_result dr 
+      WHERE dr.ktu_id = student.ktu_id 
+      AND dr.result = $${params.length}
+    )`;
+  } else {
+    // Student is considered "Not Placed" if:
+    // - They have only "Not Selected" entries in drive_result
+    // - OR they do not appear in drive_result at all
+    stud_query += ` AND NOT EXISTS (
+      SELECT 1 FROM drive_result dr 
+      WHERE dr.ktu_id = student.ktu_id 
+      AND dr.result = 'Selected'
+    )`;
+  }
 }
 
 
