@@ -67,20 +67,24 @@ const ChatBot = ({ onClose }) => {
     };
 
     return (
-        <div className="flex flex-col h-[600px] w-[500px] bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-300">
+        <div className="flex flex-col h-[750px] w-[500px] bg-white rounded-2xl shadow-xl overflow-hidden border-[#3e0c53] border-5">
             {/* Chat Header */}
-            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-md">
-                <div className="flex items-center">
-                    <FaRobot className="mr-2 text-xl" />
-                    <h1 className="text-lg font-semibold">Placement ChatBot</h1>
+            <div className="flex items-center justify-between p-4 bg-[#3e0c53]">
+                <div className="flex items-center justify-center">
+                    <FaRobot className="mr-3 text-3xl text-white" />
+                    <h1 className="text-lg font-semibold text-white">Lost in Placements? Don’t Worry, I’m Your Rescue Bot!</h1>
                 </div>
-                <button onClick={onClose} className="hover:bg-blue-500 p-2 rounded-full">
+                <button onClick={onClose} className="hover:bg-blue-500 p-2 rounded-full text-white">
                     <FaTimes />
                 </button>
             </div>
 
             {/* Chat Messages */}
             <div className="flex-1 p-4 overflow-y-auto bg-gray-100">
+                <p className="text-center text-[#4B0082] p-3 bg-navy">
+    🤖 Hey there, future CEO! 🚀 Ask me about placement drives, guidelines, qualifications, or how to crack interviews like a pro! 😆🎓💼  
+</p>
+
                 {chatHistory.map((msg, index) => (
                     <div
                         key={index}
@@ -89,7 +93,7 @@ const ChatBot = ({ onClose }) => {
                         <div
                             className={`max-w-[75%] p-3 rounded-lg shadow-md ${
                                 msg.sender === "user"
-                                    ? "bg-blue-500 text-white"
+                                    ? "bg-[#4B0082] text-white"
                                     : "bg-gray-200 text-gray-800"
                             }`}
                         >
@@ -118,20 +122,20 @@ const ChatBot = ({ onClose }) => {
             </div>
 
             {/* Chat Input */}
-            <div className="flex p-4 border-t border-gray-300 bg-white">
+            <div className="flex p-4 border-t  bg-white">
                 <input
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="Type your message..."
-                    className="flex-1 p-2 border border-gray-300 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="What You Want To Know :)..."
+                    className="flex-1 p-2  border-[#9400D3] rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                     disabled={loading}
                 />
                 <button
                     onClick={sendMessage}
                     disabled={loading}
-                    className="p-3 bg-blue-500 text-white rounded-r-xl hover:bg-blue-600 disabled:bg-gray-400"
+                    className="p-3 bg-[#9400D3] text-white rounded-r-xl hover:bg-blue-600 disabled:bg-gray-400"
                 >
                     <FaPaperPlane />
                 </button>

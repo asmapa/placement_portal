@@ -9,9 +9,7 @@ const Header = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false); // state for dropdown visibility
   const [isChatOpen, setChatOpen] = useState(false); // state for chatbot visibility
 
-  const toggleModal = () => {
-    setModalOpen(!isModalOpen); // toggle the modal visibility
-  };
+
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen); // toggle the dropdown visibility
@@ -70,21 +68,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex justify-center items-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg w-80 shadow-lg">
-            <p className="text-black">
-              Best Opportunity For Final year students, TCS is going to visit. Must apply for the Drive!
-            </p>
-            <button
-              onClick={toggleModal}
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded">
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+    
 
       {/* Chatbot */}
       {isChatOpen && (
