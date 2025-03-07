@@ -3,17 +3,16 @@ import { HiOutlineChatAlt, HiOutlineSearch } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
 import ChatBot from '../chatbot'; // Import the ChatBot component
+import { useNavigate } from "react-router-dom";
+
 
 const Header = () => {
-  const [isModalOpen, setModalOpen] = useState(false); // state for modal visibility
-  const [isDropdownOpen, setDropdownOpen] = useState(false); // state for dropdown visibility
+
   const [isChatOpen, setChatOpen] = useState(false); // state for chatbot visibility
 
+const navigate = useNavigate();
 
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen); // toggle the dropdown visibility
-  };
 
   const toggleChat = () => {
     setChatOpen(!isChatOpen); // toggle the chatbot visibility
@@ -49,22 +48,11 @@ const Header = () => {
 
         {/* User Icon with Dropdown */}
         <div className='relative'>
-          <button onClick={toggleDropdown} className='w-8 h-8'>
+          <button onClick={() => navigate("/student-dashboard/UpdateProfile")} className='w-8 h-8'>
             <FaUserCircle fontSize={24} className='hover:bg-slate-200 cursor-pointer' />
           </button>
 
-          {isDropdownOpen && (
-            <div className='z-10 absolute right-0 mt-2 bg-white rounded-lg shadow w-32'>
-              <ul className='py-2 text-sm text-gray-600'>
-                <li>
-                  <Link to="/profile" className='block px-4 py-2 hover:bg-gray-200'>
-                    Profile
-                  </Link>
-                </li>
-                {/* Add more links here if needed */}
-              </ul>
-            </div>
-          )}
+         
         </div>
       </div>
 
