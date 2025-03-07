@@ -8,6 +8,7 @@ import Welcome from './Components/Welcome';
 import FlashNews from './Components/FlashNews';
 import Contact from './Components/Contact';
 import Footer from './Components/Footer';
+import Explore from './Explore';
 import Login from './Student/Login';
 import Layout from './Student/StudentDashboard/shared/Layout';
 import Register from './Student/Register';
@@ -67,6 +68,7 @@ const App = () => {
           }
         />
 
+        <Route path="/explore" element={<Explore />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/AdminLogin" element={<AdminLogin />} />
