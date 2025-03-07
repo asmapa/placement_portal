@@ -67,7 +67,7 @@ const ChatBot = ({ onClose }) => {
     };
 
     return (
-        <div className="flex flex-col h-[750px] w-[500px] bg-white rounded-2xl shadow-xl overflow-hidden border-[#3e0c53] border-5">
+        <div className="flex flex-col h-[750px] w-[500px] bg-white rounded-lg  overflow-hidden border-[#3e0c53] border-5">
             {/* Chat Header */}
             <div className="flex items-center justify-between p-4 bg-[#3e0c53]">
                 <div className="flex items-center justify-center">
@@ -99,15 +99,15 @@ const ChatBot = ({ onClose }) => {
                         >
                             <div className="flex items-center mb-1">
                                 {msg.sender === "user" ? (
-                                    <FaUser className="mr-2 text-sm" />
+                                    <FaUser className="mr-2 text-lg" />
                                 ) : (
-                                    <FaRobot className="mr-2 text-sm" />
+                                    <FaRobot className="mr-2 text-lg" />
                                 )}
                                 <span className="text-sm font-semibold">
                                     {msg.sender === "user" ? "You" : "Bot"}
                                 </span>
                             </div>
-                            <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                            <p className="text-xl whitespace-pre-wrap">{msg.text}</p>
                         </div>
                     </div>
                 ))}
