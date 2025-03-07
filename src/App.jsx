@@ -30,6 +30,7 @@ import AdminLogin from './Admin/AdminDashboard/AdminLogin';
 import ViewStudent from './Admin/AdminDashboard/ViewStudent';
 import GetStudents from './Admin/AdminDashboard/GetStudents';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
+import ProtectedAdminRoute from './ProtectedRoute/ProtectedAdminRoute';
 
 const App = () => {
   return (
@@ -84,7 +85,7 @@ const App = () => {
 
        
         
-
+        <Route element={<ProtectedAdminRoute/>}>
         { /* Admin Dashboard Routes */}
 
       <Route path="/Admin-dashboard" element={<AdminLayout/>}>
@@ -97,7 +98,7 @@ const App = () => {
           <Route path="ViewStudents" element={<ViewStudent />} />
           <Route path="GetStudents" element={<GetStudents/>} />
         </Route>
-        
+        </Route>
 
 
       </Routes>

@@ -15,6 +15,7 @@ const AdminLogin = () => {
 
     try {
       const res = await axios.post('http://localhost:3000/portal/admin/login', { email, password });
+      localStorage.setItem("isAdminAuthenticated", "true");
       alert(res.data.message);
       navigate('/Admin-dashboard'); // Redirect on success
     } catch (err) {

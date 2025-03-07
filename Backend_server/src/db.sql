@@ -579,3 +579,84 @@ CREATE TRIGGER trigger_prevent_created_at_update
 BEFORE UPDATE ON student
 FOR EACH ROW
 EXECUTE FUNCTION prevent_created_at_update();
+
+
+CREATE OR REPLACE FUNCTION update_drive_result()
+RETURNS TRIGGER AS $$
+DECLARE
+    total_rounds INT;
+    existing_result TEXT;
+BEGIN
+    -- Check if the student failed any round
+    IF NEW.status = 'Not Cleared' THEN
+        INSERT INTO drive_result (drive_id, ktu_id, result)
+        VALUES (NEW.drive_id, NEW.ktu_id, 'Not Selected')
+        ON CONFLICT (drive_id, ktu_id) 
+        DO UPDATE SET result = 'Not Selected';
+        RETURN NEW;
+    END IF;
+
+    -- Fetch the total number of rounds for this drive
+    SELECT num_of_rounds INTO total_rounds
+    FROM placement_drive
+    WHERE drive_id = NEW.drive_id;
+
+    -- If the student cleared the last round, mark them as Selected
+    IF NEW.round_number = total_rounds AND NEW.status = 'Cleared' THEN
+        -- Check if the student is already marked as Not Selected
+        SELECT result INTO existing_result 
+        FROM drive_result 
+        WHERE drive_id = NEW.drive_id AND ktu_id = NEW.ktu_id;
+
+        -- Update or Insert only if they are not marked as "Not Selected"
+        IF existing_result IS DISTINCT FROM 'Not Selected' THEN
+            INSERT INTO drive_result (drive_id, ktu_id, result)
+            VALUES (NEW.drive_id, NEW.ktu_id, 'Selected')
+            ON CONFLICT (drive_id, ktu_id) 
+            DO UPDATE SET result = 'Selected';
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Attach the trigger to round_result
+CREATE TRIGGER trg_update_drive_result
+AFTER INSERT OR UPDATE ON round_result
+FOR EACH ROW
+EXECUTE FUNCTION update_drive_result();
+
+DO $$ 
+DECLARE 
+    rec RECORD;
+    round_no INT;
+    student_status TEXT;
+BEGIN 
+    -- Loop through each registered student
+    FOR rec IN select ktu_id,dr.drive_id,num_of_rounds
+	from drive_registered dr join placement_drive pd on dr.drive_id=pd.drive_id
+	where pd.start_date+duration<=NOW() LOOP
+        round_no := 1;  -- Start from round 1
+
+        -- Insert results for each round up to num_of_rounds
+        WHILE round_no <= rec.num_of_rounds LOOP
+            -- Randomly assign 'Cleared' or 'Not Cleared' (Modify as needed)
+            student_status := CASE WHEN RANDOM() > 0.4 THEN 'Cleared' ELSE 'Not Cleared' END;
+            
+            -- Insert into round_result table
+            INSERT INTO round_result (drive_id, round_number, ktu_id, status)
+            VALUES (rec.drive_id, round_no, rec.ktu_id, student_status);
+
+            -- If student is "Not Cleared", stop inserting further rounds
+            IF student_status = 'Not Cleared' THEN
+                EXIT;  -- Stop inserting rounds for this student
+            END IF;
+
+            -- Move to the next round
+            round_no := round_no + 1;
+        END LOOP;
+    END LOOP;
+END $$;
+
+DROP TRIGGER IF EXISTS trg_update_drive_result ON round_result;

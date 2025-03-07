@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Female from '../../../assets/Ritktym.png';
 import { DASHBOARD_SIDEBAR_LINKS } from '../../../lib/consts/AdminNavigation';
 import { HiOutlineLogout, HiChevronDoubleLeft, HiChevronDoubleRight } from 'react-icons/hi';
@@ -7,6 +7,12 @@ import classNames from 'classnames';
 
 const AdminSideBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAdminAuthenticated");
+    navigate("/AdminLogin"); // Redirect to the login page
+  };
 
   return (
     <div
@@ -54,9 +60,10 @@ const AdminSideBar = () => {
 
       {/* Logout Section */}
       <div>
-        <div
+        <button
+          onClick={handleLogout}
           className={classNames(
-            'flex items-center text-red-500 gap-4 font-extrabold px-3 py-2 rounded-sm text-base transition-colors duration-200',
+            'flex items-center text-red-500 gap-4 font-extrabold px-3 py-2 rounded-sm text-base transition-colors duration-200 w-full',
             {
               'justify-center': isCollapsed,
             }
@@ -66,7 +73,7 @@ const AdminSideBar = () => {
             <HiOutlineLogout />
           </span>
           {!isCollapsed && <span>Logout</span>}
-        </div>
+        </button>
       </div>
     </div>
   );
