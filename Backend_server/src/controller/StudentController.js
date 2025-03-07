@@ -41,7 +41,16 @@ export const getEligibleDrives = async (req, res) => {
     }
 };
 
-export const getStudents = async (req, res) => {
+export const getRegisteredStudents = async (req, res) => {
+  try {
+    const students = await StudentServices.getAllRegisteredStudents();
+    res.status(200).json(students);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getAllStudents = async (req, res) => {
   try {
     const students = await StudentServices.getAllStudents();
     res.status(200).json(students);

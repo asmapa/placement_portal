@@ -10,6 +10,9 @@ const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0); 
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otp, setOtp] = useState("");
 
   const [formData, setFormData] = useState({
     ktuid: "",
@@ -27,6 +30,51 @@ const Register = () => {
     dob: "",
     skills: "",
   });
+
+  const handleSendOTP = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/portal/send-otp", {
+        email: formData.ritmail,
+      });
+      if (response.data.success) {
+        setOtpSent(true);
+        MySwal.fire({
+          icon: "success",
+          title: "OTP Sent!",
+          text: "OTP has been sent to your email.",
+        });
+      }
+    } catch (error) {
+      MySwal.fire({
+        icon: "error",
+        title: "Failed to Send OTP",
+        text: error.response ? error.response.data.message : "Something went wrong!",
+      });
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/portal/verify-otp", {
+        email: formData.ritmail,
+        otp: otp,
+      });
+      if (response.data.success) {
+        setOtpVerified(true);
+        MySwal.fire({
+          icon: "success",
+          title: "OTP Verified!",
+          text: "You can now proceed with registration.",
+        });
+      }
+    } catch (error) {
+      MySwal.fire({
+        icon: "error",
+        title: "Failed to Verify OTP",
+        text: error.response ? error.response.data.message : "Something went wrong!",
+      });
+    }
+  };
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -68,6 +116,14 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (!otpVerified) {
+        MySwal.fire({
+          icon: "error",
+          title: "OTP Not Verified",
+          text: "Please verify your OTP before registering.",
+        });
+        return;
+      }
     setLoading(true);
     setProgress(20);
 
@@ -318,6 +374,42 @@ const Register = () => {
               </div>
             </div>
 
+            {/* Add this after the existing form fields */}
+            <div className="flex gap-10 mb-6">
+              <div className="flex-1">
+                <label className="text-white">OTP</label>
+                <input
+                  type="text"
+                  name="otp"
+                  className="input w-full text-white bg-transparent border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500"
+                  placeholder="Enter OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  disabled={!otpSent}
+                />
+              </div>
+              <div className="flex-1 flex items-end">
+                {!otpSent ? (
+                  <button
+                    type="button"
+                    onClick={handleSendOTP}
+                    className="stylebt px-6 py-2 bg-white text-Navy rounded hover:bg-Navy hover:text-green-700"
+                  >
+                    Send OTP
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleVerifyOTP}
+                    className="stylebt px-6 py-2 bg-white text-Navy rounded hover:bg-Navy hover:text-green-700"
+                    disabled={otpVerified}
+                  >
+                    Verify OTP
+                  </button>
+                )}
+              </div>
+            </div>
+
             {/* Row 7 - File Upload */}
             <div className="flex gap-10 mb-6">
               <div className="flex-1">
@@ -333,8 +425,13 @@ const Register = () => {
             </div>
 
             {/* Submit Button */}
+            {/* Modify the existing submit button */}
             <div className="text-center">
-              <button type="submit" className="stylebt px-6 py-2 bg-white text-Navy rounded hover:bg-Navy hover:text-green-700">
+              <button
+                type="submit"
+                className="stylebt px-6 py-2 bg-white text-Navy rounded hover:bg-Navy hover:text-green-700"
+                disabled={!otpVerified || loading}
+              >
                 Register Now
               </button>
             </div>

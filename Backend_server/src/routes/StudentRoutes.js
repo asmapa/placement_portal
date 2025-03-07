@@ -66,7 +66,8 @@ sample response:
     ]
 }
 */
-router.get("/get-all-students", StudentController.getStudents);
+router.get("/get-all-registered-students", StudentController.getRegisteredStudents);
+router.get("/get-all-students", StudentController.getAllStudents);
 router.get("/get-students-by-year/:year", StudentController.getStudentsByYear);
 router.get("/get-students-by-department/:dept", StudentController.getStudentsByDepartment);
 router.get("/get-students/placed", StudentController.getPlaced);
