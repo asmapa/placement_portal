@@ -15,7 +15,9 @@ const ViewStudent = () => {
     noSupplyHistory: ""
   });
 
-useEffect(() => {
+
+
+  useEffect(() => {
   const fetchStudents = async () => {
     let url = "http://localhost:3000/portal/get-all-students";
 
@@ -28,19 +30,33 @@ useEffect(() => {
       url = `http://localhost:3000/portal/filter-students?${queryParams.toString()}`;
     }
 
-    console.log("Fetching from:", url); 
+    console.log("Fetching from:", url);
 
     try {
       setStudents([]); 
       const res = await axios.get(url);
       console.log("Response Data:", res.data);
 
+      
+      const formatDate = (isoDate) => {
+        const date = new Date(isoDate);
+        return date.toLocaleDateString("en-GB"); 
+      };
+
+      let formattedData = [];
+
       if (activeTab === "all") {
-        
-        setStudents(res.data);
+        formattedData = res.data.map((student) => ({
+          ...student,
+          date_of_birth: formatDate(student.date_of_birth),
+        }));
+        setStudents(formattedData);
       } else if (activeTab === "filter" && res.data.success && Array.isArray(res.data.data)) {
-       
-        setStudents(res.data.data);
+        formattedData = res.data.data.map((student) => ({
+          ...student,
+          date_of_birth: formatDate(student.date_of_birth),
+        }));
+        setStudents(formattedData);
       } else {
         console.error("Unexpected response format", res.data);
       }
@@ -51,6 +67,7 @@ useEffect(() => {
 
   fetchStudents();
 }, [activeTab, filters]);
+
 
 
 
@@ -93,11 +110,11 @@ useEffect(() => {
       {activeTab === "filter" && (
         <div className="bg-white p-4 rounded-lg shadow-md mb-4">
          <div className="bg-blue-100 p-4 rounded-lg mb-4">
-  <h3 className="text-lg font-bold text-blue-800">Available Filters</h3>
-  <p className="text-sm text-blue-700">
+  <h3 className="text-xl font-bold text-blue-800">Available Filters</h3>
+  <p className="text-lg text-blue-700">
     You can filter students using <b>any combination</b> of the following:
   </p>
-  <ul className="list-disc pl-5 text-sm text-blue-700">
+  <ul className="list-disc pl-5 text-lg text-blue-700">
     <li><b>Department:</b> CSE, ECE, ME, etc.</li>
     <li><b>Minimum CGPA:</b> Example: 5.0, 6.5</li>
     <li><b>No. of Backlogs:</b> Example: 0, 1, 2, etc.</li>
@@ -105,7 +122,7 @@ useEffect(() => {
     <li><b>Graduation Year:</b> Example: 2026, 2025</li>
     <li><b>No Supply History:</b> true / false</li>
   </ul>
-  <p className="text-sm text-blue-700 mt-2">
+  <p className="text-lg text-blue-700 mt-2">
     ✅ You can apply <b>one filter</b> or <b>multiple filters together</b>.  
     <br /> Example: Filter by <b>Department = CSE</b> & <b>CGPA ≥ 6.5</b> at the same time.
   </p>

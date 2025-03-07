@@ -190,21 +190,7 @@ try {
   }, [selectedDrive]); 
 
   
- /*const fetchCompanies = () => {
-  axios
-    .get("http://localhost:3000/portal/get-company") 
-    .then((response) => {
-      console.log("Fetched Data:", response.data);
-      setCompanies(response.data); // Update state
-    })
-    .catch((error) => {
-      console.error("Error fetching companies:", error);
-    });
-};
 
-useEffect(() => {
-  fetchCompanies(); // Fetch initially
-}, []); */
 
   
 useEffect(() => {
@@ -520,6 +506,11 @@ setTimeout(() => setDrivechoose(true), 10);
       {/*The Table Data */}
       {selectedTab === "Existing-Company" && (
         <div className="overflow-x-auto shadow-md rounded-lg border-Navy mt-8">
+          <input
+          type="text"
+            placeholder="Enter company Name for search "
+          className='w-1/2 rounded-md border-[#005f69] mb-10'/>
+
           <Table striped bordered hover responsive>
             <thead style={{ backgroundColor: "#005f69", color: "white" }}>
               <tr>
