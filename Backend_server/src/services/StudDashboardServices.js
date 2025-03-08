@@ -60,9 +60,19 @@ export const getStudentRoundResults = async (ktuId, driveId) => {
             ORDER BY pr.round_number ASC
         `;
 
-        const { rows } = await query(round_query, [ktuId, driveId]);
+        const company_query = `
+            SELECT c.company_name 
+            FROM company c
+            INNER JOIN placement_drive pd ON c.company_id = pd.company_id
+            WHERE pd.drive_id = $1
+        `;
 
-        return rows;
+        const { rows: roundResults } = await query(round_query, [ktuId, driveId]);
+        const { rows: companyData } = await query(company_query, [driveId]);
+
+        const companyName = companyData.length > 0 ? companyData[0].company_name : null;
+
+        return { companyName, roundResults };    
     } catch (error) {
         throw new Error(error.message);
     }

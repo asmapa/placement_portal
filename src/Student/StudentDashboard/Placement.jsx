@@ -197,7 +197,7 @@ useEffect(() => {
             </a>
           <a
             onClick={() => {
-                MySwal.fire({
+                Swal.fire({
         title: "Registed SuccessFully,Prepare Well 🎉",
         text: "Redirecting to dashboard...",
         icon: "success",

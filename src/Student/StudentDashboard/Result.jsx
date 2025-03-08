@@ -27,10 +27,10 @@ const Result = () => {
           }
         );
 
-        if (response.data.length > 0) {
+        if (response.data && response.data.roundResults.length > 0) {
           setCompanyData({
-            company: "Company Name", // Replace with actual company name or fetch it from the backend
-            rounds: response.data.map((round) => ({
+            company: response.data.companyName, // Replace with actual company name or fetch it from the backend
+            rounds: response.data.roundResults.map((round) => ({
               name: round.round_name,
               result: round.status, // Assuming backend returns "Cleared", "Pending", etc.
             })),

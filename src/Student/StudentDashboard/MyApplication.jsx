@@ -94,14 +94,14 @@ const MyApplication = () => {
 
       {round && (
   <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-    <div className="bg-Navy p-6 w-1/2 text-white text-center rounded-lg shadow-lg border border-gray-400">
+    <div className="bg-Navy p-6 w-1/2 text-white text-center rounded-lg shadow-lg border border-gray-400 max-h-[95vh] overflow-y-auto">
       <h2 className="text-3xl font-semibold mb-4 flex items-center justify-center">
         📢 Round Details
       </h2>
       <p className="mb-4 text-xl text-yellow-300">Brace yourself! Here comes the battle of rounds! ⚔️</p>
       <ul>
         {selectedRounds.map((round, index) => (
-          <li key={index} className="mb-2 border-b border-gray-300 pb-2 text-xl flex flex-col items-center">
+          <li key={index} className="mb-2  border-gray-300 pb-2 text-xl flex flex-col items-center">
             <h3 className="text-2xl font-semibold text-blue-300">🎯 {round.round_name}</h3>
             <p className="text-lg">📅 <strong>Date:</strong> {new Date(round.round_date).toLocaleDateString()}</p>
             <p className="text-lg">📍 <strong>Location:</strong> {round.location}</p>

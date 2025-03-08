@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import ritImg from "./assets/rit_campus.jpg"; // Import the image
-import ritImg1 from "./assets/rit_ground_img.jpg"; // Import the image
+import ritImg1 from "./assets/rit_trees.jpg"; // Import the image
 import ritImg2 from "./assets/rit_img.jpg"; // Import the image
-import ritImg3 from "./assets/rit_trees.jpg"; // Import the image
+import ritImg3 from "./assets/rit_sky_view.jpg"; // Import the image
 import alumni1 from "./assets/unni.png"; // Import the image
 import alumni2 from "./assets/kiara.png"; // Import the image
 import alumni3 from "./assets/alia.png"; // Import the image
@@ -132,7 +132,7 @@ const ExplorePage = () => {
       }}
       >
         <h1 className="text-4xl font-bold mb-4">
-          Welcome to the Placement Management System
+          Welcome to the CGPC RIT
         </h1>
         <p className="text-xl mb-8">Empowering Students for Successful Careers</p>
         <button
