@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ritImg from "./assets/rit_campus.jpg"; // Import the image
 import ritImg1 from "./assets/rit_ground_img.jpg"; // Import the image
 import ritImg2 from "./assets/rit_img.jpg"; // Import the image
@@ -10,6 +10,10 @@ import alumni4 from "./assets/tovino.png"; // Import the image
 import { FaCheckCircle, FaRegCheckCircle, FaUser, FaClipboardList, FaHandshake, FaClock, FaBell, FaUserTie, FaGraduationCap } from "react-icons/fa"; // Import icons
 
 const ExplorePage = () => {
+    const nextSectionRef = useRef(null); 
+    const handleExploreMore = () => {
+        nextSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    };
   // Sample data for companies and testimonials
   const companies = [
     { id: 1, name: "Google", logo: "https://via.placeholder.com/100" },
@@ -131,10 +135,16 @@ const ExplorePage = () => {
           Welcome to the Placement Management System
         </h1>
         <p className="text-xl mb-8">Empowering Students for Successful Careers</p>
+        <button
+          onClick={handleExploreMore} // Add click handler
+          className="bg-orange-500 px-6 py-2 rounded-lg hover:bg-orange-600 transition-all duration-300 transform hover:scale-105"
+        >
+          Explore More
+        </button>
       </div>
 
       {/* About Placement Cell and College */}
-      <div className="py-12 px-4">
+      <div ref={nextSectionRef} className="py-12 px-4">
         <h2 className="text-3xl font-bold text-center mb-8">About Us</h2>
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8">
           <img
