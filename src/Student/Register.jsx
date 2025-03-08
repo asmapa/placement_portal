@@ -42,6 +42,9 @@ const Register = () => {
           icon: "success",
           title: "OTP Sent!",
           text: "OTP has been sent to your email.",
+          timer: 2000, // Close the pop-up after 3 seconds (3000 milliseconds)
+          timerProgressBar: true, // Show a progress bar for the timer
+          showConfirmButton: false, // Hide the "OK" button
         });
       }
     } catch (error) {
@@ -49,6 +52,9 @@ const Register = () => {
         icon: "error",
         title: "Failed to Send OTP",
         text: error.response ? error.response.data.message : "Something went wrong!",
+        timer: 2000, // Close the pop-up after 3 seconds (3000 milliseconds)
+        timerProgressBar: true, // Show a progress bar for the timer
+        showConfirmButton: false, // Hide the "OK" button
       });
     }
   };
@@ -60,20 +66,27 @@ const Register = () => {
         otp: otp,
       });
       if (response.data.success) {
-        setOtpVerified(true);
-        MySwal.fire({
-          icon: "success",
-          title: "OTP Verified!",
-          text: "You can now proceed with registration.",
-        });
-      }
+      setOtpVerified(true);
+      MySwal.fire({
+        icon: "success",
+        title: "OTP Verified!",
+        text: "You can now proceed with registration.",
+        timer: 2000, // Close the pop-up after 3 seconds (3000 milliseconds)
+        timerProgressBar: true, // Show a progress bar for the timer
+        showConfirmButton: false, // Hide the "OK" button
+      });
+    }
     } catch (error) {
       MySwal.fire({
         icon: "error",
         title: "Failed to Verify OTP",
         text: error.response ? error.response.data.message : "Something went wrong!",
+        timer: 2000, // Close the pop-up after 3 seconds (3000 milliseconds)
+        timerProgressBar: true, // Show a progress bar for the timer
+        showConfirmButton: false, // Hide the "OK" button
       });
     }
+
   };
 
   const handleChange = async (e) => {

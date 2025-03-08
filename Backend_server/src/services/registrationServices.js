@@ -35,7 +35,7 @@ export const verifyStudentDetails = async (ktuId,file) => {
         return result.rows[0];
     } catch (error) {
         logger.error(`Database error: ${error.message}`);
-        throw new Error("Failed to verify student details");
+        throw new Error("Failed to verify student details: " + error.message);
     }
 };
 
@@ -53,7 +53,7 @@ export const updateStudentDetails = async (ktuId,skills, resumeUrl, password) =>
         logger.info(`Student details updated: ${ktuId}`);
     } catch (error) {
         logger.error(`Database error: ${error.message}`);
-        throw new Error("Failed to update student details");
+        throw new Error("Failed to update student details: " + error.message);
     }
 };
 

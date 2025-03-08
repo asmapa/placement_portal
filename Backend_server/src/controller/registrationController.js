@@ -36,6 +36,18 @@ export const registerStudent = async (req, res) => {
         res.status(200).json({ message: 'Registration successful', token });
     } catch (error) {
         logger.error(`Registration failed: ${error.message}`);
-        res.status(500).json({ message: 'Registration failed', error: error.message });
+       if (error.message.includes("Student details not found")) {
+            return res.status(404).json({ message: error.message });
+        } else if (error.message.includes("Student is already registered")) {
+            return res.status(400).json({ message: error.message });
+        } else if (error.message.includes("Invalid file type")) {
+            return res.status(400).json({ message: error.message });
+        } else if (error.message.includes("File size exceeds")) {
+            return res.status(400).json({ message: error.message });
+        } else if (error.message.includes("Failed to upload resume")) {
+            return res.status(500).json({ message: error.message });
+        } else {
+            return res.status(500).json({ message: 'Registration failed', error: error.message });
+        }
     }
 };
