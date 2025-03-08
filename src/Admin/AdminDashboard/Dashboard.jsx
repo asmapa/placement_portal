@@ -104,7 +104,9 @@ useEffect(() => {
     };
 
     fetchStatisticsByYear();
-  }, []);
+ }, []);
+  
+  
 
 const handleShowRounds = (driveId) => {
   const rounds = RoundDrive.filter((round) => round.drive_id === driveId);

@@ -116,6 +116,7 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+     
     if (!otpVerified) {
         MySwal.fire({
           icon: "error",
@@ -196,12 +197,11 @@ const Register = () => {
             <h1 className="text-3xl font-bold text-white">Registration Form</h1>
             <p className='text-lg text-white mt-9'>✨ "Type your KTU ID carefully, like it's your Netflix password! 🎬 If you're a valid student, all your details will magically appear. Set your password, show off your skills, and upload that resume like a pro! 🚀"</p>
           </div>
-               {loading && (
+            {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-80 rounded-2xl">
             <div className="animate-spin h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
           </div>
         )}
-
 
           <form onSubmit={handleRegister}>
             {/* Row 1 */}
@@ -430,9 +430,9 @@ const Register = () => {
               <button
                 type="submit"
                 className="stylebt px-6 py-2 bg-white text-Navy rounded hover:bg-Navy hover:text-green-700"
-                disabled={!otpVerified || loading}
+                disabled={!otpVerified }
               >
-                Register Now
+                 {loading ? "registration is in progress..." : "Register Now"}
               </button>
             </div>
           </form>

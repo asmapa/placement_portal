@@ -1,12 +1,21 @@
 import React from 'react';
 import { Carousel } from 'flowbite-react';
 import Rit from '../assets/placement2.png';
-import homeimage1 from '../assets/homeimage1.png';
-import homeimage2 from '../assets/hi2.png';
+
 import { motion } from 'framer-motion';
 import { fadeIn } from '../variants';
+import { useNavigate } from "react-router-dom";
+
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  const explorePage = () => {
+    navigate("/explore");
+  }
+
+
+  
   return (
     <div>
       <div className='px-4 lg:px-14 max-w-screen-2xl mx-auto min-h-screen h-screen'>
@@ -50,7 +59,8 @@ const Home = () => {
               viewport={{ once: false, amount: 0.3 }} // Trigger animation when 30% of the div is visible
               variants={fadeIn('up', 0.2)} 
                           >
-                              <button className='px-7 py-2 bg-Navy text-white rounded hover:bg-[#696969] transition-all duration-300 hover:-translate-y-4 w-36'>
+                <button className='px-7 py-2 bg-Navy text-white rounded hover:bg-[#696969] transition-all duration-300 hover:-translate-y-4 w-36'
+                onClick={explorePage}>
                 Explore
               </button>
                           </motion.button>

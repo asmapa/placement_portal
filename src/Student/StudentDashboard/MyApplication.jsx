@@ -4,7 +4,20 @@ import { useNavigate } from "react-router-dom";
 
 const MyApplication = () => {
   const [applications, setApplications] = useState([]);
+  const [selectedRounds, setSelectedRounds] = useState([]);
+  const [round, setRound] = useState(false);
   const navigate = useNavigate();
+
+ const handleRounds = async (drive_id) => {
+   try {
+    setSelectedRounds([]);
+    const response = await axios.get(`http://localhost:3000/portal/get-drive-rounds/${drive_id}`);
+    setSelectedRounds(response.data); 
+    setRound(true);
+  } catch (error) {
+    console.error("Error fetching rounds:", error.response?.data?.message || error.message);
+  }
+};
 
   
   useEffect(() => {
@@ -56,13 +69,55 @@ const MyApplication = () => {
                   <strong>Salary:</strong> {company.permanent_package} LPA
                 </p>
               </div>
-              <button onClick={() => navigate(`/student-dashboard/Result/${company.drive_id}`)} className="mt-2 px-4 py-2 bg-blue-950 text-white font-semibold rounded-lg hover:bg-blue-800 transition w-1/2 flex justify-center">
-                Result
-              </button>
+            
+               <div className="flex w-full gap-4 mt-4">
+                <button
+                  onClick={() => navigate(`/student-dashboard/Result/${company.drive_id}`)}
+                  className="px-4 py-2 bg-blue-950 text-white font-semibold rounded-lg hover:bg-blue-800 transition w-1/2"
+                >
+                  Result
+                </button>
+                <button
+                  onClick={() => handleRounds(company.drive_id)}
+                  className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-500 transition w-1/2"
+                >
+                  View Rounds
+                </button>
+              </div>
+
             </div>
           ))
         )}
       </div>
+
+
+
+      {round && (
+  <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="bg-Navy p-6 w-1/2 text-white text-center rounded-lg shadow-lg border border-gray-400">
+      <h2 className="text-3xl font-semibold mb-4 flex items-center justify-center">
+        📢 Round Details
+      </h2>
+      <p className="mb-4 text-xl text-yellow-300">Brace yourself! Here comes the battle of rounds! ⚔️</p>
+      <ul>
+        {selectedRounds.map((round, index) => (
+          <li key={index} className="mb-2 border-b border-gray-300 pb-2 text-xl flex flex-col items-center">
+            <h3 className="text-2xl font-semibold text-blue-300">🎯 {round.round_name}</h3>
+            <p className="text-lg">📅 <strong>Date:</strong> {new Date(round.round_date).toLocaleDateString()}</p>
+            <p className="text-lg">📍 <strong>Location:</strong> {round.location}</p>
+            <p className="text-lg">💻 <strong>Mode:</strong> {round.mode}</p>
+          </li>
+        ))}
+      </ul>
+      <button 
+        onClick={() => setRound(false)} 
+        className="mt-4 px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-500 transition w-full"
+      >
+        ❌ Close the battlefield
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 };

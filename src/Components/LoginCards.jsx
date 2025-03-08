@@ -67,10 +67,10 @@ const LoginCards = () => {
         {/* Placement Cell Card */}
         <motion.div variants={fadeIn('up', 0.6)}>
           <Card style={{ width: '18rem' }}>
-            <Card.Img variant="top" src={officer} />
+            <Card.Img variant="top" src={officer} className='mb-20' />
             <Card.Body>
-              <Card.Title style={{ fontSize: '1.5rem', color: 'navy', fontWeight: 'bold' }}>Placement Cell</Card.Title>
-              <Card.Text style={{ fontSize: '1rem', color: '#696969', lineHeight: '1.5' }}>
+              <Card.Title style={{ fontSize: '1.5rem', color: 'navy', fontWeight: 'bold' }} >Placement Cell</Card.Title>
+              <Card.Text style={{ fontSize: '1rem', color: '#696969', lineHeight: '1.5' }} >
                 "Manage student profiles and placement activities effortlessly. Track company visits, interview schedules, and placement results."
               </Card.Text>
               <div className="d-flex gap-4 justify-center">
