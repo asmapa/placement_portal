@@ -107,50 +107,74 @@ useEffect(() => {
  }, []);
   
   
-
+{/*Duration */}
 const handleShowRounds = (driveId) => {
   const rounds = RoundDrive.filter((round) => round.drive_id === driveId);
   setSelectedDriveRounds(rounds);
+  
   setEditedRounds(
     rounds.reduce((acc, round) => {
-      acc[`${round.drive_id}-${round.round_number}`] = { ...round };
+      acc[`${round.drive_id}-${round.round_number}`] = {
+        ...round,
+        duration: {
+          hours: round.duration?.seconds ? Math.floor(round.duration.seconds / 3600) : 0, 
+          minutes: round.duration?.seconds ? Math.floor((round.duration.seconds % 3600) / 60) : 0,
+        },
+      };
       return acc;
     }, {})
   );
+
   setShowForm(true);
 };
 
+
 const handleRoundChange = (e, roundKey, field) => {
-  setEditedRounds({
-    ...editedRounds,
+  const value = e.target.value;
+
+  setEditedRounds((prevRounds) => ({
+    ...prevRounds,
     [roundKey]: {
-      ...editedRounds[roundKey],[field]: e.target.value,
+      ...prevRounds[roundKey],
+      duration: {
+        ...prevRounds[roundKey].duration, // Preserve existing duration object
+        [field]: value, // Update only hours or minutes
+      },
     },
-  });
+  }));
 };
 
-const handleUpdate = async() => {
+
+const handleUpdate = async () => {
   console.log("Updated Rounds: ", editedRounds);
-try {
+
+  try {
     await Promise.all(
       Object.entries(editedRounds).map(([key, roundData]) => {
-        const [drive_id, round_number] = key.split("-"); // Extract IDs
+        const [drive_id, round_number] = key.split("-");
+
+        // Convert hours and minutes into seconds
+        const totalSeconds =
+          (parseInt(roundData.duration.hours) || 0) * 3600 +
+          (parseInt(roundData.duration.minutes) || 0) * 60;
 
         return axios.put(
           `http://localhost:3000/portal/update-round/${drive_id}/${round_number}`,
-          roundData
+          { ...roundData, duration: { seconds: totalSeconds } } // Send seconds to backend
         );
       })
     );
-  alert("All rounds updated");
+
+    alert("All rounds updated");
     console.log("✅ All rounds updated successfully!");
   } catch (error) {
     console.error("❌ Error updating rounds:", error.response?.data || error.message);
   }
+
   setShowForm(false);
 };
 
-  
+
  
 
   //Comapny Form Data
@@ -860,13 +884,16 @@ setTimeout(() => setDrivechoose(true), 10);
                   onChange={(e) => handleRoundChange(e, roundKey, "round_date")}
                 />
 
-                <label className="block mt-2 font-bold  text-[#005f69]">Duration (hours/minutes)</label>
-                <input
-                  type="text"
-                  className="w-full border-[#005f69] rounded-md focus:ring focus:ring-blue-500"
-                  value={editedRounds[roundKey].duration.hours || editedRounds[roundKey].duration.minutes}
-                  onChange={(e) => handleRoundChange(e, roundKey, "duration")}
-                />
+                {/*Duration Issue */}
+
+               <label className="block mt-2 font-bold text-[#005f69]">Duration (hours/minutes)</label>
+<input
+  type="text"
+  className="w-full border-[#005f69] rounded-md focus:ring focus:ring-blue-500"
+  value={`${editedRounds[roundKey]?.duration?.hours || 0}h ${editedRounds[roundKey]?.duration?.minutes || 0}m`}
+  
+/>
+
 
                 <label className="block mt-2 font-bold  text-[#005f69]">Location</label>
                 <input
