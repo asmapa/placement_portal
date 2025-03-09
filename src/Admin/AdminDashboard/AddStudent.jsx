@@ -92,27 +92,28 @@ const AddStudent = () => {
 
     try {
       const res = await axios.post("http://localhost:3000/portal/add-student", data);
-      if (res.status === 200) {
-         Swal.fire({
-                    icon: 'success',
-                    title: 'Students Enterd Into Database Successfully!',
-                    showConfirmButton: false,
-                    timer: 2000,  // Auto close after 2 sec
-                  });
-            
-                  setTimeout(() => {
-                    navigate('/Admin-dashboard'); // Redirect after alert
-                  }, 2000);
+
+      if (!res || !res.status || (res.status !== 200 && res.status !== 201)) {
+        throw new Error("Unexpected response status: " + res.status);
       }
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Students Entered Into Database Successfully!',
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => {
+        navigate('/Admin-dashboard');
+      });
+
     } catch (error) {
       console.error("Error adding student:", error);
-     
-       Swal.fire({
-                    icon: 'error',
-                    title: 'Error While Adding Students!!!!!',
-                    showConfirmButton: false,
-                    timer: 2000,  // Auto close after 2 sec
-                  });
+      Swal.fire({
+        icon: 'error',
+        title: 'Error While Adding Students!!!!!',
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
 
     console.log(data);
