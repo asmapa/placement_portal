@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import axios from "axios";
+
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+
 const Data = ({ excelData }) => {
   return excelData.map((individualExcelData, index) => (
     <tr key={index}>
@@ -30,6 +34,7 @@ const IndividualData = ({ individualExcelData }) => {
 };
 
 const AddStudent = () => {
+  const navigate = useNavigate();
   const [excelFile, setExcelFile] = useState(null);
   const [excelFileError, setExcelFileError] = useState(null);
   const [excelData, setExcelData] = useState([]);
@@ -88,11 +93,26 @@ const AddStudent = () => {
     try {
       const res = await axios.post("http://localhost:3000/portal/add-student", data);
       if (res.status === 200) {
-        alert("It Added successfully");
+         Swal.fire({
+                    icon: 'success',
+                    title: 'Students Enterd Into Database Successfully!',
+                    showConfirmButton: false,
+                    timer: 2000,  // Auto close after 2 sec
+                  });
+            
+                  setTimeout(() => {
+                    navigate('/Admin-dashboard'); // Redirect after alert
+                  }, 2000);
       }
     } catch (error) {
       console.error("Error adding student:", error);
-      alert("Failed to Add student.");
+     
+       Swal.fire({
+                    icon: 'error',
+                    title: 'Error While Adding Students!!!!!',
+                    showConfirmButton: false,
+                    timer: 2000,  // Auto close after 2 sec
+                  });
     }
 
     console.log(data);

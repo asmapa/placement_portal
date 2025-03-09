@@ -107,11 +107,12 @@ useEffect(() => {
  }, []);
   
   
-
+{/*Duration */}
 const handleShowRounds = (driveId) => {
   const rounds = RoundDrive.filter((round) => round.drive_id === driveId);
 
   setSelectedDriveRounds(rounds);
+  
   setEditedRounds(
     rounds.reduce((acc, round) => {
       let durationHours = "00";
@@ -140,8 +141,10 @@ const handleShowRounds = (driveId) => {
       return acc;
     }, {})
   );
+
   setShowForm(true);
 };
+
 
 
 const handleRoundChange = (e, roundKey, field) => {
@@ -199,6 +202,7 @@ const handleUpdate = async () => {
       error.response?.data || error.message
     );
   }
+
   setShowForm(false);
 };
   
