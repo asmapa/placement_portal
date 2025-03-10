@@ -99,7 +99,7 @@ export const getChatbotResponse = async (userQuery, user) => {
         ${recommendation}
 
         **Placement Guidelines:**
-        1. All final year students from the Institute have to register with CGPC to be eligible for placement drive for the corresponding passout year. Placement Registration is for one academic year only and will be done during the month of July. Registration fee is Rs 300/- (Rs Three Hundred only).
+        1. All final year students from the Institute have to register with CGPC to be eligible for placement drive for the corresponding passout year. Placement Registration is for one academic year only and will be done during the month of July.
 
         2. Registration is not compulsory. Students not interested in placement are advised not to register for placement. Due to the current pandemic situation if all placements are carried out virtually, 50% of fees will be refunded at the end of academic year.
 
@@ -145,7 +145,7 @@ export const getChatbotResponse = async (userQuery, user) => {
 
         17. For all matters not covered by the above guidelines, CGPC will use its discretion to take appropriate decisions. The decision taken by this office shall be binding on all students.
 
-        Answer the student's query in a friendly and helpful way. Use 'you' instead of 'she' since the student is asking personally. Ensure your response is clear and engaging.
+        Answer the student's query in a friendly and helpful way. Use 'you' instead of 'he'/'she' since the student is asking personally. Ensure your response is clear and engaging.
         `;
 
         // ✅ Make API request to Gemini

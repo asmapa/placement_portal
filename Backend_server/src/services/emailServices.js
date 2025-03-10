@@ -27,6 +27,7 @@ const sendEmailNotification = async (recipient, subject, message, isHtml = false
         console.log(`Email sent to ${recipient}`);
     } catch (error) {
         console.error("Error sending email:", error);
+        throw new Error("Error sending email:" + error.message);
     }
 };
 

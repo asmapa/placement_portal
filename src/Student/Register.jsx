@@ -9,6 +9,7 @@ const MySwal = withReactContent(Swal);
 const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [isSendingOTP, setIsSendingOTP] = useState(false);
   const [progress, setProgress] = useState(0); 
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
@@ -33,6 +34,7 @@ const Register = () => {
 
   const handleSendOTP = async () => {
     try {
+      setIsSendingOTP(true); // Set loading state
       const response = await axios.post("http://localhost:3000/portal/send-otp", {
         email: formData.ritmail,
       });
@@ -56,6 +58,8 @@ const Register = () => {
         timerProgressBar: true, // Show a progress bar for the timer
         showConfirmButton: false, // Hide the "OK" button
       });
+    }finally {
+        setIsSendingOTP(false); // Reset loading state
     }
   };
 
@@ -408,7 +412,7 @@ const Register = () => {
                     onClick={handleSendOTP}
                     className="stylebt px-6 py-2 bg-white text-Navy rounded hover:bg-Navy hover:text-green-700"
                   >
-                    Send OTP
+                    {isSendingOTP ? "Sending OTP..." : "Send OTP"}
                   </button>
                 ) : (
                   <button
@@ -445,7 +449,7 @@ const Register = () => {
                 className="stylebt px-6 py-2 bg-white text-Navy rounded hover:bg-Navy hover:text-green-700"
                 disabled={!otpVerified }
               >
-                 {loading ? "registration is in progress..." : "Register Now"}
+                 {loading ? "Registration is in progress..." : "Register Now"}
               </button>
             </div>
           </form>
