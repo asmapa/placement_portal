@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 
 const UploadOrDeleteDrive = () => {
   const navigate = useNavigate();
+  const [companies, setCompanies] = useState([]);
   const [placementDriveData, setPlacementDriveData] = useState({
     company_id: "",
     job_role: "",
@@ -15,7 +16,7 @@ const UploadOrDeleteDrive = () => {
     last_date_to_submit: "",
     registration_link: "",
     work_location: "",
-    duration:"",
+    duration: "",
     drive_mode: "On Campus",
     drive_type: "Dream",
     start_date: "",
@@ -26,9 +27,23 @@ const UploadOrDeleteDrive = () => {
     description: "",
   });
 
-  const [round, setRound] = useState(0); // ✅ Moved outside the function to fix state update issue
+  const [round, setRound] = useState(0);
 
- // Ensure round state updates correctly
+  // Fetch company list on mount
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/portal/get-company");
+        setCompanies(response.data.companies);
+      } catch (error) {
+        console.error("Error fetching companies:", error);
+      }
+    };
+
+    fetchCompanies();
+  }, []);
+
+  // Ensure round state updates correctly
   useEffect(() => {
     setRound(Number(placementDriveData.num_of_rounds || 0));
   }, [placementDriveData.num_of_rounds]);
@@ -36,7 +51,7 @@ const UploadOrDeleteDrive = () => {
   // Handle input changes
   const handleChange = (e) => {
     const { name, value, type, checked, multiple, options } = e.target;
-    
+
     if (multiple) {
       // Handle multiple select inputs
       const selectedValues = Array.from(options)
@@ -60,7 +75,7 @@ const handleSubmit = async (e) => {
     const response = await axios.post("http://localhost:3000/portal/add-drive", placementDriveData);
     console.log("Drive successfully entered into database !!", response.data);
 
-    if (response?.data?.drive?.drive_id && response.data.drive.drive_mode === "On campus") {
+    if (response?.data?.drive?.drive_id && response.data.drive.drive_mode === "On Campus") {
       navigate(`/Admin-dashboard/AddRounds/${roundCount}/${response.data.drive.drive_id}`);
     } else {
        Swal.fire({
@@ -89,15 +104,21 @@ const handleSubmit = async (e) => {
         <form onSubmit={handleSubmit}>
           {/* Company ID */}
           <div className="mb-6">
-            <label className="text-[#005f69] font-semibold">Company ID:</label>
-            <input
-              type="text"
+            <label className="text-[#005f69] font-semibold">Company:</label>
+            <select
               name="company_id"
               value={placementDriveData.company_id}
               onChange={handleChange}
               className="w-full text-gray-800 bg-white border border-[#005f69] rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
               required
-            />
+            >
+              <option value="" disabled>Select a company</option>
+              {companies.map((company) => (
+                <option key={company.company_id} value={company.company_id}>
+                  {company.company_id} - {company.company_name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Job Role */}
@@ -243,12 +264,12 @@ const handleSubmit = async (e) => {
               required
             >
               <option value="CSE">CSE</option>
-              <option value="IT">CE</option>
-              <option value="IT">ME</option>
-              <option value="IT">MCA</option>
+              <option value="CE">CE</option>
+              <option value="ME">ME</option>
+              <option value="MCA">MCA</option>
               <option value="ECE">ECE</option>
               <option value="EEE">EEE</option>
-              <option value="MCA">Robotics</option>
+              <option value="Robotics">Robotics</option>
             </select>
           </div>
 

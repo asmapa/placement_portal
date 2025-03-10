@@ -741,10 +741,15 @@ setTimeout(() => setDrivechoose(true), 10);
               <input
                 type={key === "supply_history_allowed" ? "checkbox" : "text"}
                 name={key}
-                value={formDrive[key]}
-                onChange={handleDrive}
-                className="border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 focus:ring-2 focus:ring-blue-400"
-                readOnly={key === "drive_id"} 
+                checked={key === "supply_history_allowed" ? formDrive[key] : undefined}  // ✅ Use `checked`
+                value={key !== "supply_history_allowed" ? formDrive[key] : undefined}  // ✅ Prevent `value` on checkbox
+                onChange={(e) => {
+                  if (key === "supply_history_allowed") {
+                    setFormDrive((prev) => ({ ...prev, [key]: e.target.checked }));  // ✅ Toggle boolean value
+                  } else {
+                    handleDrive(e); // ✅ For other inputs
+                  }
+                }}
               />
             </div>
           ))}
@@ -911,7 +916,7 @@ setTimeout(() => setDrivechoose(true), 10);
                 <input
                   type="date"
                   className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
-                  value={editedRounds[roundKey].round_date}
+                  value={new Date(editedRounds[roundKey].round_date).toISOString().split("T")[0]}
                   onChange={(e) => handleRoundChange(e, roundKey, "round_date")}
                 />
 
