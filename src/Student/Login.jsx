@@ -91,13 +91,26 @@ const Login = () => {
             <p className="text-center">OR</p>
             <hr className="border-gray-500" />
           </div>
-          <button
-            className="bg-Navy text-white py-2 rounded-xl mt-4 mb-4 w-full hover:bg-green-600"
+
+          <div className="flex flex-col">
+              <button
+            className="bg-Navy text-white py-2 rounded-xl mt-4 mb-4 flex-1 hover:bg-green-600"
             onClick={() => navigate("/Register")}
             disabled={loading}
           >
             Register
+            </button>
+            
+
+            <button
+            className="bg-green-800 text-white py-2 rounded-xl mt-4 mb-4 flex-1  hover:bg-green-600"
+            onClick={() => navigate("/")}
+            disabled={loading}
+          >
+            Home
           </button>
+          </div>
+          
         </div>
         
         <div className="sm:block hidden w-1/2">

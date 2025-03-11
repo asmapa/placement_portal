@@ -61,6 +61,8 @@ const[upcomingDeadlines,setupcomingDeadlines] = useState(0);
 const[registeredStudents,setregisteredStudents] = useState(0);
 const[placementSuccessRate,setPlacementSucessRate] = useState(0);
   const [dataBar, setDataBar] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+
   
 
 
@@ -247,26 +249,53 @@ const handleUpdate = async () => {
   }, [selectedDrive]); 
 
   
+const handleSearch = async (e) => {
+  const name = e.target.value.toLowerCase(); // Convert input to lowercase
+  setSearchTerm(e.target.value);
 
-
-  
-useEffect(() => {
-  axios.get("http://localhost:3000/portal/get-company")
-    .then((response) => {
-      console.log("Fetched companies:", response.data);
-      // Extract the 'companies' array from the response
+  if (name.trim() === "") {
+    fetchAllCompanies();
+  } else {
+    try {
+      const response = await axios.get(`http://localhost:3000/portal/get-company`);
       const companiesData = response.data.companies;
-      
+
+      if (Array.isArray(companiesData)) {
+        // Filter companies case-insensitively
+        const filteredCompanies = companiesData.filter(company =>
+          company.company_name.toLowerCase().includes(name)
+        );
+        setCompanies(filteredCompanies);
+      } else {
+        setCompanies([]);
+      }
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+      setCompanies([]);
+    }
+  }
+};
+
+  useEffect(() => {
+    fetchAllCompanies();
+  }, []);
+
+  const fetchAllCompanies = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/portal/get-company");
+      console.log("Fetched companies:", response.data);
+
+      const companiesData = response.data.companies; // Extract 'companies' array
+
       if (Array.isArray(companiesData)) {
         setCompanies(companiesData);
       } else {
         console.error("Companies data is not an array:", companiesData);
       }
-    })
-    .catch((error) => {
+    } catch (error) {
       console.error("Error fetching companies:", error);
-    });
-}, []);
+    }
+  };
   
 
 
@@ -566,6 +595,8 @@ setTimeout(() => setDrivechoose(true), 10);
           <input
           type="text"
             placeholder="Enter company Name for search "
+          value={searchTerm}
+        onChange={handleSearch}
           className='w-1/2 rounded-md border-[#005f69] mb-10'/>
 
           <Table striped bordered hover responsive>
