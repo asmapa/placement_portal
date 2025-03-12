@@ -916,7 +916,7 @@ setTimeout(() => setDrivechoose(true), 10);
                 <input
                   type="date"
                   className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
-                  value={new Date(editedRounds[roundKey].round_date).toISOString().split("T")[0]}
+                  value={editedRounds[roundKey].round_date?.split("T")[0]} 
                   onChange={(e) => handleRoundChange(e, roundKey, "round_date")}
                 />
 

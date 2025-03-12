@@ -28,6 +28,9 @@ export const loginUser = async (rit_email, password) => {
       return { success: false, message: "Your account has expired. Please contact the admin." };
     }
 
+    if(user.password==null){
+      return { success: false, message: "You are not registered" };
+    }
     // Validate password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {

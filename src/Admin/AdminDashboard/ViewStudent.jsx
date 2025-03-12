@@ -19,7 +19,7 @@ const ViewStudent = () => {
 
   useEffect(() => {
   const fetchStudents = async () => {
-    let url = "http://localhost:3000/portal/get-all-students";
+    let url = "http://localhost:3000/portal/get-all-registered-students";
 
     if (activeTab === "filter") {
       const queryParams = new URLSearchParams();

@@ -12,13 +12,51 @@ import {
   FaUsers,        // For Ongoing Drives
 } from 'react-icons/fa';
 
+
+
 const Placement = () => {
   const [selectedTab, setSelectedTab] = useState('on-campus');
   const [selectedDrive, setSelectedDrive] = useState(null);
  
   const [onCampusDrives, setOnCampusDrives] = useState([]);
-const [offCampusDrives, setOffCampusDrives] = useState([]);
-   
+  const [offCampusDrives, setOffCampusDrives] = useState([]);
+   const [stats, setStats] = useState({
+    totalRegistered: 0,
+    ongoingDrives: 0,
+    placedDrives: 0,
+  });
+
+  // Fetch stats data
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.log("No token found! User not authenticated.");
+          return;
+        }
+
+        const res = await axios.get("http://localhost:3000/portal/student/drives/stats", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.data.status === 200) {
+          setStats({
+            totalRegistered: res.data.totalRegistered,
+            ongoingDrives: res.data.ongoingDrives,
+            placedDrives: res.data.placedDrives,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
 
 const handleConfirm = async (driveId) => {
   try {
@@ -111,17 +149,17 @@ useEffect(() => {
         <div className="flex flex-col items-center flex-1 bg-Navy text-white p-4 rounded-lg mx-2 shadow-md">
           <FaUserGraduate className="text-5xl mb-2" />
           <h2 className="text-lg font-bold">Placements Attended</h2>
-          <p className="text-4xl font-bold">6</p>
+          <p className="text-4xl font-bold">{stats.totalRegistered}</p>
         </div>
         <div className="flex flex-col items-center flex-1 bg-blue-950 text-white p-4 rounded-lg mx-2 shadow-md">
           <FaRegHandshake className="text-5xl mb-2" />
           <h2 className="text-lg font-bold">Number of Offers</h2>
-          <p className="text-4xl font-bold">1</p>
+          <p className="text-4xl font-bold">{stats.placedDrives}</p>
         </div>
         <div className="flex flex-col items-center flex-1 bg-blue-900 text-white p-4 rounded-lg mx-2 shadow-md">
           <FaUsers className="text-5xl mb-2" />
           <h2 className="text-lg font-bold">Ongoing Drives</h2>
-          <p className="text-4xl font-bold">3</p>
+          <p className="text-4xl font-bold">{stats.ongoingDrives}</p>
         </div>
       </div>
 
@@ -191,7 +229,20 @@ useEffect(() => {
             <p className="mb-2 text-xl"><strong>Drive Type:</strong> {selectedDrive.drive_type}</p>
             <p className="mb-2 text-xl"><strong>Location:</strong> {selectedDrive.work_location}</p>
             <p className="mb-2 text-xl"><strong>Remuneration:</strong> Training - ₹{selectedDrive.training_package}, Permanent - ₹{selectedDrive.permanent_package}</p>
-            <p className="mb-2 text-xl"><strong>Key Dates:</strong> Resume Submission - {new Date(selectedDrive.last_date_to_submit).toLocaleDateString()}, Interview Date - {new Date(selectedDrive.start_date).toLocaleDateString()}</p>
+            <p className="mb-2 text-xl">
+              <strong>Key Dates:</strong> Resume Submission -{" "}
+              {new Date(selectedDrive.last_date_to_submit).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              }).replace(/\//g, "-")}
+              , Interview Date -{" "}
+              {new Date(selectedDrive.start_date).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              }).replace(/\//g, "-")}
+            </p>
             <a href={selectedDrive.registration_link} target="_blank" rel="noopener noreferrer" className="block mt-4 bg-blue-500 text-white text-center py-2 rounded hover:bg-blue-600">
               Apply using Their Site
             </a>
