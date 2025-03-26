@@ -47,7 +47,7 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 	},
 	{
 		key: 'GetStudents',
-		label: 'Get Students',
+		label: 'Drives',
 		path: '/Admin-dashboard/GetStudents', // Added path for Get Students
 		icon: <HiOutlineSearch /> // Added search icon for "Get Students"
 	}

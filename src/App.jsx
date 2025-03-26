@@ -30,6 +30,7 @@ import AddRounds from './Admin/AdminDashboard/AddRounds';
 import AdminLogin from './Admin/AdminDashboard/AdminLogin';
 import ViewStudent from './Admin/AdminDashboard/ViewStudent';
 import GetStudents from './Admin/AdminDashboard/GetStudents';
+import Drives  from './Admin/AdminDashboard/Drives.jsx';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import ProtectedAdminRoute from './ProtectedRoute/ProtectedAdminRoute';
 
@@ -98,7 +99,8 @@ const App = () => {
           <Route path="AddStudent" element={<AddStudent />} />
           <Route path="AddRounds/:round/:drive_id" element={<AddRounds />} />
           <Route path="ViewStudents" element={<ViewStudent />} />
-          <Route path="GetStudents" element={<GetStudents/>} />
+            <Route path="GetStudents" element={<GetStudents />} />
+             <Route path="Drives/:id" element={<Drives/>} />
         </Route>
         </Route>
 

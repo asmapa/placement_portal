@@ -45,7 +45,7 @@ const roundOptions = [
   ];
   const[lastYear,setLastYear] = useState(null);
   const [selectedTab, setSelectedTab] = useState('Existing-Company');
-  const [drives, setDrives] = useState([]);
+
   const [choose, setChoose] = useState(false);
   const [selectedDrive, setSelectedDrive] = useState("");
   const [companies, setCompanies] = useState([]);
@@ -71,20 +71,8 @@ useEffect(()=>{
 },[]);
 
 
-useEffect(() => {
-  const fetchRounds = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/portal/get-all-rounds");
-      setRoundDrive(response.data); 
-    } catch (error) {
-      console.error("Error fetching rounds:", error);
-    }
-  };
 
-  fetchRounds();
-}, []);
-  
-  {/*Fetch statistics by Year */}
+
   
  useEffect(() => {
     const fetchStatisticsByYear = async () => {
@@ -109,104 +97,11 @@ useEffect(() => {
  }, []);
   
   
-{/*Duration */}
-const handleShowRounds = (driveId) => {
-  const rounds = RoundDrive.filter((round) => round.drive_id === driveId);
-
-  setSelectedDriveRounds(rounds);
-  
-  setEditedRounds(
-    rounds.reduce((acc, round) => {
-      let durationHours = "00";
-      let durationMinutes = "00";
-
-      if (round.duration) {
-        if (typeof round.duration === "string") {
-          // If duration is a string, try splitting
-          const durationParts = round.duration.split(":");
-          durationHours = durationParts[0] || "00";
-          durationMinutes = durationParts[1] || "00";
-        } else if (typeof round.duration === "object") {
-          // If duration is an object (e.g., returned as { hours: x, minutes: y })
-          durationHours = round.duration.hours || "00";
-          durationMinutes = round.duration.minutes || "00";
-        }
-      }
-
-      acc[`${round.drive_id}-${round.round_number}`] = {
-        ...round,
-        duration: {
-          hours: durationHours,
-          minutes: durationMinutes,
-        },
-      };
-      return acc;
-    }, {})
-  );
-
-  setShowForm(true);
-};
 
 
 
-const handleRoundChange = (e, roundKey, field) => {
-  if (field === "duration.hours" || field === "duration.minutes") {
-    const [key, subfield] = field.split("."); // Split field into "duration" and "hours/minutes"
-    setEditedRounds((prev) => ({
-      ...prev,
-      [roundKey]: {
-        ...prev[roundKey],
-        duration: {
-          ...prev[roundKey].duration,
-          [subfield]: e.target.value,
-        },
-      },
-    }));
-  } else {
-    setEditedRounds((prev) => ({
-      ...prev,
-      [roundKey]: {
-        ...prev[roundKey],
-        [field]: e.target.value,
-      },
-    }));
-  }
-};
 
 
-const handleUpdate = async () => {
-  console.log("Updated Rounds: ", editedRounds);
-  try {
-    await Promise.all(
-      Object.entries(editedRounds).map(([key, roundData]) => {
-        const [drive_id, round_number] = key.split("-");
-
-        // Convert hours/minutes into PostgreSQL INTERVAL format
-        const formattedDuration = `${roundData.duration.hours || "00"}:${
-          roundData.duration.minutes || "00"
-        }:00`;
-
-        return axios.put(
-          `http://localhost:3000/portal/update-round/${drive_id}/${round_number}`,
-          {
-            ...roundData,
-            duration: formattedDuration, // Send as HH:MI:SS
-          }
-        );
-      })
-    );
-    alert("All rounds updated");
-    console.log("✅ All rounds updated successfully!");
-  } catch (error) {
-    alert(`Error updating rounds: ${JSON.stringify(error.response?.data) || error.message}`);
-    console.error(
-      "❌ Error updating rounds:",
-      error.response?.data || error.message
-    );
-  }
-
-  setShowForm(false);
-};
   
  
 
@@ -222,31 +117,7 @@ const handleUpdate = async () => {
    });
 
 
-   useEffect(() => {
-    let url = "http://localhost:3000/portal/getdrives"; // Default URL
-
-    if (selectedDrive === "On-Going-drive") {
-      url = "http://localhost:3000/portal/drives/ongoing";
-    } else if (selectedDrive === "Up-coming-Drives") {
-      url = "http://localhost:3000/portal/drives/upcoming";
-    } else if (selectedDrive === "Completed-drives") {
-      url = "http://localhost:3000/portal/drives/past";
-    }
-
-    axios.get(url)
-      .then((response) => {
-        console.log("Fetched drives:", response.data);
-        if (Array.isArray(response.data.drives)) {
-          setDrives(response.data.drives);
-        } else {
-          console.error("Drives data is not an array:", response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching drives:", error);
-      });
-
-  }, [selectedDrive]); 
+   
 
   
 const handleSearch = async (e) => {
@@ -338,80 +209,8 @@ const handleSearch = async (e) => {
 
 
 
-const [formDrive, setFormDrive] = useState({
-    drive_id: "", // Primary key for updating drive
-    company_id: "", // Changed from company_name → company_id to match DB
-    job_role: "",
-    num_of_rounds: "",
-    training_package: "",
-    permanent_package: "",
-    drive_mode: "",
-    drive_type: "",
-    start_date: "",
-    last_date_to_submit: "",
-    no_of_backlogs_permitted: "",
-    supply_history_allowed: false, // Boolean field
-    min_cgpa_required: "",
-    focused_branches: [], // Array field
-    description: "", // Added to match DB
-    registration_link: "", // Added to match DB
-    work_location: "",
-   
-});
 
-  
 
-  const handleDriveChange = (drive) => {
-   setFormDrive({
-        drive_id: drive.drive_id || "", // Ensuring primary key exists
-        company_id: drive.company_id || "", // Changed from company_name → company_id to match DB
-        job_role: drive.job_role || "",
-        num_of_rounds: drive.num_of_rounds || "",
-        training_package: drive.training_package || "",
-        permanent_package: drive.permanent_package || "",
-        drive_mode: drive.drive_mode || "",
-        drive_type: drive.drive_type || "",
-        start_date: drive.start_date || "",
-        last_date_to_submit: drive.last_date_to_submit || "",
-        no_of_backlogs_permitted: drive.no_of_backlogs_permitted || "",
-        supply_history_allowed: drive.supply_history_allowed ?? false, // Boolean handling
-        min_cgpa_required: drive.min_cgpa_required || "",
-        focused_branches: drive.focused_branches || [], // Ensuring array consistency
-        description: drive.description || "", // Added to match DB
-        registration_link: drive.registration_link || "", // Added to match DB
-        work_location: drive.work_location || "",
-        
-    });
-setTimeout(() => setDrivechoose(true), 10);
-  }
-
-//delete Drive Data
-  const handleDriveDelete = async (drive) => {
-     alert("Hey Are You Sure ?? You Want to Delete ? There is no undo !!!!!");
-    try {
-      const result = await axios.delete(`http://localhost:3000/portal/deleteDrive/${drive.drive_id}`);
-      if (result.status === 200) {
-        alert("Its get deleted successfully");
-      }
-    } catch (error) {
-       console.error("Error deleting drive:", error);
-    alert("Failed to delete drive.");
-    }
-  }
-  //Delete The Company From DB
-  const handleDeleteClick = async (company) => {
-    alert("Hey Are You Sure ?? You Want to Delete ? There is no undo !!!!!");
-  try {
-    const res = await axios.delete(`http://localhost:3000/portal/delete-company/${company.company_id}`);
-    
-    if (res.status === 200) {
-      alert("Deleted successfully!!!");
-    } 
-  } catch (error) {
-    console.error("Error deleting company:", error);
-    alert("Failed to delete company.");
-  }
-};
 
 
 
@@ -440,30 +239,6 @@ setTimeout(() => setDrivechoose(true), 10);
   };
 
 
-//Update the Drive
- const handleDriveSubmit = async (e) => {
-    e.preventDefault(); 
-
-    if (!formDrive.drive_id || isNaN(Number(formDrive.drive_id))) {
-        alert("Invalid drive ID. Please select a valid drive.");
-        return;
-    }
-
-    try {
-        const response = await axios.put('http://localhost:3000/portal/updateDrive', {
-            ...formDrive,
-            drive_id: Number(formDrive.drive_id),  // Convert `drive_id` to integer
-        });
-
-        if (response.status === 200) {  // Fix: response should check `status`
-            alert("Drive updated successfully!");
-            setDrivechoose(false);
-        }
-    } catch (error) {
-        console.error("Error updating Drive:", error);
-        alert("Failed to update Drive.");
-    }
-};
 
   //Updation of company from front
   const handleCompanySubmit = async (e) => {
@@ -578,14 +353,7 @@ setTimeout(() => setDrivechoose(true), 10);
         >
           Existing Company
         </button>
-        <button
-          className={`px-6 py-2  font-bold flex-1 ${
-            selectedTab === 'DriveData' ? 'bg-[#005f69] text-white' : 'bg-gray-300'
-          }`}
-          onClick={() => setSelectedTab('DriveData')}
-        >
-          Check Drive Details
-        </button>
+      
          
       </div>   
 
@@ -654,159 +422,9 @@ setTimeout(() => setDrivechoose(true), 10);
         </div>
       )}
 
-      {selectedTab === "DriveData" && (
-  <div className="overflow-x-auto shadow-md rounded-lg border-Navy mt-8 p-4">
-    <div>
-      <select
-        name="course"
-        className="w-50 border-[#005f69] text-black border-b rounded-lg focus:outline-none focus:ring focus:ring-blue-500 p-2"
-        onChange={(e) => setSelectedDrive(e.target.value)}
-        required
-      >
-        <option value="">All Drives</option>
-        <option value="On-Going-drive">On-Going Drive</option>
-        <option value="Up-coming-Drives">Upcoming Drives</option>
-        <option value="Completed-drives">Completed Drives</option>
-      </select>
-    </div>
-
-    <Table striped bordered hover responsive>
-      <thead style={{ backgroundColor: "#005f69", color: "white" }}>
-        <tr>
-          <th className="px-4 py-2">Drive ID</th>
-          <th className="px-4 py-2">Company ID</th>
-          <th className="px-4 py-2">Company Name</th>
-          <th className="px-4 py-2">Job Role</th>
-          <th className="px-4 py-2">Rounds</th>
-          <th className="px-4 py-2">Training Package</th>
-          <th className="px-4 py-2">Permanent Package</th>
-          <th className="px-4 py-2">Drive Mode</th>
-          <th className="px-4 py-2">Drive Type</th>
-          <th className="px-4 py-2">Start Date</th>
-          <th className="px-4 py-2">Last Date to Submit</th>
-          <th className="px-4 py-2">Backlogs Permitted</th>
-          <th className="px-4 py-2">Supply Allowed</th>
-          <th className="px-4 py-2">Min CGPA</th>
-          <th className="px-4 py-2">Focused Branches</th>
-          <th className="px-4 py-2">Work Location</th>
-          <th className="px-4 py-2">Description</th>
-          <th className="px-4 py-2">Registration Link</th>
-          <th className="px-4 py-2">Round Details</th>
-          <th className="px-4 py-2">Update</th>
-          <th className="px-4 py-2">Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        {drives.map((drive) => (
-          <tr key={drive.drive_id}>
-            <td className="px-4 py-3">{drive.drive_id}</td>
-            <td className="px-4 py-3">{drive.company_id || "Unknown"}</td>
-            <td className="px-4 py-3">{drive.company_name || "Unknown"}</td>
-            <td className="px-4 py-3">{drive.job_role}</td>
-            <td className="px-4 py-3">{drive.num_of_rounds}</td>
-            <td className="px-4 py-3">{drive.training_package} LPA</td>
-            <td className="px-4 py-3">{drive.permanent_package} LPA</td>
-            <td className="px-4 py-3">{drive.drive_mode}</td>
-            <td className="px-4 py-3">{drive.drive_type}</td>
-            <td className="px-4 py-3">{new Date(drive.start_date).toLocaleDateString()}</td>
-            <td className="px-4 py-3">{new Date(drive.last_date_to_submit).toLocaleDateString()}</td>
-            <td className="px-4 py-3">{drive.no_of_backlogs_permitted}</td>
-            <td className="px-4 py-3">{drive.supply_history_allowed ? "Yes" : "No"}</td>
-            <td className="px-4 py-3">{drive.min_cgpa_required}</td>
-            <td className="px-4 py-3">{drive.focused_branches.join(", ")}</td>
-            <td className="px-4 py-3">{drive.work_location}</td>
-            <td className="px-4 py-3">{drive.description}</td>
-            <td className="px-4 py-3">
-              <a
-                href={drive.registration_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 underline"
-              >
-                Apply Here
-              </a>
-            </td>
-            <td>
-              <button className="px-6 py-2 bg-gray-500 text-white font-bold rounded hover:bg-[#004b52] transition"
-                onClick={() => handleShowRounds(drive.drive_id)}
-              >
-                Round
-              </button>
-            </td>
-            <td>
-              <button
-                className="px-6 py-2 bg-[#005f69] text-white font-bold rounded hover:bg-blue-700 transition"
-                onClick={() => handleDriveChange(drive)}
-              >
-                Update
-              </button>
-            </td>
-            <td>
-              <button
-                className="px-6 py-2 bg-red-700 text-white font-bold rounded hover:bg-[#004b52] transition"
-                onClick={() => handleDriveDelete(drive)}
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
-  </div>
-)}
+     
 
 
-{drivechoose && (
-  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div className="bg-white p-6 rounded-2xl shadow-xl w-1/2">
-      <h2 className="text-3xl text-[#005f69] font-bold mb-6 text-center my-7">Update Drive</h2>
-
-      <form onSubmit={handleDriveSubmit} className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-3">
-          {Object.keys(formDrive).map((key) => (
-            <div key={key}>
-              <label className="block text-sm font-semibold text-gray-700">
-                {key.replace(/_/g, " ").toUpperCase()}
-              </label>
-              <input
-                type={key === "supply_history_allowed" ? "checkbox" : "text"}
-                name={key}
-                checked={key === "supply_history_allowed" ? formDrive[key] : undefined}  // ✅ Use `checked`
-                value={key !== "supply_history_allowed" ? formDrive[key] : undefined}  // ✅ Prevent `value` on checkbox
-                onChange={(e) => {
-                  if (key === "supply_history_allowed") {
-                    setFormDrive((prev) => ({ ...prev, [key]: e.target.checked }));  // ✅ Toggle boolean value
-                  } else {
-                    handleDrive(e); // ✅ For other inputs
-                  }
-                }}
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="flex justify-center items-center gap-5 ">
-          <button
-            type="button"
-            onClick={() => setDrivechoose(false)}
-            className="text-white hover:bg-red-700 font-bold bg-slate-500 rounded-lg text-sm px-5 py-2.5 transition flex-1 my-7"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="text-white bg-[#005f69] hover:bg-[#004b52] font-medium rounded-lg text-sm px-5 py-2.5 transition flex-1 my-7"
-          >
-            Update Drive
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
-
-      
 
 {choose && (
   <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -907,100 +525,7 @@ setTimeout(() => setDrivechoose(true), 10);
   </div>
 )}
 
-      {/*This is the form for rounds */}
-       {showForm && (
-        <div className="fixed inset-0 flex  items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 border-[#005f69] border-5 overflow-x-auto ">
-            <h2 className="text-2xl font-bold mb-4 text-center text-[#2d939e]">Edit Round Details</h2>
-        <div className=" flex gap-8  p-9">
-          
-          {selectedDriveRounds.map((round) => {
-            const roundKey = `${round.drive_id}-${round.round_number}`;
-            return (
-              <div key={roundKey} className="mb-4 border-[#005f69] border-5 p-6  rounded-lg ">
-                <label className="block font-bold  text-[#005f69]">Round Number</label>
-                <input
-        type="text"
-        className="w-full border-[#005f69] p-2 rounded-md bg-gray-200 cursor-not-allowed"
-        value={round.round_number}
-        readOnly
-      />
-                <label className="block font-bold  text-[#005f69]">Round Name</label>
-
-                 <select
-                value={editedRounds[roundKey].round_name}
-                onChange={(e) => handleRoundChange(e, roundKey, "round_name")}
-                className="w-full  border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
-                required
-              >
-                <option value="" disabled>Select Round</option>
-                {roundOptions.map((option, i) => (
-                  <option key={i} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-
-               
-
-                <label className="block mt-2 font-bold  text-[#005f69]">Round Date</label>
-                <input
-                  type="date"
-                  className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
-                  value={editedRounds[roundKey].round_date?.split("T")[0]} 
-                  onChange={(e) => handleRoundChange(e, roundKey, "round_date")}
-                />
-
-                <label className="block mt-2 font-bold text-[#005f69]">Duration (Hours)</label>
-                <input
-                  type="number"
-                  className="w-full border-[#005f69] rounded-md focus:ring focus:ring-blue-500"
-                  value={editedRounds[roundKey].duration?.hours || ""}
-                  onChange={(e) => handleRoundChange(e, roundKey, "duration.hours")}
-                />
-
-                <label className="block mt-2 font-bold text-[#005f69]">Duration (Minutes)</label>
-                <input
-                  type="number"
-                  className="w-full border-[#005f69] rounded-md focus:ring focus:ring-blue-500"
-                  value={editedRounds[roundKey].duration?.minutes || ""}
-                  onChange={(e) => handleRoundChange(e, roundKey, "duration.minutes")}
-                />
-
-
-                <label className="block mt-2 font-bold  text-[#005f69]">Location</label>
-                <input
-                  type="text"
-                  className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
-                  value={editedRounds[roundKey].location || ""}
-                  onChange={(e) => handleRoundChange(e, roundKey, "location")}
-                />
-
-                <label className="block mt-2 font-bold  text-[#005f69]">Mode</label>
-                <input
-                  type="text"
-                  className="w-full border-[#005f69] p-2 rounded-md focus:ring focus:ring-blue-500"
-                  value={editedRounds[roundKey].mode}
-                  onChange={(e) => handleRoundChange(e, roundKey, "mode")}
-                />
-              </div>
-            );
-          })}
-
-         
-            </div>
-             <div className="flex justify-center mt-4">
-            <button className="bg-red-600 text-white px-4 py-2 rounded-md mr-2" onClick={() => setShowForm(false)}>
-              Cancel Changes
-            </button>
-            <button className="bg-[#005f69] text-white px-4 py-2 rounded-md" onClick={handleUpdate}>
-              Save Changes
-            </button>
-          </div>
-            </div>
-      </div>
-    )}
-  
+      
  
     </div>
   );
