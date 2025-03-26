@@ -1,4 +1,8 @@
 import React, { useRef } from "react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/effect-fade';
+import { EffectFade, Autoplay } from 'swiper/modules';
 import ritImg from "./assets/rit_campus.jpg"; // Import the image
 import ritImg1 from "./assets/rit_trees.jpg"; // Import the image
 import ritImg2 from "./assets/rit_img.jpg"; // Import the image
@@ -25,6 +29,7 @@ const ExplorePage = () => {
     { id: 3, name: "ENVESTNET", logo: p2 },
     { id: 4, name: "CONGNIZENT", logo: p1},
   ];
+  const images=[ritImg,ritImg1,ritImg2];
 
   const testimonials = [
     {
@@ -126,26 +131,40 @@ const ExplorePage = () => {
   return (
     <div className="font-sans text-gray-800">
       {/* Hero Section */}
-      <div
-        className="bg-cover bg-center h-96 flex flex-col justify-center items-center text-white"
-        style={{
-        backgroundImage: `url(${ritImg})`, // Use the imported image
-        height: "800px", // Match the height of the image
-        width: "100%", // Full width
-        margin: "0 auto", // Center the hero section
-      }}
-      >
-        <h1 className="text-4xl font-bold mb-4">
-          Welcome to the CGPC RIT
-        </h1>
-        <p className="text-xl mb-8">Empowering Students for Successful Careers</p>
-        <button
-          onClick={handleExploreMore} // Add click handler
-          className="bg-orange-500 px-6 py-2 rounded-lg hover:bg-orange-600 transition-all duration-300 transform hover:scale-105"
-        >
-          Explore More
-        </button>
+      <div className="pt-10">
+        <div className="relative w-[96%] h-[650px] mx-auto rounded-lg overflow-hidden">
+          {/* Carousel Background */}
+          <Swiper
+            modules={[EffectFade, Autoplay]}
+            effect="fade"
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
+            loop
+            className="absolute inset-0 w-full h-full rounded-lg"
+          >
+            {images.map((image, index) => (
+              <SwiperSlide key={index}>
+                <div
+                  className="w-full h-full bg-cover bg-center"
+                  style={{ backgroundImage: `url(${image})` }}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          {/* Overlay Content */}
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center z-10">
+          <h1 className="text-4xl font-bold mb-4">Welcome to the CGPC RIT</h1>
+          <p className="text-xl mb-8">Empowering Students for Successful Careers</p>
+          <button
+            onClick={handleExploreMore}
+            className="bg-orange-500 px-6 py-2 rounded-lg hover:bg-orange-600 transition-all duration-300 transform hover:scale-105"
+          >
+            Explore More
+          </button>
+        </div>
+        </div>
       </div>
+
 
       {/* About Placement Cell and College */}
       <div ref={nextSectionRef} className="py-12 px-4">

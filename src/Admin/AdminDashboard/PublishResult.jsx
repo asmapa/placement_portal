@@ -10,7 +10,13 @@ const PublishResult = () => {
     const [excelFile, setExcelFile] = useState(null);
     const [excelFileError, setExcelFileError] = useState(null);
     const [excelData, setExcelData] = useState(null);
-    const [fileName, setFileName] = useState(""); // State to store the selected file name
+    const [fileName, setFileName] = useState(""); 
+
+
+    const [company_name, setCompanyName] = useState("");
+    const [job_role, setJobRole] = useState("");
+    const [year, setYear] = useState("");
+    const [round_number, setRoundNumber] = useState("");
 
     const FileType = [
         "application/vnd.ms-excel",
@@ -58,85 +64,119 @@ const PublishResult = () => {
         }
     };
 
-    const handleSubmit = async(e) => {
-        e.preventDefault();
-        if (excelFile !== null) {
-            const workbook = XLSX.read(excelFile, { type: "array" });
-            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-            let data = XLSX.utils.sheet_to_json(worksheet, { raw: false });
+   const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (excelFile !== null) {
+        const workbook = XLSX.read(excelFile, { type: "array" });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        let data = XLSX.utils.sheet_to_json(worksheet, { raw: false });
 
-            // Format dates
-            data = data.map((row) => {
-                if (row.Date) {
-                    row.Date = new Date((row.Date - 25569) * 86400 * 1000)
-                        .toISOString()
-                        .split("T")[0];
-                }
-                return row;
-            });
-            console.log(data);
-            setExcelData(data);
-
-            
-            
-            
-            for (const row of excelData) {
-        try {
-            console.log(`Processing KTU ID: ${row.ktu_id} for ${row.company_name}`);
-
-            const { data: driveResponse } = await axios.get(
-                `http://localhost:3000/portal/drive-id/${row.company_name}/${row.job_role}/${row.year}`
-            );
-
-            if (!driveResponse.driveId) {
-                console.error(`Drive ID not found for:`, row);
-                continue;
+        // Format dates
+        data = data.map((row) => {
+            if (row.Date) {
+                row.Date = new Date((row.Date - 25569) * 86400 * 1000)
+                    .toISOString()
+                    .split("T")[0];
             }
+            return row;
+        });
 
-            const driveId = driveResponse.driveId;
+        console.log(data);
+        setExcelData(data);  
 
-            const roundResultPayload = {
-                driveId,
-                roundNumber: row.round_number,
-                ktuId: row.ktu_id,
-                status: row.round_status,
-            };
+        for (const row of data) {  
+            try {
+                console.log(`Processing KTU ID: ${row.ktu_id} for ${company_name}`);
 
-            await axios.post("http://localhost:3000/portal/round-result", roundResultPayload);
+                const { data: driveResponse } = await axios.get(
+                    `http://localhost:3000/portal/drive-id/${company_name}/${job_role}/${year}`
+                );
 
-            console.log(`✅ Successfully posted round result for KTU ID: ${row.ktu_id}`);
+                if (!driveResponse.driveId) {
+                    console.error(`Drive ID not found for:`, row);
+                    continue;
+                }
 
-        } catch (error) {
-            console.error(`❌ Error processing row:`, row, error.response ? error.response.data : error.message);
+                const driveId = driveResponse.driveId;
+
+                const roundResultPayload = {
+                    driveId,
+                    roundNumber: round_number,
+                    ktuId: row.ktu_id,
+                    status: row.round_status,
+                };
+
+                console.log("Here is the round result payload !!!");
+                console.log(roundResultPayload);
+
+                await axios.post("http://localhost:3000/portal/round-result", roundResultPayload);
+
+                console.log(`✅ Successfully posted round result for KTU ID: ${row.ktu_id}`);
+
+            } catch (error) {
+                console.error(`❌ Error processing row:`, row, error.response ? error.response.data : error.message);
+            }
         }
-    }
 
-     Swal.fire({
+        Swal.fire({
             icon: 'success',
-            title: 'Result Enterd Into Database Successfully!',
+            title: 'Result Entered Into Database Successfully!',
             showConfirmButton: false,
-            timer: 2000,  // Auto close after 2 sec
-          });
-    
-          setTimeout(() => {
-            navigate('/Admin-dashboard'); // Redirect after alert
-          }, 2000);
-    
+            timer: 2000,  
+        });
 
-            
-            
-        } else {
-            setExcelData(null);
-            Swal.fire({
-                    icon: 'error',
-                    title: 'Login Failed!',
-                    text: err.response?.data?.message || 'Something went wrong',
-                  });
-        }
-    };
+        setTimeout(() => {
+            navigate('/Admin-dashboard');  
+        }, 2000);
+
+    } else {
+        setExcelData(null);
+        Swal.fire({
+            icon: 'error',
+            title: 'Login Failed!',
+            text: 'Something went wrong',
+        });
+    }
+};
+
 
     return (
         <div className="container mx-auto p-6">
+
+
+            <div className="flex gap-8">
+            <input
+                type="text"
+                className="flex-1 rounded-md border-[#005f69] border-3"
+                placeholder="Company Name"
+                value={company_name}
+                onChange={(e) => setCompanyName(e.target.value)}
+            />
+            <input
+                type="text"
+                className="flex-1 rounded-md border-[#005f69] border-3"
+                placeholder="Job Role"
+                value={job_role}
+                onChange={(e) => setJobRole(e.target.value)}
+            />
+            <input
+                type="text"
+                className="flex-1 rounded-md border-[#005f69] border-3"
+                placeholder="Year"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+            />
+            <input
+                type="text"
+                className="flex-1 rounded-md border-[#005f69] border-3"
+                placeholder="Round Number"
+                value={round_number}
+                onChange={(e) => setRoundNumber(e.target.value)}
+            />
+            </div>
+            
+
+
             {/* Drag and Drop File Section */}
             <div
                 className="border-2 border-dashed border-Navy p-6 text-center rounded-lg mt-6"
@@ -192,11 +232,9 @@ const PublishResult = () => {
                     <table className="min-w-full table-auto">
                         <thead>
                             <tr className="bg-[#005f69] text-left text-white border-Navy">
-                                <th className="px-4 py-2">Company Name</th>
-                                <th className="px-4 py-2">Job Role</th>
-                                <th className="px-4 py-2">Year</th>
+                                
                                 <th className="px-4 py-2">Ktu id</th>
-                                <th className="px-4 py-2">Round Number</th>
+                                
                                 <th className="px-4 py-2">Round status</th>
                             </tr>
                         </thead>
